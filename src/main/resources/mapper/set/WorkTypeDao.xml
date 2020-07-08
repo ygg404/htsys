@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.set.dao.WorkTypeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.set.entity.WorkTypeEntity" id="workTypeMap">
+        <result property="id" column="id"/>
+        <result property="typeName" column="type_name"/>
+        <result property="unit" column="unit"/>
+        <result property="unitOutput" column="unit_output"/>
+        <result property="startDateTime" column="start_date_time"/>
+        <result property="updateDateTime" column="update_date_time"/>
+    </resultMap>
+
+    <select id="getWorkTypePage" resultMap="workTypeMap">
+        select work_type.*, wp.ptypeId  from work_type
+        LEFT JOIN work_project_type wp on wp.wtypeId = work_type.id
+        where  1=1
+        <if test="key != '' and key != null">
+            and (work_type.type_name like '%${key}%'
+            or work_type.unit like '%${key}%'
+            or work_type.unit_output like '%${key}%')
+        </if>
+        <choose>
+            <when test="projectTypeId != '' and  projectTypeId != null">
+                <if test="projectTypeId == 0">
+                    and wp.ptypeId is null
+                </if>
+                <if test="projectTypeId != 0">
+                    and wp.ptypeId = '${projectTypeId}'
+                </if>
+            </when>
+            <otherwise>GROUP BY work_type.id</otherwise>
+        </choose>
+    </select>
+
+    <select id="getListByPtypeId" parameterType="java.lang.Long" resultMap="workTypeMap">
+        select work_type.*, wp.ptypeId  from work_type
+        LEFT JOIN work_project_type wp on wp.wtypeId = work_type.id
+        where  1=1
+        <if test="_parameter == 0">
+            and wp.ptypeId is null
+        </if>
+        <if test="_parameter != 0">
+            and wp.ptypeId = #{projectTypeId}
+            GROUP BY work_type.id
+        </if>
+        order by work_type.order_num desc
+    </select>
+</mapper>

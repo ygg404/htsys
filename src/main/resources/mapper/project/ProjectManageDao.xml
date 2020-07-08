@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectManageDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.vo.ProjectVoEntity" id="projectVoMap">
+        <result property="id" column="id"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectAuthorize" column="project_authorize"/>
+        <result property="projectType" column="project_type"/>
+        <result property="projectProduce" column="project_produce"/>
+        <result property="projectProduceAccount" column="project_produce_account"/>
+        <result property="projectStartDateTime" column="project_start_date_time"/>
+        <result property="createuserid" column="createUserId"/>
+        <result property="scheduleRate" column="schedule_rate"/>
+        <result property="scheduleNote" column="schedule_note"/>
+        <result property="projectCharge" column="project_charge"/>
+        <result property="projectChargeAccount" column="project_charge_account"/>
+        <result property="projectWorkDate" column="project_work_date"/>
+        <result property="projectQualityDate" column="project_quality_date"/>
+        <result property="projectBegunDateTime" column="project_begun_date_time"/>
+        <result property="wFinishDateTime" column="wFinishDateTime"/>
+        <result property="qFinishDateTime" column="qFinishDateTime"/>
+        <result property="suspendTime" column="suspend_time"/>
+        <result property="suspendExcuse" column="suspend_excuse"/>
+        <result property="suspendDay" column="suspend_day"/>
+        <result property="cutOffTime" column="cut_off_time"/>
+        <result property="projectStatus" column="project_status"/>
+        <result property="isPlan" column="is_plan"/>
+        <result property="isWork" column="is_work"/>
+        <result property="isCheck" column="is_check"/>
+        <result property="isQauth" column="is_qauth"/>
+        <result property="isOutput" column="is_output"/>
+        <result property="isAuthorize" column="is_authorize"/>
+        <result property="backId" column="backId"/>
+        <result property="submitNote" column="submit_note"/>
+        <result property="backDateNum" column="back_date_num"/>
+        <result property="isCharge" column="isCharge"/>
+    </resultMap>
+
+    <select id="getProjectManagPage"  resultMap="projectVoMap">
+        select a.id id,a.project_no ,a.project_name,a.project_authorize,
+        a.project_produce,a.project_produce_account,a.project_start_date_time,
+        a.project_type,sch.schedule_rate,sch.schedule_note,
+        project_plan.project_charge,project_plan.project_charge_account,
+        project_plan.project_work_date,project_plan.project_quality_date,
+        project_plan.project_begun_date_time,project_work.finish_date_time as wFinishDateTime,
+        project_work.suspend_time,project_work.suspend_excuse,project_work.suspend_day,
+        check_quality.finish_date_time as qFinishDateTime,check_quality.cut_off_time,project_work.project_status,
+        project_situation.is_plan,project_situation.is_work,project_situation.is_check,project_situation.is_qauth,
+        project_situation.is_output,project_situation.is_authorize,
+        backwork.id as backId,backwork.submit_note,backwork.back_date_num,
+        <choose>
+            <when test="projectchargeAccount != '' and  projectchargeAccount != null">
+                (CASE project_charge_account when '${projectchargeAccount}' then 1 else 0 END) as isCharge
+            </when>
+            <otherwise> 1 as isCharge </otherwise>
+        </choose>
+        from project a
+        left join project_plan on project_plan.project_no = a.project_no
+        left join project_work on project_work.project_no = a.project_no
+        left join check_quality on check_quality.project_no = a.project_no
+        left join project_situation on project_situation.project_no = a.project_no
+        left join (SELECT s.* from (select project_no,max(id)as id,create_time  from project_schedule GROUP BY project_no) maxs
+        LEFT JOIN project_schedule s  on maxs.project_no = s.project_no and s.id = maxs.id) sch
+        on sch.project_no = a.project_no
+        LEFT JOIN (SELECT id,project_no,back_date_num,submit_note FROM back_work where id in
+        (SELECT  max(id) as id from back_work GROUP BY project_no)) backwork on backwork.project_no = a.project_no
+        <if test="groupId != '' and groupId != null">
+            LEFT join project_group on project_group.project_no = a.project_no
+        </if>
+        where a.p_stage = 1
+        <if test="startDate != null and startDate != ''">
+            <if test="dateItemId == 0"> and a.project_start_date_time >=  '${startDate}'</if>
+            <if test="dateItemId == 1"> and project_plan.project_begun_date_time >=  '${startDate}'</if>
+            <if test="dateItemId == 2"> and project_work.finish_date_time >=  '${startDate}'</if>
+            <if test="dateItemId == 3"> and check_quality.finish_date_time >=  '${startDate}'</if>
+            <if test="dateItemId == 4"> and check_quality.cut_off_time >=  '${startDate}'</if>
+        </if>
+        <if test="endDate != null and endDate != ''">
+            <if test="dateItemId == 0"> and a.project_start_date_time &lt;= '${endDate}'</if>
+            <if test="dateItemId == 1"> and project_plan.project_begun_date_time &lt;= '${endDate}'</if>
+            <if test="dateItemId == 2"> and project_work.finish_date_time &lt;= '${endDate}'</if>
+            <if test="dateItemId == 3"> and check_quality.finish_date_time &lt;= '${endDate}'</if>
+            <if test="dateItemId == 4"> and check_quality.cut_off_time &lt;= '${endDate}'</if>
+        </if>
+        <if test="key != ''">
+            and (a.project_no like '%${key}%'
+            or a.project_name like '%${key}%'
+            or a.project_authorize like '%${key}%'
+            or a.project_type like '%${key}%'
+            or project_plan.project_charge like '%${key}%')
+        </if>
+        <if test="projectType != '' and projectType != null">
+            and a.project_type like '%${projectType}%'
+        </if>
+        <if test="groupId != '' and groupId != null">
+            and project_group.group_id = '${groupId}'
+        </if>
+        order by
+        <if test="sidx != '' and sidx != null and sidx == 'projectCharge'">project_plan.project_charge_account</if>
+        <if test="sidx != '' and sidx != null and sidx == 'scheduleRate'">sch.schedule_rate</if>
+        <if test="sidx != '' and sidx != null and sidx == 'projectStatus'">project_work.project_status</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isPlan'">project_situation.is_plan</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isWork'">project_situation.is_work</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isCheck'">project_situation.is_check</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isQauth'">project_situation.is_qauth</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isOutput'">project_situation.is_output</if>
+        <if test="sidx != '' and sidx != null and sidx == 'isAuthorize'">project_situation.is_authorize</if>
+
+        <if test="sidx != '' and sidx != null and sidx == 'projectStartDateTime'">a.project_start_date_time</if>
+        <if test="sidx != '' and sidx != null and sidx == 'projectBegunDateTime'">project_plan.project_begun_date_time</if>
+        <if test="sidx != '' and sidx != null and sidx == 'wFinishDateTime'">project_work.finish_date_time</if>
+        <if test="sidx != '' and sidx != null and sidx == 'qFinishDateTime'">check_quality.finish_date_time</if>
+        <if test="sidx != '' and sidx != null and sidx == 'cutOffTime'">check_quality.cut_off_time</if>
+
+        <if test="sidx != '' and sidx != null and sidx == 'id'">a.id</if>
+        <if test="sidx == '' or sidx == null">a.id</if>
+        <choose>
+            <when test="order == 'desc'">desc</when>
+            <otherwise>asc</otherwise>
+        </choose>
+    </select>
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.entity.ProjectEntity" id="projectMap">
+        <result property="id" column="id"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="contractNo" column="contract_no"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectMoney" column="project_money"/>
+        <result property="projectAuthorize" column="project_authorize"/>
+        <result property="projectNote" column="project_note"/>
+        <result property="projectBusiness" column="project_business"/>
+        <result property="pStage" column="p_stage"/>
+        <result property="examineNote" column="examine_note"/>
+        <result property="projectType" column="project_type"/>
+        <result property="projectStage" column="project_stage"/>
+        <result property="projectProduce" column="project_produce"/>
+        <result property="projectProduceAccount" column="project_produce_account"/>
+        <result property="projectStartDateTime" column="project_start_date_time"/>
+        <result property="projectCreateDateTime" column="project_create_date_time"/>
+        <result property="createuserid" column="createUserId"/>
+    </resultMap>
+</mapper>

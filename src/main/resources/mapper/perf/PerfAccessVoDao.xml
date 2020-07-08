@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.perf.dao.PerfAssessVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.perf.vo.PerfAssessVoEntity" id="perfAccessVoMap">
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="username"/>
+        <result property="dutyId" column="duty_id"/>
+        <result property="dutyName" column="dutyName"/>
+        <result property="standardScore" column="standard_score"/>
+        <result property="kbiId" column="KBI_id"/>
+        <result property="kbiName" column="KBI_name"/>
+        <result property="kbiRatio" column="KBI_ratio"/>
+        <result property="kbiScore" column="kbi_score"/>
+        <result property="year" column="year"/>
+        <result property="updown" column="updown"/>
+    </resultMap>
+
+    <select id="getPerfAccessVoList" resultMap="perfAccessVoMap">
+        SELECT sys_role.role_id,sys_role.role_name,
+		sys_user.user_id,sys_user.username,
+		sys_role_kbi.KBI_id,sys_kbi.KBI_name,sys_role_kbi.KBI_ratio,
+		perf.kbi_score,perf.year,perf.updown
+		FROM sys_role
+		LEFT JOIN sys_role_kbi on sys_role_kbi.role_id = sys_role.role_id
+		LEFT JOIN sys_kbi on sys_role_kbi.KBI_id = sys_kbi.id
+		LEFT JOIN sys_user_role on sys_user_role.role_id = sys_role.role_id
+		LEFT JOIN sys_user on sys_user.user_id = sys_user_role.user_id
+		LEFT JOIN (SELECT * from perf_assess where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and perf_assess.user_id = '${userId}')perf
+		on perf.kbi_id =  sys_role_kbi.KBI_id and perf.check_user_id = sys_user.user_id
+		where sys_role.role_id != 1 and sys_user.user_id is not NULL
+		and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and updown = '${updown}')
+		ORDER BY sys_role.role_id,sys_user.user_id,sys_role_kbi.KBI_id ASC
+    </select>
+
+    <select id="countPerfAccess" resultType="java.lang.Long">
+        select count(1) from perf_assess where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and perf_assess.user_id = '${userId}'
+    </select>
+
+    <select id="getUserRoleList" resultMap="perfAccessVoMap">
+        SELECT sys_user.user_id,sys_user.username,
+            sys_role.role_id,sys_role.role_name,
+			ren_record.duty_id,set_score_duty.duty as dutyName,set_score_kbi_duty.standard_score,
+			ren_record.title_lever,set_score_title.job_title as titleName,set_score_kbi_title.standard_score as titleStandScore
+        from sys_user
+        LEFT JOIN sys_user_role on sys_user_role.user_id = sys_user.user_id
+        LEFT JOIN sys_role on sys_role.role_id = sys_user_role.role_id
+		LEFT JOIN ren_record on ren_record.user_id = sys_user.user_id
+		LEFT JOIN set_score_kbi_duty on set_score_kbi_duty.duty_id = ren_record.duty_id
+		LEFT JOIN set_score_duty on set_score_kbi_duty.duty_id = set_score_duty.id
+		LEFT JOIN set_score_kbi_title on set_score_kbi_title.title_id = ren_record.title_lever
+		LEFT JOIN set_score_title on set_score_title.id = ren_record.title_lever
+        where sys_role.role_id is not NULL and sys_role.role_id != 1
+        <if test="year != null and updown != null">
+            and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and updown = '${updown}')
+        </if>
+        order by sys_role.role_id,sys_user.user_id asc
+    </select>
+
+    <select id="getUserHasAssess" resultMap="perfAccessVoMap">
+        SELECT perf_assess.user_id,perf_assess.user_name
+        from perf_assess
+        where perf_assess.year = '${year}' and perf_assess.updown = '${updown}'
+        GROUP BY perf_assess.user_id,perf_assess.user_name
+    </select>
+
+</mapper>

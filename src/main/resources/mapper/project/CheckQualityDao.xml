@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.CheckQualityDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.entity.CheckQualityEntity" id="checkQualityMap">
+        <result property="id" column="id"/>
+        <result property="finalCheckSuggestion" column="final_check_suggestion"/>
+        <result property="qualityNote" column="quality_note"/>
+        <result property="qualityScore" column="quality_score"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="finishDateTime" column="finish_date_time"/>
+        <result property="cutOffTime" column="cut_off_time"/>
+        <result property="groupid" column="groupId"/>
+        <result property="qualityUseraccount" column="quality_useraccount"/>
+        <result property="qualityConfirmaccount" column="quality_confirmaccount"/>
+    </resultMap>
+
+
+</mapper>

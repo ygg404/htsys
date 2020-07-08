@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">    
+<mapper namespace="io.renren.modules.sys.dao.RoleKBIVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="io.renren.modules.sys.vo.RoleKBIVoEntity" id="roleKBIVoMap">
+		<result property="roleId" column="role_id"/>
+		<result property="roleName" column="role_name"/>
+		<result property="userId" column="user_id"/>
+		<result property="username" column="username"/>
+		<result property="kbiId" column="KBI_id"/>
+		<result property="kbiName" column="KBI_name"/>
+		<result property="kbiRatio" column="KBI_ratio"/>
+	</resultMap>
+
+	<select id="getRoleKBIList" resultMap="roleKBIVoMap">
+		SELECT sys_role.role_id,sys_role.role_name,
+		sys_user.user_id,sys_user.username,
+		sys_role_kbi.KBI_id,sys_kbi.KBI_name,sys_role_kbi.KBI_ratio
+		FROM sys_role
+		LEFT JOIN sys_role_kbi on sys_role_kbi.role_id = sys_role.role_id
+		LEFT JOIN sys_kbi on sys_role_kbi.KBI_id = sys_kbi.id
+		LEFT JOIN sys_user_role on sys_user_role.role_id = sys_role.role_id
+		LEFT JOIN sys_user on sys_user.user_id = sys_user_role.user_id
+		where sys_role.role_id != 1 and sys_user.user_id is not NULL
+		ORDER BY sys_role.role_id,sys_user.user_id,sys_role_kbi.KBI_id ASC
+	</select>
+	
+</mapper>

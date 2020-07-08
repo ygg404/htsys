@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ren.dao.RenSalaryVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ren.vo.RenSalaryVoEntity" id="salaryMap">
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="branchId" column="branchId"/>
+        <result property="branchName" column="branch_name"/>
+        <result property="baseSalary" column="base_salary"/>
+        <result property="workSalary" column="work_salary"/>
+        <result property="titleSalary" column="title_salary"/>
+        <result property="housingSalary" column="housing_salary"/>
+        <result property="pcSalary" column="pc_salary"/>
+        <result property="mealSalary" column="meal_salary"/>
+        <result property="socialSalary" column="social_salary"/>
+        <result property="createDate" column="create_date"/>
+    </resultMap>
+
+    <select id="getRenSalaryVoList" resultMap="salaryMap">
+        SELECT sys_user.user_id,sys_user.username,
+             sys_branch.id as branchId, sys_branch.branch_name,
+             ren_salary_set.base_salary,ren_salary_set.work_salary,ren_salary_set.title_salary,
+             ren_salary_set.housing_salary,ren_salary_set.pc_salary,ren_salary_set.meal_salary,
+             ren_salary_set.social_salary,ren_salary_set.create_date
+             from sys_user
+            LEFT JOIN sys_branch_user on sys_branch_user.user_id = sys_user.user_id
+            LEFT JOIN sys_branch on sys_branch.id = sys_branch_user.branch_id
+            LEFT join ren_salary_set on ren_salary_set.user_id = sys_user.user_id
+            where sys_branch.id is not NULL and sys_branch.parent_id != 0
+            ORDER BY sys_branch.parent_id ASC ,sys_branch.order_num ASC, sys_user.user_id ASC
+    </select>
+
+    <select id="getSalarySetVoList" resultMap="salaryMap">
+        SELECT sys_user.user_id,sys_user.username,
+             sys_branch.id as branchId, sys_branch.branch_name,
+             ren_salary_set.base_salary,ren_salary_set.work_salary,ren_salary_set.title_salary,
+             ren_salary_set.housing_salary,ren_salary_set.pc_salary,ren_salary_set.meal_salary,
+             ren_salary_set.social_salary,ren_salary_set.create_date
+             from sys_user
+            LEFT JOIN sys_branch_user on sys_branch_user.user_id = sys_user.user_id
+            LEFT JOIN sys_branch on sys_branch.id = sys_branch_user.branch_id
+            LEFT join ren_salary_set on ren_salary_set.user_id = sys_user.user_id
+            where sys_branch.id is not NULL and sys_branch.parent_id != 0
+            ORDER BY sys_branch.parent_id ASC ,sys_branch.order_num ASC, sys_user.user_id ASC
+    </select>
+</mapper>

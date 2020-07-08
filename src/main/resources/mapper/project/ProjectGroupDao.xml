@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectGroupDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.entity.ProjectGroupEntity" id="projectGroupMap">
+        <result property="id" column="id"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="groupId" column="group_id"/>
+        <result property="outputRate" column="output_rate"/>
+        <result property="shortDateTime" column="short_date_time"/>
+        <result property="lastDateTime" column="last_date_time"/>
+        <result property="projectOutput" column="project_output"/>
+        <result property="projectActuallyOutput" column="project_actually_output"/>
+    </resultMap>
+
+
+    <resultMap type="io.renren.modules.project.vo.ProjectGroupVoEntity" id="projectGroupVoMap">
+        <result property="id" column="id"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectStartDateTime" column="project_start_date_time"/>
+        <result property="groupId" column="group_id"/>
+        <result property="groupName" column="groupName"/>
+        <result property="scheduleRate" column="schedule_rate"/>
+        <result property="projectOutput" column="project_output"/>
+        <result property="projectActuallyOutput" column="project_actually_output"/>
+    </resultMap>
+
+    <select id="getProjectDataCoe" resultMap="projectGroupVoMap">
+        select a.id id,a.project_no ,a.project_name,a.project_start_date_time,
+        sch.schedule_rate,sch.schedule_note,
+        project_plan.project_charge,project_plan.project_charge_account,
+        project_plan.project_begun_date_time,project_work.project_status,work_group.name as groupName,
+        project_group.group_id,project_group.project_output,project_group.project_actually_output
+        from project a
+        left join project_plan on project_plan.project_no = a.project_no
+        left join project_work on project_work.project_no = a.project_no
+        LEFT JOIN project_group on project_group.project_no = a.project_no
+        LEFT JOIN work_group on work_group.id = project_group.group_id
+        left join (SELECT s.* from (select project_no,max(create_time) as create_time from project_schedule GROUP BY project_no) maxs
+        LEFT JOIN project_schedule s  on maxs.project_no = s.project_no and s.create_time = maxs.create_time) sch
+        on sch.project_no = a.project_no
+        where a.p_stage = 1 and project_work.project_status = 0
+        and ( (sch.schedule_rate BETWEEN 0 and 99 and a.project_start_date_time &lt; DATE_ADD(curdate(),interval -day(curdate())+1 day))
+        or a.project_start_date_time >= DATE_ADD(curdate(),interval -day(curdate())+1 day) )
+        ORDER BY a.project_start_date_time DESC
+    </select>
+
+    <select id="getChartCollect" resultMap="projectGroupVoMap">
+        select project_group.group_id, project_group.project_output,project_group.project_actually_output,
+        project.project_start_date_time
+        from project_group
+        left join project on project.project_no = project_group.project_no
+        where 1=1
+        <if test="startDate != null and startDate != ''">
+            and project.project_start_date_time >=  '${startDate}'
+        </if>
+        <if test="endDate != null and endDate != ''">
+             and project.project_start_date_time &lt;= '${endDate}'
+        </if>
+    </select>
+</mapper>

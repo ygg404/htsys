@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ren.dao.RenRecordVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ren.vo.RenRecordVoEntity" id="renRecordVoMap">
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="useraccount" column="useraccount"/>
+        <result property="idNo" column="id_no"/>
+        <result property="birthday" column="birthday"/>
+        <result property="entryTime" column="entry_time"/>
+        <result property="sex" column="sex"/>
+        <result property="jobType" column="job_type"/>
+        <result property="houseType" column="house_type"/>
+        <result property="education" column="education"/>
+        <result property="educationType" column="education_type"/>
+        <result property="educationTime" column="education_time"/>
+        <result property="proRatio" column="pro_ratio"/>
+        <result property="edName" column="edName"/>
+        <result property="edTypeName" column="edTypeName"/>
+        <result property="proName" column="proName"/>
+        <result property="dutyName" column="dutyName"/>
+        <result property="titleName" column="titleName"/>
+        <result property="dutyId" column="duty_id"/>
+        <result property="titleLever" column="title_lever"/>
+        <result property="titlePro" column="title_pro"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="trialPeriod" column="trial_period"/>
+        <result property="nativeProvince" column="native_province"/>
+        <result property="nativeCity" column="native_city"/>
+        <result property="maritalStatus" column="marital_status"/>
+
+        <result property="titleScore" column="titleScore"/>
+        <result property="titleProscore" column="titleProscore"/>
+        <result property="titleProname" column="titleProname"/>
+        <result property="edScore" column="edScore"/>
+        <result property="edTypescore" column="edTypescore"/>
+        <result property="edProscore" column="edProscore"/>
+        <result property="titlePro" column="title_pro"/>
+        <result property="dutyStandScore" column="dutyStandScore"/>
+        <result property="dutyAssessScore" column="dutyAssessScore"/>
+        <result property="dutyTrialScore" column="dutyTrialScore"/>
+        <result property="titleStandScore" column="titleStandScore"/>
+        <result property="titleAssessScore" column="titleAssessScore"/>
+        <result property="titleTrialScore" column="titleTrialScore"/>
+        <result property="kbiAuditScore" column="kbi_audit_score"/>
+
+        <result property="headImg" column="head_img"/>
+        <result property="isAudit" column="is_audit"/>
+        <result property="auditMsg" column="audit_msg"/>
+    </resultMap>
+
+    <!-- 查询职工档案（包含用户名账号） -->
+    <select id="getRenRecordVoPage" resultMap="renRecordVoMap">
+		SELECT sys_user.user_id,sys_user.useraccount,sys_user.username,
+			ren_record.id_no,ren_record.birthday,ren_record.entry_time,ren_record.sex,
+			ren_record.job_type,ren_record.house_type,ren_record.education,ren_record.title_lever,ren_record.title_pro,
+			ren_record.education_type,ren_record.pro_ratio,ren_record.duty_id,ren_record.education_time,
+			ren_record.email,ren_record.native_province,ren_record.native_city,
+			ren_record.mobile,ren_record.trial_period,ren_record.marital_status,
+			ren_record.head_img,ren_record_temp.is_audit,ren_record_temp.audit_msg
+        FROM sys_user
+        LEFT JOIN ren_record on ren_record.user_id = sys_user.user_id
+        LEFT JOIN ren_record_temp on ren_record_temp.user_id = sys_user.user_id
+        <if test="key != '' and key != null">
+            where sys_user.useraccount like '%${key}%' or sys_user.username like '%${key}%'
+        </if>
+        ORDER BY sys_user.user_id
+	</select>
+
+    <!-- 查询个人职工档案（包含用户名账号） -->
+    <select id="getRenRecordVoById" resultMap="renRecordVoMap">
+		SELECT sys_user.user_id,sys_user.useraccount,sys_user.username,
+			ren_record.id_no,ren_record.birthday,ren_record.entry_time,ren_record.sex,
+			ren_record.job_type,ren_record.house_type,ren_record.education,ren_record.title_lever,ren_record.title_pro,
+			ren_record.education_type,ren_record.pro_ratio,ren_record.duty_id,ren_record.education_time,
+			proEd.score_name as proName,typeEd.score_name as edTypeName,ed.score_name as edName,duty.duty as dutyName,
+			ren_record.email,ren_record.native_province,ren_record.native_city,title.job_title as titleName,
+			ren_record.mobile,ren_record.trial_period,ren_record.marital_status,
+			ren_record.head_img,ren_record_temp.is_audit,ren_record_temp.audit_msg
+        FROM sys_user
+        LEFT JOIN ren_record on ren_record.user_id = sys_user.user_id
+        LEFT JOIN ren_record_temp on ren_record_temp.user_id = sys_user.user_id
+		LEFT JOIN set_score_ed typeEd on (typeEd.id = ren_record.education_type and typeEd.cateId = 1)
+		LEFT JOIN set_score_ed proEd on (proEd.id = ren_record.pro_ratio and proEd.cateId = 2)
+		LEFT JOIN set_score_ed ed on (ed.id = ren_record.education and ed.cateId = 3)
+		LEFT JOIN set_score_duty duty on duty.id = ren_record.duty_id
+		LEFT JOIN set_score_title title on title.id = ren_record.title_lever
+        where sys_user.user_id = #{userId}
+	</select>
+    
+    <!-- 查询职工的档案及其对应的分数 -->
+    <select id="getRecordScoreVoList" resultMap="renRecordVoMap">
+        SELECT sys_user.user_id,sys_user.useraccount,sys_user.username,
+            branch.branch_id,branch.order_num,branch.parent_id,
+			ren_record.id_no,ren_record.birthday,ren_record.entry_time,ren_record.sex,
+			ren_record.job_type,ren_record.house_type,ren_record.trial_period,
+			ren_record.education,ed1.score_name as edName,ed1.score as edScore,
+			ren_record.education_type,ed2.score_name as edTypeName, ed2.score as edTypescore,
+			ren_record.pro_ratio,ed3.score_name as proName,ed3.score as edProscore,
+			ren_record.title_lever,t1.job_title as titleName,t1.score as titleScore,
+			ren_record.title_pro,t2.job_title as titleProname,t2.score as titleProscore,
+			ren_record.duty_id,set_score_duty.duty as dutyName,set_score_duty.score as dutyScore,
+			set_score_kbi_duty.standard_score as dutyStandScore,
+			set_score_kbi_duty.assessno_score as dutyAssessScore,
+			set_score_kbi_duty.trial_score as dutyTrialScore,
+			set_score_kbi_title.standard_score as titleStandScore,
+			set_score_kbi_title.assessno_score as titleAssessScore,
+			set_score_kbi_title.trial_score as titleTrialScore,
+			audit.kbi_audit_score,
+			ren_record.education_time
+        FROM sys_user
+        LEFT JOIN ren_record on ren_record.user_id = sys_user.user_id
+        LEFT JOIN ren_record_temp on ren_record_temp.user_id = sys_user.user_id
+				LEFT JOIN set_score_ed ed1 on ed1.id = ren_record.education
+				LEFT JOIN set_score_ed ed2 on ed2.id = ren_record.education_type
+				LEFT JOIN set_score_ed ed3 on ed3.id = ren_record.pro_ratio
+				LEFT JOIN set_score_title t1 on t1.id = ren_record.title_lever
+				LEFT JOIN set_score_title t2 on t2.id = ren_record.title_pro
+				LEFT JOIN set_score_duty on set_score_duty.id = ren_record.duty_id
+				LEFT JOIN set_score_kbi_duty on set_score_kbi_duty.duty_id = ren_record.duty_id
+				LEFT JOIN set_score_kbi_title on set_score_kbi_title.title_id = ren_record.title_lever
+				LEFT JOIN
+				(SELECT * from ren_kbi_audit where ren_kbi_audit.year = '${year}' and ren_kbi_audit.updown = '${updown}') audit
+				on audit.user_id = sys_user.user_id
+				LEFT JOIN (SELECT sys_branch_user.branch_id,sys_branch_user.user_id,
+				          sys_branch.branch_name,sys_branch.order_num,sys_branch.parent_id
+                            from sys_branch_user
+                            LEFT JOIN sys_branch on sys_branch.id = sys_branch_user.branch_id
+                            GROUP BY sys_branch_user.user_id
+                            ORDER BY sys_branch.parent_id,order_num) branch on branch.user_id = sys_user.user_id
+				where sys_user.status = 1
+				and sys_user.useraccount != 'admin' and sys_user.useraccount != 'jiexin'
+        ORDER BY branch.parent_id,branch.order_num,sys_user.user_id
+    </select>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectContractDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.entity.ProjectContractEntity" id="projectContractMap">
+        <result property="id" column="id"/>
+        <result property="contractNo" column="contract_no"/>
+        <result property="contractAddTime" column="contract_add_time"/>
+        <result property="contractCreateTime" column="contract_create_time"/>
+        <result property="contractAuthorize" column="contract_authorize"/>
+        <result property="contractName" column="contract_name"/>
+        <result property="contractType" column="contract_type"/>
+        <result property="contractNote" column="contract_note"/>
+        <result property="contractBusiness" column="contract_business"/>
+        <result property="contractStage" column="contract_stage"/>
+        <result property="contractMoney" column="contract_money"/>
+        <result property="projectType" column="project_type"/>
+        <result property="filename" column="fileName"/>
+        <result property="userPhone" column="user_phone"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+
+</mapper>

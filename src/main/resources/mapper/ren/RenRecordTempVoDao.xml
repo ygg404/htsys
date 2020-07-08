@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ren.dao.RenRecordTempVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ren.vo.RenRecordTempVoEntity" id="renRecordVoMap">
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="useraccount" column="useraccount"/>
+        <result property="idNo" column="id_no"/>
+        <result property="birthday" column="birthday"/>
+        <result property="entryTime" column="entry_time"/>
+        <result property="sex" column="sex"/>
+        <result property="jobType" column="job_type"/>
+        <result property="houseType" column="house_type"/>
+        <result property="education" column="education"/>
+        <result property="educationType" column="education_type"/>
+        <result property="educationTime" column="education_time"/>
+        <result property="proRatio" column="pro_ratio"/>
+        <result property="titleLever" column="title_lever"/>
+        <result property="titlePro" column="title_pro"/>
+        <result property="dutyId" column="duty_id"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="trialPeriod" column="trial_period"/>
+        <result property="nativeProvince" column="native_province"/>
+        <result property="nativeCity" column="native_city"/>
+        <result property="maritalStatus" column="marital_status"/>
+        <result property="headImg" column="head_img"/>
+        <result property="isAudit" column="is_audit"/>
+        <result property="auditMsg" column="audit_msg"/>
+    </resultMap>
+
+    <!-- 查询个人职工档案临时（包含用户名账号） -->
+    <select id="getRenRecordTempVoById" resultMap="renRecordVoMap">
+		SELECT sys_user.user_id,sys_user.useraccount,sys_user.username,
+			temp.id_no,temp.birthday,temp.entry_time,temp.sex,
+			temp.job_type,temp.house_type,temp.education,
+			temp.education_type,temp.education_time,temp.pro_ratio,
+			temp.title_lever,temp.title_pro,temp.duty_id,
+			temp.email,temp.native_province,temp.native_city,
+			temp.mobile,temp.trial_period,temp.marital_status,
+			temp.head_img,temp.is_audit,temp.audit_msg
+        FROM sys_user
+        LEFT JOIN ren_record_temp  temp on temp.user_id = sys_user.user_id
+        where sys_user.user_id = #{userId}
+	</select>
+</mapper>

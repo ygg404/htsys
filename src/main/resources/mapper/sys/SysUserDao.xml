@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.SysUserDao">
+
+	<resultMap type="io.renren.modules.sys.vo.UserVoEntity" id="userMap">
+		<result property="userId" column="user_id"/>
+		<result property="username" column="username"/>
+		<result property="useraccount" column="useraccount"/>
+	</resultMap>
+
+	<!-- 查询用户的所有权限 -->
+	<select id="queryAllPerms" resultType="string">
+		select m.perms from sys_user_role ur 
+			LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id 
+			LEFT JOIN sys_menu m on rm.menu_id = m.menu_id 
+		where ur.user_id = #{userId} and m.valid_flag = true
+	</select>
+	
+	<!-- 查询用户的所有菜单ID --> 
+	<select id="queryAllMenuId" resultType="long">
+		select distinct rm.menu_id from sys_user_role ur 
+			LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id
+						LEFT JOIN sys_menu m on m.menu_id = rm.menu_id
+		where ur.user_id = #{userId} and m.valid_flag = true
+	</select>
+	
+	<select id="queryByUserName" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		select * from sys_user where username = #{username}
+	</select>
+
+	<select id="queryByUserAccount" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		select * from sys_user where useraccount = #{useraccount}
+	</select>
+
+	<select id="queryByUserMaxId" resultType="long">
+		SELECT MAX(user_id) FROM sys_user
+	</select>
+
+	<!-- 查询用户列表 -->
+	<select id="queryUserList" resultMap="userMap" parameterType="java.lang.Long">
+		SELECT u.*, r.role_id from sys_user u
+		left join sys_user_role r on u.user_id = r.user_id
+		<if test="roleId != 0">
+			where r.role_id = #{roleId}
+		</if>
+		order by u.user_id asc
+	</select>
+
+	<!-- 查询所有用户 -->
+	<select id="queryAllList" resultMap="userMap" parameterType="java.lang.Long">
+		SELECT u.user_id,u.username,u.useraccount from sys_user u
+		order by u.user_id asc
+	</select>
+</mapper>

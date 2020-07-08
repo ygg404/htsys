@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.set.dao.WpShortcutDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.set.entity.WpShortcutEntity" id="wpShortcutMap">
+        <result property="id" column="id"/>
+        <result property="shortcutName" column="shortcut_name"/>
+        <result property="shortcutNote" column="shortcut_note"/>
+        <result property="shortcutTypeId" column="shortcut_type_id"/>
+    </resultMap>
+
+
+</mapper>

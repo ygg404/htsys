@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.set.dao.SetScoreKbiVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.set.vo.ScoreKbiVoEntity" id="scorekbiVoMap">
+        <result property="dutyId" column="dutyId"/>
+        <result property="dutyName" column="dutyName"/>
+        <result property="standardScore" column="standard_score"/>
+        <result property="assessnoScore" column="assessno_score"/>
+        <result property="trialScore" column="trial_score"/>
+    </resultMap>
+
+    <select id="getDutyKbiList" resultMap="scorekbiVoMap">
+        select set_score_duty.id as dutyId, set_score_duty.duty as dutyName,
+                set_score_kbi.assessno_score,set_score_kbi.standard_score,
+                set_score_kbi.trial_score
+        FROM set_score_duty
+        LEFT JOIN set_score_kbi on set_score_kbi.duty_id = set_score_duty.id
+        order by set_score_duty.order_num asc
+    </select>
+
+    <select id="getOneByDutyId" resultMap="scorekbiVoMap">
+        select set_score_duty.id as dutyId, set_score_duty.duty as dutyName,
+                set_score_kbi.assessno_score,set_score_kbi.standard_score,
+                set_score_kbi.trial_score
+        FROM set_score_duty
+        LEFT JOIN set_score_kbi on set_score_kbi.duty_id = set_score_duty.id
+        where set_score_duty.id = #{dutyId}
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.set.dao.BranchVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.set.vo.BranchVoEntity" id="branchVoMap">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="branchName" column="branch_name"/>
+        <result property="mdeputyId" column="mdeputy_id"/>
+        <result property="mdeputyName" column="mdeputyName"/>
+        <result property="sdeputyId" column="sdeputy_id"/>
+        <result property="sdeputyName" column="sdeputyName"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+
+    <select id="getBranchVoList" resultMap="branchVoMap">
+        select sys_branch.* ,a.username as mdeputyName,b.username as sdeputyName
+		from sys_branch
+        left join sys_user a on sys_branch.mdeputy_id = a.user_id
+		left join sys_user b on sys_branch.sdeputy_id = b.user_id
+		order by sys_branch.order_num
+    </select>
+
+    <insert id="insertBranchVo" parameterType="io.renren.modules.set.vo.BranchVoEntity" >
+      INSERT INTO sys_branch ( parent_id, branch_name,mdeputy_id ,sdeputy_id,order_num)
+      VALUES ( #{parentId}, #{branchName}, #{mdeputyId}, #{sdeputyId}, #{orderNum} )
+      <selectKey resultType="java.lang.Long" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+      </selectKey>
+    </insert>
+
+    <select id="getEntityById" parameterType="java.lang.Long"  resultMap="branchVoMap">
+        select  * from sys_branch
+        where id = #{id}
+    </select>
+</mapper>

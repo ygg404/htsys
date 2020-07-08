@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.finance.dao.FinanceOperationDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.finance.vo.FinanceOperationVoEntity" id="FinanceOperationVoMap">
+        <result property="id" column="id"/>
+        <result property="contractNo"  column="contract_no"/>
+        <result property="contractName"  column="contract_name"/>
+        <result property="contractAuthorize"  column="contract_authorize"/>
+        <result property="contractMoney"  column="contract_money"/>
+        <result property="contractBusiness"  column="contract_business"/>
+        <result property="projectType"  column="project_type"/>
+        <result property="contractAddTime"  column="contract_add_time"/>
+        <result property="username"  column="user_name"/>
+        <result property="userphone"  column="user_phone"/>
+        <result property="projectActuallyReceipts"  column="projectActuallyReceipts"/>
+        <result property="projectExpenditure"  column="projectExpenditure"/>
+        <result property="projectNotReceipts"  column="projectNotReceipts"/>
+
+    </resultMap>
+
+    <select id="getFinanceOperationList" resultMap="FinanceOperationVoMap">
+        SELECT
+        PC.id as id,
+        PC.contract_no as contract_no,
+        PC.contract_name as contract_name,
+        PC.contract_authorize as contract_authorize,
+        PC.contract_money as contract_money,
+        PC.contract_business as contract_business,
+        PC.project_type as project_type,
+        PC.contract_add_time as contract_add_time,
+        PC.user_name as user_name,
+        PC.user_phone as user_phone,
+        Rec.Recsum as projectActuallyReceipts,
+        Exp.Expsum as projectExpenditure,
+        (contract_money - Rec.Recsum) as projectNotReceipts
+        from project_contract as PC
+        LEFT JOIN (SELECT sum(account_num) as Recsum,contract_no,account_type FROM project_account GROUP BY contract_no,account_type) Rec
+        on Rec.contract_no = PC.contract_no AND Rec.account_type = 0
+
+        LEFT JOIN (SELECT sum(account_num) as Expsum,contract_no,account_type FROM project_account GROUP BY contract_no,account_type) Exp
+        on Exp.contract_no = PC.contract_no AND Exp.account_type = 1
+        where 1 = 1
+        <if test="startDate != null and startDate != ''">
+            and PC.contract_add_time &gt;=  '${startDate}'
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and PC.contract_add_time &lt;=  '${endDate}'
+        </if>
+        <if test="business != null and business != ''">
+            and PC.contract_business like '${business}'
+        </if>
+        <if test="projectType != null and projectType != ''">
+            and PC.project_type like  '${projectType}'
+        </if>
+        <if test="key != ''">and (PC.contract_authorize like '%${key}%'
+            or PC.contract_name like '%${key}%'
+            or PC.contract_no like '%${key}%')
+        </if>
+        order by PC.id
+        <choose>
+            <when test="order == 'desc'">desc</when>
+            <otherwise>asc</otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getFinanceOperationList" resultMap="FinanceOperationVoMap">
+        SELECT
+        PC.id as id,
+        PC.contract_no as contract_no,
+        PC.contract_name as contract_name,
+        PC.contract_authorize as contract_authorize,
+        PC.contract_money as contract_money,
+        PC.contract_business as contract_business,
+        PC.project_type as project_type,
+        PC.contract_add_time as contract_add_time,
+        PC.user_name as user_name,
+        PC.user_phone as user_phone,
+        Rec.Recsum as projectActuallyReceipts,
+        Exp.Expsum as projectExpenditure,
+        (contract_money - (case when Rec.Recsum is NULL then 0 else Rec.Recsum end )) as projectNotReceipts
+        from project_contract as PC
+        LEFT JOIN (SELECT sum(account_num) as Recsum,contract_no,account_type FROM project_account GROUP BY contract_no,account_type) Rec
+        on Rec.contract_no = PC.contract_no AND Rec.account_type = 0
+
+        LEFT JOIN (SELECT sum(account_num) as Expsum,contract_no,account_type FROM project_account GROUP BY contract_no,account_type) Exp
+        on Exp.contract_no = PC.contract_no AND Exp.account_type = 1
+        where 1 = 1
+        <if test="startDate != null and startDate != ''">
+            and PC.contract_add_time &gt;=  '${startDate}'
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and PC.contract_add_time &lt;=  '${endDate}'
+        </if>
+        <if test="business != null and business != ''">
+            and PC.contract_business like '${business}'
+        </if>
+        <if test="projectType != null and projectType != ''">
+            and PC.project_type like  '${projectType}'
+        </if>
+        <if test="key != ''">and (PC.contract_authorize like '%${key}%'
+            or PC.contract_name like '%${key}%'
+            or PC.contract_no like '%${key}%')
+        </if>
+        order by
+        <if test="sidx == ''">PC.id </if>
+        <if test="sidx == 'id'">PC.id </if>
+        <if test="sidx == 'contract_business'">PC.contract_business</if>
+        <choose>
+            <when test="order == 'desc'">desc</when>
+            <otherwise>asc</otherwise>
+        </choose>
+    </select>
+
+    <select id="getContractCount" resultType="java.lang.Long">
+        select count(*) from project_contract
+    </select>
+
+</mapper>

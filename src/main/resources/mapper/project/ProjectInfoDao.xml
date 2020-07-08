@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectInfoDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.vo.ProjectInfoVoEntity" id="projectInfoVoMap">
+        <result property="id" column="id"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectAuthorize" column="project_authorize"/>
+        <result property="projectNote" column="project_note"/>
+        <result property="examineNote" column="examine_note"/>
+        <result property="projectType" column="project_type"/>
+        <result property="projectProduce" column="project_produce"/>
+        <result property="projectCharge" column="project_charge"/>
+        <result property="contractBusiness" column="contract_business"/>
+        <result property="userPhone" column="user_phone"/>
+        <result property="userName" column="user_name"/>
+        <result property="executeStandard" column="execute_standard"/>
+        <result property="workNote" column="work_note"/>
+        <result property="workRequire" column="work_require"/>
+        <result property="projectBegunDateTime" column="project_begun_date_time"/>
+        <result property="projectWorkDate" column="project_work_date"/>
+        <result property="projectQualityDate" column="project_quality_date"/>
+        <result property="projectOutput" column="project_output"/>
+        <result property="projectWorkload" column="project_workload"/>
+        <result property="projectWriter" column="project_writer"/>
+        <result property="workLoad" column="work_load"/>
+        <result property="dataName" column="data_name"/>
+        <result property="briefSummary" column="brief_summary"/>
+        <result property="technicalDisclosureNote" column="technical_disclosure_note"/>
+        <result property="checkSuggestion" column="check_suggestion"/>
+        <result property="qualityNote" column="quality_note"/>
+        <result property="qualityScore" column="quality_score"/>
+        <result property="createuserid" column="createUserId"/>
+        <result property="createUserName" column="createUserName"/>
+        <result property="outputRemark" column="output_remark"/>
+        <result property="shortDateTime" column="short_date_time"/>
+        <result property="lastDateTime" column="last_date_time"/>
+        <result property="groupName" column="groupName"/>
+    </resultMap>
+
+    <select id="getInfoByProjectNo" parameterType="string" resultMap="projectInfoVoMap" >
+        select a.id,a.project_no,a.project_name,a.project_authorize,a.project_note,a.project_produce,
+        a.examine_note,a.createUserId,s.username as createUserName,a.output_remark,
+        a.project_type, a.project_business,c.contract_business,c.user_name,c.user_phone,
+        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.project_begun_date_time,
+        p.project_work_date,p.project_quality_date,p.project_output,p.project_workload,p.project_writer,
+        w.work_load,w.data_name,w.brief_summary,w.technical_disclosure_note,w.check_suggestion,
+        q.quality_note,q.quality_score
+        from project a
+        LEFT JOIN project_contract c on c.contract_no = a.contract_no
+		LEFT JOIN project_plan p on p.project_no = a.project_no
+		LEFT JOIN project_work w on w.project_no = a.project_no
+		LEFT JOIN check_quality q on q.project_no = a.project_no
+		LEFT JOIN sys_user s on s.user_id = a.createUserId
+        where a.project_no = #{projectNo}
+    </select>
+
+    <select id="getPrintByProjectNo" parameterType="string" resultMap="projectInfoVoMap" >
+        select a.id,a.project_no,a.project_name,a.project_authorize,a.project_note,
+        a.examine_note,a.createUserId,s.username as createUserName,a.project_produce,
+        a.project_type, a.project_business,c.contract_business,c.user_name,c.user_phone,
+        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.project_begun_date_time,
+        p.project_work_date,p.project_quality_date,p.project_output,p.project_workload,p.project_writer,
+        w.work_load,w.data_name,w.brief_summary,w.technical_disclosure_note,w.check_suggestion,
+        q.quality_note,q.quality_score,
+        project_group.short_date_time,project_group.last_date_time,work_group.name as groupName
+        from project a
+        LEFT JOIN project_contract c on c.contract_no = a.contract_no
+		LEFT JOIN project_plan p on p.project_no = a.project_no
+		LEFT JOIN project_work w on w.project_no = a.project_no
+		LEFT JOIN check_quality q on q.project_no = a.project_no
+		LEFT JOIN sys_user s on s.user_id = a.createUserId
+		LEFT JOIN sys_user on sys_user.useraccount = p.project_charge_account
+        LEFT JOIN project_group on project_group.project_no = a.project_no
+        LEFT JOIN work_group on work_group.id = project_group.group_id
+        where a.project_no = #{projectNo} and work_group.head_id = sys_user.user_id
+    </select>
+</mapper>

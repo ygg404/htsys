@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.project.dao.ProjectPlanDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.project.entity.ProjectPlanEntity" id="projectPlanMap">
+        <result property="id" column="id"/>
+        <result property="executeStandard" column="execute_standard"/>
+        <result property="workNote" column="work_note"/>
+        <result property="workRequire" column="work_require"/>
+        <result property="projectWriter" column="project_writer"/>
+        <result property="projectNo" column="project_no"/>
+        <result property="projectCharge" column="project_charge"/>
+        <result property="projectChargeAccount" column="project_charge_account"/>
+        <result property="projectOutput" column="project_output"/>
+        <result property="projectOutputNote" column="project_output_note"/>
+        <result property="projectWorkload" column="project_workload"/>
+        <result property="projectBegunDateTime" column="project_begun_date_time"/>
+        <result property="projectWorkDate" column="project_work_date"/>
+        <result property="projectQualityDate" column="project_quality_date"/>
+        <result property="projectActuallyOutput" column="project_actually_output"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.SysUserDetailDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.SysUserDetailEntity" id="sysUserDetailMap">
+        <result property="userId" column="user_id"/>
+        <result property="birthday" column="birthday"/>
+        <result property="education" column="education"/>
+        <result property="graduateSchool" column="graduate_school"/>
+        <result property="professionalTitle" column="professional_title"/>
+        <result property="headUrl" column="head_url"/>
+        <result property="mobile" column="mobile"/>
+    </resultMap>
+
+    <resultMap type="io.renren.modules.sys.vo.UserDetailVoEntity" id="userDetailVoMap">
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="useraccount" column="useraccount"/>
+        <result property="birthday" column="birthday"/>
+        <result property="education" column="education"/>
+        <result property="graduateSchool" column="graduate_school"/>
+        <result property="professionalTitle" column="professional_title"/>
+        <result property="headUrl" column="head_url"/>
+        <result property="mobile" column="mobile"/>
+    </resultMap>
+
+    <select id="getUserDetailVo" resultMap="userDetailVoMap">
+        select sys_user.user_id,sys_user.useraccount,sys_user.username,
+        sys_user_detail.*
+        from sys_user
+        LEFT JOIN sys_user_detail on sys_user.user_id = sys_user_detail.user_id
+        where sys_user.user_id = #{userId}
+    </select>
+
+    <select id="getWorkGroupListByUserId" resultType="java.lang.String">
+        SELECT work_group.name
+        from work_group where work_group.id in
+        (select user_group.group_id from user_group where user_group.user_id =  #{userId})
+    </select>
+
+    <select id="getRoleNameListByUserId" resultType="java.lang.String">
+        SELECT sys_role.role_name
+        from sys_role where sys_role.role_id in
+         (select sys_user_role.role_id from sys_user_role where sys_user_role.user_id = #{userId})
+    </select>
+</mapper>

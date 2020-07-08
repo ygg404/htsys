@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.finance.dao.ProjectAccountDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.finance.entity.ProjectAccountEntity" id="projectAccountMap">
+        <result property="id" column="id"/>
+        <result property="contractNo" column="contract_no"/>
+        <result property="accountNote" column="account_note"/>
+        <result property="accountNum" column="account_num"/>
+        <result property="accountType" column="account_type"/>
+        <result property="accountTypeName" column="account_type_name"/>
+        <result property="accountAddDateTime" column="account_add_date_time"/>
+        <result property="createDateTime" column="create_date_time"/>
+    </resultMap>
+
+    <select id="getBusinessList" resultType="java.lang.String">
+        SELECT DISTINCT(contract_business) from project_contract
+    </select>
+
+</mapper>
