@@ -43,6 +43,7 @@ public class PerfAssessServiceImpl extends ServiceImpl<PerfAssessDao, PerfAssess
         List<PerfAssessEntity> list = this.selectList(
                 new EntityWrapper<PerfAssessEntity>().eq("year" , year).eq("updown",updown)
                         .orderBy("check_user_id",true).orderBy("user_id",true)
+                        .orderBy("kbi_id",true)
         );
         return list;
     }

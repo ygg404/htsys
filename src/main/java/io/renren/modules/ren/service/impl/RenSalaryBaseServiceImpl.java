@@ -110,7 +110,7 @@ public class RenSalaryBaseServiceImpl extends ServiceImpl<RenSalaryBaseDao, RenS
                 }
                 // 司龄
                 // 当前工资月份
-                String curMonth = params.get("salaryYear") + "-" +String.format("%02d",Integer.parseInt( params.get("salaryMonth").toString())  )  + "-30";
+                String curMonth = params.get("salaryYear") + "-" +String.format("%02d",Integer.parseInt( params.get("salaryMonth").toString())  )  + "-01";
                 if(recordNewVo.getentryTime() == null) {
                     salaryNewBase.setFirmYear(0L);
                 } else {
