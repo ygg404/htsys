@@ -6,6 +6,7 @@ import java.util.List;
 
 import cn.hutool.db.Entity;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.renren.common.annotation.SysLog;
 import io.renren.modules.ren.service.RenKbiPersonVoService;
 import io.renren.modules.ren.vo.RenKbiPersonVoEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -58,6 +59,7 @@ public class RenKbiPersonController {
     /**
      * 保存
      */
+    @SysLog("保存参评人")
     @RequestMapping("/save")
     public R save(@RequestBody RenKbiPersonVoEntity renKbiPersonVo){
         Long year = renKbiPersonVo.getYear();
