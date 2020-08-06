@@ -86,7 +86,7 @@ public class ProjectManageController {
             // 字段表格样式
             HSSFCellStyle tstyle = workbook.createCellStyle();
             tstyle.setFont(tfont);
-            tstyle.setVerticalAlignment(VerticalAlignment.CENTER);  // 垂直居中
+            tstyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  // 垂直居中
 
             // 字段行
             HSSFRow tRow = sheet.createRow(rowIndex++);

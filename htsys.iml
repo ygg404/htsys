@@ -171,18 +171,6 @@
     <orderEntry type="library" name="Maven: cn.hutool:hutool-all:4.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-core:3.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.aliyun:aliyun-java-sdk-dysmsapi:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-base:3.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.15" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.15" level="project" />
-    <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.15" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
-    <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
-    <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
-    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-web:3.2.0" level="project" />
-    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-annotation:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.28" level="project" />
     <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:jdk15:2.4" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.0" level="project" />
@@ -192,6 +180,25 @@
     <orderEntry type="library" name="Maven: org.jodd:jodd-bean:3.6.6" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.55" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
+    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-base:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.15" level="project" />
+    <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.15" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-web:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: cn.afterturn:easypoi-annotation:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:4.2.0" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:fr.opensagres.xdocreport.document:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:fr.opensagres.xdocreport.core:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:fr.opensagres.xdocreport.converter:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:fr.opensagres.xdocreport.template:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:org.apache.poi.xwpf.converter.xhtml:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: fr.opensagres.xdocreport:org.apache.poi.xwpf.converter.core:1.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:ooxml-schemas:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi:3.12" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.poi:poi-scratchpad:3.12" level="project" />
   </component>
 </module>

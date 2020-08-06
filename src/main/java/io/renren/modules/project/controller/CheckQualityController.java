@@ -238,4 +238,24 @@ public class CheckQualityController {
         return R.ok().put("errno",0).put("imgName",imgName);
     }
 
+    @SysLog("提交质检报告Word文档")
+    @RequestMapping("/uploadWord")
+    public R mockPaper(@RequestParam("file") MultipartFile file,@RequestParam("projectNo") String projectNo) {
+        String uuid = UuidUtil.getShortUUID();
+        String imagePath = upReportFolder + projectNo + "(" + uuid + ")";
+        String imgUrl = "https://www.gdjxch.cn//uploadFile/report/" + projectNo + "(" + uuid + ")/";
+        String content = "";
+        try {
+            if(file.getOriginalFilename().endsWith(".doc")){
+                content = WordUtils.docToHtml(file,imagePath,imgUrl);
+            }
+            if(file.getOriginalFilename().endsWith(".docx")){
+                content = WordUtils.docxToHtml(file,imagePath);
+            }
+            return R.ok(content);
+        } catch (Exception e) {
+            return R.error("读取文件失败！");
+        }
+    }
+
 }

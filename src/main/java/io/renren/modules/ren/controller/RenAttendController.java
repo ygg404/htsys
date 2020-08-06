@@ -142,8 +142,8 @@ public class RenAttendController {
             sheet.setDefaultColumnWidth(15);    //设置表格列宽度
             // 标题
             HSSFCellStyle headerStyle = workbook.createCellStyle();
-            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);  // 垂直居中
-            headerStyle.setAlignment(HorizontalAlignment.CENTER);       // 水平居中
+            headerStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  // 垂直居中
+            headerStyle.setAlignment(HSSFCellStyle.VERTICAL_CENTER);       // 水平居中
             headerStyle.setFont(font);
             String title = fileName.replace(".xls","") + "(应出勤天数：" + Float.toString(daysEntity.getattendDays()) + "天）";
             HSSFRow headerRow = sheet.createRow(rowIndex++);

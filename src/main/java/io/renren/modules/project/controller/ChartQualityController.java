@@ -93,8 +93,8 @@ public class ChartQualityController {
             // 标题表格样式
             HSSFCellStyle hstyle = workbook.createCellStyle();
             hstyle.setFont(hfont);
-            hstyle.setVerticalAlignment(VerticalAlignment.CENTER);  // 垂直居中
-            hstyle.setAlignment(HorizontalAlignment.CENTER);       // 水平居中
+            hstyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  // 垂直居中
+            hstyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);       // 水平居中
 
             // 标题行
             HSSFRow hRow = sheet.createRow(rowIndex++);
@@ -112,7 +112,7 @@ public class ChartQualityController {
             // 字段表格样式
             HSSFCellStyle tstyle = workbook.createCellStyle();
             tstyle.setFont(tfont);
-            tstyle.setVerticalAlignment(VerticalAlignment.CENTER);  // 垂直居中
+            tstyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  // 垂直居中
 
             // 字段行
             HSSFRow tRow = sheet.createRow(rowIndex++);
@@ -169,7 +169,7 @@ public class ChartQualityController {
                 gfont.setBold(true);   //字体加粗
                 HSSFCellStyle gstyle = workbook.createCellStyle();
                 gstyle.setFont(gfont);
-                gstyle.setVerticalAlignment(VerticalAlignment.CENTER);  // 垂直居中
+                gstyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);  // 垂直居中
                 sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 5));
                 HSSFRow gRow = sheet.createRow(rowIndex++);
                 gRow.setHeight((short) 300);
