@@ -2,6 +2,7 @@ package io.renren.modules.project.controller;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.gson.Gson;
@@ -251,6 +252,7 @@ public class CheckQualityController {
             }
             if(file.getOriginalFilename().endsWith(".docx")){
                 content = WordUtils.docxToHtml(file,imagePath);
+                content = Pattern.compile("src=\"image").matcher(content).replaceAll("src=\"" + imgUrl);
             }
             return R.ok(content);
         } catch (Exception e) {
