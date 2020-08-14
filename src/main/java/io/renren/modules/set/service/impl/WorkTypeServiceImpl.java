@@ -39,12 +39,6 @@ public class WorkTypeServiceImpl extends ServiceImpl<WorkTypeDao, WorkTypeEntity
         Page<WorkTypeEntity> pagnation = new Query<WorkTypeEntity>(params).getPage();
         pagnation = pagnation.setRecords( baseMapper.getWorkTypePage(pagnation , params ) );
 
-//        Page<WorkTypeEntity> page = this.selectPage(
-//                new Query<WorkTypeEntity>(params).getPage(),
-//                new EntityWrapper<WorkTypeEntity>().like(StringUtils.isNotBlank(key), "id", key)
-//                .or().like(StringUtils.isNotBlank(key), "type_name", key)
-//                .or().like(StringUtils.isNotBlank(key), "unit", key)
-//        );
 
         //根据wtypeId 找到 ptypeId (set)
         for (WorkTypeEntity entity : pagnation.getRecords()) {
@@ -53,10 +47,10 @@ public class WorkTypeServiceImpl extends ServiceImpl<WorkTypeDao, WorkTypeEntity
 
             List<Long> PList = new ArrayList<Long>();
             for (WorkProjectTypeEntity ptentity : workprojecttypeservice.queryList(parms)) {
-                System.out.println("控制台打印作业类型ID为: " + ptentity.getWtypeid() + "  的项目类型编号是: " + ptentity.getPtypeid());
+
                 PList.add(ptentity.getPtypeid());
             }
-            System.out.println("---------------------------------------------------------------------------------------------------");
+
             entity.setProjectTypeIdList(PList);
         }
 

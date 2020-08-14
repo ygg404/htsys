@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.set.dao.SetQualityScoreDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.set.entity.SetQualityScoreEntity" id="QualityScoreMap">
+        <result property="typeId" column="type_id"/>
+        <result property="scoreRadio" column="score_radio"/>
+        <result property="typeaName" column="typea_name"/>
+        <result property="typebName" column="typeb_name"/>
+        <result property="typecName" column="typec_name"/>
+        <result property="typedName" column="typed_name"/>
+        <result property="qualityCate" column="quality_cate"/>
+        <result property="fileNo" column="file_no"/>
+    </resultMap>
+
+    <select id="getFileList" resultType="java.lang.String">
+        select distinct (file_no) from  set_quality_score
+        ORDER BY file_no DESC
+    </select>
+
+</mapper>
