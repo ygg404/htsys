@@ -8,16 +8,25 @@ import io.renren.modules.project.vo.ChartOutputVoEntity;
 import io.renren.modules.project.vo.ChartQualityVoEntity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.poifs.filesystem.DirectoryEntry;
+import org.apache.poi.poifs.filesystem.DocumentEntry;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +57,42 @@ public class ChartQualityController {
         return R.ok().put("list", list);
     }
 
+    /**
+     * 导出质检单word
+     */
+    @SysLog("导出质检单word")
+    @RequestMapping("/exportWord")
+    public void exportWord(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String, Object> params){
+        //word内容
+        String html = "<html><body>" + params.get("html").toString() + "</body></html>";
+        html = html.replaceAll("<html>", "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+        try {
+            byte b[] = html.getBytes("utf-8");  //这里是必须要设置编码的，不然导出中文就会乱码。
+            ByteArrayInputStream bais = new ByteArrayInputStream(b);//将字节数组包装到流中
+            /*
+             * 关键地方
+             * 生成word格式 */
+            POIFSFileSystem poifs = new POIFSFileSystem();
+            DirectoryEntry directory = poifs.getRoot();
+            DocumentEntry documentEntry = directory.createDocument("文档名称", bais);
+            //输出文件
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/msword");//导出word格式
+            response.addHeader("Content-Disposition", "p_w_upload;filename=" +
+                    new String( (documentEntry.getName() + ".doc").getBytes(),  "iso-8859-1"));
+            OutputStream ostream = response.getOutputStream();
+            poifs.writeFilesystem(ostream);
+            bais.close();
+            ostream.close();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
 
     /**
-     * 列表
+     * 导出质量统计表
      */
     @SysLog("导出质量统计表")
     @RequestMapping("/exportExcel")
