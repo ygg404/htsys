@@ -3,6 +3,7 @@ package io.renren.modules.set.controller;
 import java.io.InputStream;
 import java.util.*;
 
+import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.DateUtil;
 import io.renren.common.utils.StringUtil;
 import org.apache.lucene.search.FieldCache;
@@ -63,7 +64,7 @@ public class SetQualityScoreController {
      * 信息
      */
     @RequestMapping("/info/{typeId}")
-    @RequiresPermissions("set:setqualityscore:info")
+    @RequiresPermissions("set:qualityscore:info")
     public R info(@PathVariable("typeId") Long typeId){
 		SetQualityScoreEntity setQualityScore = setQualityScoreService.selectById(typeId);
 
@@ -73,6 +74,7 @@ public class SetQualityScoreController {
     /**
      * 导入Excel
      */
+    @SysLog("导入质量评分表")
     @RequestMapping("/importFile")
     @RequiresPermissions("set:qualityscore:import")
     public R importFile(@RequestParam("file") MultipartFile file){
@@ -141,7 +143,7 @@ public class SetQualityScoreController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("set:setqualityscore:update")
+    @RequiresPermissions("set:qualityscore:update")
     public R update(@RequestBody SetQualityScoreEntity setQualityScore){
 		setQualityScoreService.updateById(setQualityScore);
 

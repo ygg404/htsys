@@ -22,6 +22,18 @@ public class ScoreRequestVoEntity implements Serializable {
      * 质检评分
      */
     private Float qualityScore;
+    /**
+     * 点位中误差
+     */
+    private Float errorPoint;
+    /**
+     * 间距中误差
+     */
+    private Float errorSpace;
+    /**
+     * 高程中误差
+     */
+    private Float errorHeigh;
 
     /**
      * 获取：项目编号
@@ -47,4 +59,28 @@ public class ScoreRequestVoEntity implements Serializable {
      * 设置：质检评分
      */
     public void setqualityScore (Float qualityScore){this.qualityScore = qualityScore;};
+    /**
+     * 获取：点位中误差
+     */
+    public Float getErrorPoint (){return this.errorPoint;};
+    /**
+     * 设置：点位中误差
+     */
+    public void setErrorPoint (Float errorPoint){this.errorPoint = errorPoint;};
+    /**
+     * 获取：间距中误差
+     */
+    public Float getErrorSpace (){return this.errorSpace;};
+    /**
+     * 设置：间距中误差
+     */
+    public void setErrorSpace (Float errorSpace){this.errorSpace = errorSpace;};
+    /**
+     * 获取：高程中误差
+     */
+    public Float getErrorHeigh (){return this.errorHeigh;};
+    /**
+     * 设置：高程中误差
+     */
+    public void setErrorHeigh (Float errorHeigh){this.errorHeigh = errorHeigh;};
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.renren.common.annotation.SysLog;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,11 +49,20 @@ public class ProjectTypeController {
     /**
      * 信息
      */
-//    @SysLog("输出指定的单条项目类型信息")
     @RequestMapping("/info/{id}")
     @RequiresPermissions("set:projecttype:info")
     public R info(@PathVariable("id") Integer id){
         ProjectTypeEntity projectType = projectTypeService.selectById(id);
+
+        return R.ok().put("projectType", projectType);
+    }
+
+    /**
+     * 根据项目类型 获取 信息
+     */
+    @RequestMapping("/getByName")
+    public R getByName(@RequestParam("typeName") String typeName){
+        ProjectTypeEntity projectType = projectTypeService.getByName(typeName);
 
         return R.ok().put("projectType", projectType);
     }

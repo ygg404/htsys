@@ -8,7 +8,9 @@ import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.MapUtils;
+import io.renren.modules.project.entity.CheckErrorEntity;
 import io.renren.modules.project.entity.CheckQualityEntity;
+import io.renren.modules.project.service.CheckErrorService;
 import io.renren.modules.project.service.CheckQualityService;
 import io.renren.modules.project.vo.ScoreRequestVoEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -39,6 +41,8 @@ public class QualityScoreController {
     private QualityScoreService qualityScoreService;
     @Autowired
     private CheckQualityService checkQualityService;
+    @Autowired
+    private CheckErrorService checkErrorService;
     /**
      * 列表
      */
@@ -85,6 +89,14 @@ public class QualityScoreController {
         checkQualityService.insertOrUpdate(cqEntity);
         //批量插入评分明细
 		if(scoreVo.getScoreList().size() > 0)qualityScoreService.insertBatch(scoreVo.getScoreList());
+
+		// 插入质检点、间距、高程中误差
+        CheckErrorEntity errorEntity = new CheckErrorEntity();
+        errorEntity.setProjectNo(scoreVo.getprojectNo());
+        errorEntity.setErrorPoint(scoreVo.getErrorPoint());
+        errorEntity.setErrorSpace(scoreVo.getErrorSpace());
+        errorEntity.setErrorHeigh(scoreVo.getErrorHeigh());
+        checkErrorService.insertOrUpdate(errorEntity);
 
         return R.ok();
     }

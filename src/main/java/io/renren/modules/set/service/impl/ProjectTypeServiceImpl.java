@@ -38,6 +38,12 @@ public class ProjectTypeServiceImpl extends ServiceImpl<ProjectTypeDao, ProjectT
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public ProjectTypeEntity getByName(String typeName){
+        return this.selectOne( new EntityWrapper<ProjectTypeEntity>().eq("name" , typeName));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(ProjectTypeEntity entity) {
         this.insert(entity);
     }

@@ -32,6 +32,8 @@ public interface ProjectTypeService extends IService<ProjectTypeEntity> {
 
     List<ProjectTypeEntity> selectBatch(Long[] ids);
 
+    ProjectTypeEntity getByName(String typeName);
+
 
 }
 
