@@ -38,7 +38,7 @@ public class ChartCollectController {
     /**
      * 列表
      */
-    @SysLog("查看产值汇总统计表")
+//    @SysLog("查看产值汇总统计表")
     @RequestMapping("/list")
     @RequiresPermissions("project:chartcollect")
     public R list(@RequestParam Map<String, Object> params){

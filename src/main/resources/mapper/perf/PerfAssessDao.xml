@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.perf.dao.PerfAssessDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.perf.entity.PerfAssessEntity" id="perfAssessMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="checkUserId" column="check_user_id"/>
+        <result property="checkUserName" column="check_user_name"/>
+        <result property="kbiId" column="kbi_id"/>
+        <result property="kbiName" column="kbi_name"/>
+        <result property="kbiRatio" column="kbi_ratio"/>
+        <result property="kbiScore" column="kbi_score"/>
+        <result property="year" column="year"/>
+        <result property="updown" column="updown"/>
+    </resultMap>
+
+    <select id="queryAssessList" resultMap="perfAssessMap">
+        SELECT perf_assess.*
+        from perf_assess
+        where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and
+        perf_assess.check_user_id in
+        (SELECT ren_kbi_person.user_id from ren_kbi_person
+        where ren_kbi_person.year = '${year}' and ren_kbi_person.updown = '${updown}')
+        ORDER BY perf_assess.check_user_id ASC,perf_assess.user_id ASC,perf_assess.kbi_id ASC
+    </select>
+
+</mapper>

@@ -40,11 +40,12 @@ public class PerfAssessServiceImpl extends ServiceImpl<PerfAssessDao, PerfAssess
         String updown = params.get("updown").toString();
 //        String userId = params.get("userId").toString();
 
-        List<PerfAssessEntity> list = this.selectList(
-                new EntityWrapper<PerfAssessEntity>().eq("year" , year).eq("updown",updown)
-                        .orderBy("check_user_id",true).orderBy("user_id",true)
-                        .orderBy("kbi_id",true)
-        );
+        List<PerfAssessEntity> list = this.baseMapper.queryAssessList(params);
+//        List<PerfAssessEntity> list = this.selectList(
+//                new EntityWrapper<PerfAssessEntity>().eq("year" , year).eq("updown",updown)
+//                        .orderBy("check_user_id",true).orderBy("user_id",true)
+//                        .orderBy("kbi_id",true)
+//        );
         return list;
     }
 
