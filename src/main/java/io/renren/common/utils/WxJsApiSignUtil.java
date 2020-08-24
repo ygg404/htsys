@@ -19,9 +19,9 @@ public class WxJsApiSignUtil {
 
         //注意这里参数名必须全部小写，且必须有序
         string1 = "jsapi_ticket=" + jsapi_ticket +
-                  "&noncestr=" + nonce_str +
-                  "&timestamp=" + timestamp +
-                  "&url=" + url;
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
         System.out.println(string1);
 
         try
@@ -67,11 +67,10 @@ public class WxJsApiSignUtil {
     private static String create_timestamp() {
         return Long.toString(System.currentTimeMillis() / 1000);
     }
-    
-    
-    //测试
+
+
     public static void main(String[] args) {
-        String jsapi_ticket = "HoagFKDcsGMVCIY2vOjf9mazcXZ_DF3IiTbqD75tcT0Tb8qOZf6WXhUkmxXGx1O54u90M3EqD0rOqMulmRfDag";
+        String jsapi_ticket = "jsapi_ticket";
 
         // 注意 URL 一定要动态获取，不能 hardcode
         String url = "http://example.com";
@@ -80,6 +79,4 @@ public class WxJsApiSignUtil {
             System.out.println(entry.getKey() + ", " + entry.getValue());
         }
     };
-    
-    
 }

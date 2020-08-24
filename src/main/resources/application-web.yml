@@ -1,0 +1,41 @@
+# Tomcat
+server:
+    tomcat:
+        uri-encoding: UTF-8
+        max-threads: 1000
+        min-spare-threads: 30
+    port: 10010
+    connection-timeout: 6000ms
+    servlet:
+        context-path: /websys
+
+spring:
+    file:
+        #文件管理和合同文件的上传路径（window）
+        uploadFolder: /home/ubuntu/upload/file/
+        upContractFolder: /home/ubuntu/upload/contract/
+        upReportFolder: /home/ubuntu/upload/report/
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/e?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: ygg654321
+        druid:
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            test-on-borrow: true
+            validation-query: SELECT 1
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                    multi-statement-allow: true
+logging:
+    file: ./springbootlog/ren.log
+
+
+

@@ -56,6 +56,7 @@ public class ShiroConfig {
         shiroFilter.setFilters(filters);
 
         Map<String, String> filterMap = new LinkedHashMap<>();
+        filterMap.put("/sys/wx/getWxToken", "anon");
         filterMap.put("/sys/config/list", "anon");
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/druid/**", "anon");
