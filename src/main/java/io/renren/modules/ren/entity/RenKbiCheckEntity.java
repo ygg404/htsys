@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 效能分年度被考核人员
+ * 效能分年度考核人员
  * 
  * @author ygg
- * @date 2020-07-04 10:33:57
+ * @date 2020-08-26 09:38:17
  */
-@TableName("ren_kbi_person")
-public class RenKbiPersonEntity implements Serializable {
+@TableName("ren_kbi_check")
+public class RenKbiCheckEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

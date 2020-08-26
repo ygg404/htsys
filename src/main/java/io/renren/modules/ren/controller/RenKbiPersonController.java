@@ -25,7 +25,7 @@ import io.renren.common.utils.R;
 
 
 /**
- * 效能分年度参评人员
+ * 效能分年度被考核人员
  *
  * @author ygg
  * @date 2020-07-04 10:33:57
@@ -48,7 +48,7 @@ public class RenKbiPersonController {
     }
 
     /**
-     * 获取参评人数
+     * 获取被考核人数
      */
     @RequestMapping("/getCount")
     public R getCount(@RequestParam Map<String, Object> params){
@@ -59,7 +59,7 @@ public class RenKbiPersonController {
     /**
      * 保存
      */
-    @SysLog("保存参评人")
+    @SysLog("保存被考核人")
     @RequestMapping("/save")
     public R save(@RequestBody RenKbiPersonVoEntity renKbiPersonVo){
         Long year = renKbiPersonVo.getYear();

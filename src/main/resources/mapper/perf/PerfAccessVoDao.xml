@@ -61,10 +61,14 @@
         order by sys_role.role_id,sys_user.user_id asc
     </select>
 
+
     <select id="getUserHasAssess" resultMap="perfAccessVoMap">
         SELECT perf_assess.user_id,perf_assess.user_name
         from perf_assess
         where perf_assess.year = '${year}' and perf_assess.updown = '${updown}'
+        and perf_assess.user_id in
+			(SELECT ren_kbi_check.user_id FROM ren_kbi_check
+			where ren_kbi_check.year = '${year}' and ren_kbi_check.updown =  '${updown}')
         GROUP BY perf_assess.user_id,perf_assess.user_name
     </select>
 

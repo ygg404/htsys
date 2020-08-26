@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * 效能分年度参评人员
+ * 效能分被考核人员
  *
  * @author ygg
  * @date 2020-07-04 10:33:57

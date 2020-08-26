@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ren.dao.RenKbiCheckVoDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.ren.vo.RenKbiCheckVoEntity" id="renKbiCheckVoMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="isAttend" column="isAttend"/>
+        <result property="year" column="year"/>
+        <result property="updown" column="updown"/>
+    </resultMap>
+
+    <select id="getKbiCheckVoList" resultMap="renKbiCheckVoMap">
+            SELECT sys_user.user_id,sys_user.username,
+                        (case WHEN person.user_id IS NULL THEN 0 ELSE 1 END) as isAttend
+             from sys_user
+            LEFT JOIN (SELECT ren_kbi_check.* from ren_kbi_check
+            where ren_kbi_check.year = '${year}' and ren_kbi_check.updown = '${updown}') person
+            on person.user_id = sys_user.user_id
+            where sys_user.status = 1
+            ORDER BY sys_user.user_id
+    </select>
+
+</mapper>
