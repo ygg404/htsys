@@ -61,6 +61,16 @@ public class SetQualityScoreController {
     }
 
     /**
+     * 获取文件列表
+     */
+    @RequestMapping("/fileNoList")
+    public R fileNoList(){
+        List<SetQualityScoreEntity> list = setQualityScoreService.getFileNoList();
+
+        return R.ok().put("list", list);
+    }
+
+    /**
      * 信息
      */
     @RequestMapping("/info/{typeId}")

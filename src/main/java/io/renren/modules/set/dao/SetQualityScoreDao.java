@@ -16,4 +16,6 @@ import java.util.List;
 public interface SetQualityScoreDao extends BaseMapper<SetQualityScoreEntity> {
 
     List<String> getFileList();
+
+    List<SetQualityScoreEntity> getFileNoList();
 }

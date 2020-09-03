@@ -38,6 +38,11 @@ public class SetQualityScoreServiceImpl extends ServiceImpl<SetQualityScoreDao, 
     }
 
     @Override
+    public List<SetQualityScoreEntity> getFileNoList() {
+        return this.baseMapper.getFileNoList();
+    }
+
+    @Override
     public List<SetQualityScoreEntity> queryList(Map<String, Object> params){
         String fileNo = (String)params.get("fileNo");
 

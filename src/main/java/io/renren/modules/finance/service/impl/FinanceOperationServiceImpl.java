@@ -47,21 +47,6 @@ public class FinanceOperationServiceImpl  extends ServiceImpl<FinanceOperationDa
         Page<FinanceOperationVoEntity> pagnation = new Query<FinanceOperationVoEntity>(params).getPage();
         pagnation = pagnation.setRecords( baseMapper.getFinanceOperationList(pagnation , params ) );
         return new PageUtils(pagnation);
-//        int curpage = Integer.parseInt((String)params.get("page"));
-//        int pagesize = Integer.parseInt((String)params.get("limit"));
-//        Page<FinanceOperationVoEntity> Respage = new Page<FinanceOperationVoEntity>();
-//        List<FinanceOperationVoEntity> list = this.baseMapper.getFinanceOperationList(params);
-//        Respage.setRecords(list);
-//        PageUtils ResPageUtils = new PageUtils(Respage);
-//        //总记录数
-//        ResPageUtils.setTotalCount(list.size());
-//        //每页固定记录数
-//        ResPageUtils.setPageSize(pagesize);
-//        //当前页
-//        ResPageUtils.setCurrPage(curpage);
-//        int totalpage = list.size() % pagesize == 0 ? list.size() / pagesize:list.size() / pagesize + 1;
-//        ResPageUtils.setTotalPage(totalpage);
-//        return ResPageUtils;
     }
 
 }

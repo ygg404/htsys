@@ -22,6 +22,9 @@ public interface SetQualityScoreService extends IService<SetQualityScoreEntity> 
     // 获取文件编号列表
     List<String> getFileList();
 
+    // 获取文件编号列表
+    List<SetQualityScoreEntity> getFileNoList();
+
     void save(SetQualityScoreEntity entity);
 
     void update(SetQualityScoreEntity entity);
