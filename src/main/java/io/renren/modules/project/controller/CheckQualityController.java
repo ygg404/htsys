@@ -191,7 +191,7 @@ public class CheckQualityController {
     /**
      * 修改
      */
-    @SysLog("质量审核")
+    @SysLog("保存质量审核")
     @RequestMapping("/update")
     @RequiresPermissions("project:quality:update")
     public R update(@RequestBody CheckQualityEntity checkQuality){

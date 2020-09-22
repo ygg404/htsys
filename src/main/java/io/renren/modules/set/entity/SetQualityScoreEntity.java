@@ -30,14 +30,14 @@ public class SetQualityScoreEntity implements Serializable {
 	 * 评分权重
 	 */
 	private Float scoreRadio;
-	/**
-	 * 子元素类别
-	 */
-	private String childCate;
-	/**
-	 * 子元素权重
-	 */
-	private Float childRadio;
+//	/**
+//	 * 子元素类别
+//	 */
+//	private String childCate;
+//	/**
+//	 * 子元素权重
+//	 */
+//	private Float childRadio;
 	/**
 	 * A类错误名
 	 */
@@ -87,22 +87,22 @@ public class SetQualityScoreEntity implements Serializable {
 	 * 设置：评分权重
 	 */
 	public void setScoreRadio (Float scoreRadio){this.scoreRadio = scoreRadio;};
-	/**
-	 * 获取：子元素类别
-	 */
-	public String getChildCate (){return this.childCate;};
-	/**
-	 * 设置：子元素类别
-	 */
-	public void setChildCate (String childCate){this.childCate = childCate;};
-	/**
-	 * 获取：子元素权重
-	 */
-	public Float getChildRadio (){return this.childRadio;};
-	/**
-	 * 设置：子元素权重
-	 */
-	public void setChildRadio (Float childRadio){this.childRadio = childRadio;};
+//	/**
+//	 * 获取：子元素类别
+//	 */
+//	public String getChildCate (){return this.childCate;};
+//	/**
+//	 * 设置：子元素类别
+//	 */
+//	public void setChildCate (String childCate){this.childCate = childCate;};
+//	/**
+//	 * 获取：子元素权重
+//	 */
+//	public Float getChildRadio (){return this.childRadio;};
+//	/**
+//	 * 设置：子元素权重
+//	 */
+//	public void setChildRadio (Float childRadio){this.childRadio = childRadio;};
 	/**
 	 * 获取：A类错误名
 	 */

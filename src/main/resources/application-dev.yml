@@ -15,18 +15,19 @@ spring:
         uploadFolder: E://upload//file//
         upContractFolder: E://upload//contract//
         upReportFolder: E://upload//report//
+        upDopFolder: E://upload//dop//
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
         druid:
             first:  #数据源1
-                url: jdbc:mysql://localhost:3306/e?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+                url: jdbc:mysql://localhost:3306/jxtest?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
                 username: root
                 password:
             second:  #数据源2
-                url: jdbc:mysql://localhost:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+                url: jdbc:mysql://localhost:3306/jxtest?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
                 username: root
-                password: admin
+                password:
             initial-size: 10
             max-active: 100
             min-idle: 10

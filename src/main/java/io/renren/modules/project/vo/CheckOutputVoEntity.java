@@ -1,6 +1,7 @@
 package io.renren.modules.project.vo;
 
 import com.baomidou.mybatisplus.annotations.TableId;
+import io.renren.modules.project.entity.CheckOutputRemarkEntity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -50,6 +51,11 @@ public class CheckOutputVoEntity implements Serializable {
      * 作业类型列表ID
      */
     private List<Long> projectTypeIdList;
+    /**
+     * 产值核算备注
+     */
+    private List<CheckOutputRemarkEntity> outputRemarkList;
+
 
     /**
      * 获取：ID
@@ -141,4 +147,12 @@ public class CheckOutputVoEntity implements Serializable {
      */
     public void setProjectTypeIdList(List<Long> projectTypeIdList) {this.projectTypeIdList = projectTypeIdList;}
 
+    /**
+     * 获取：产值核算备注
+     */
+    public List<CheckOutputRemarkEntity> getOutputRemarkList() { return this.outputRemarkList; }
+    /**
+     * 设置：产值核算备注
+     */
+    public void setOutputRemarkList(List<CheckOutputRemarkEntity> outputRemarkList) { this.outputRemarkList = outputRemarkList;}
 }

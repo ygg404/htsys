@@ -72,6 +72,9 @@ public class RecycleController {
     private CheckOutputTempService checkOutputTempService;
 
     @Autowired
+    private CheckOutputRemarkService checkOutputRemarkService;
+
+    @Autowired
     private BackWorkService backWorkService;
     /**
      * 列表
@@ -130,6 +133,7 @@ public class RecycleController {
         qualityScoreService.deleteByMap(parm);
         checkOutputTempService.deleteByMap(parm);
         backWorkService.deleteByMap(parm);
+        checkOutputRemarkService.deleteByMap(parm);
 
         return R.ok();
     }

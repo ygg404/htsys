@@ -8,8 +8,8 @@
         <result property="typeId" column="type_id"/>
         <result property="qualityCate" column="quality_cate"/>
         <result property="scoreRadio" column="score_radio"/>
-        <result property="childCate" column="child_cate"/>
-        <result property="childRadio" column="child_radio"/>
+        <!--<result property="childCate" column="child_cate"/>-->
+        <!--<result property="childRadio" column="child_radio"/>-->
         <result property="typeaName" column="typea_name"/>
         <result property="typebName" column="typeb_name"/>
         <result property="typecName" column="typec_name"/>

@@ -1,7 +1,7 @@
 spring:
-  # 环境 dev|test|prod|ren|web
+  # 环境 dev|test|prod|ren|dop
   profiles:
-    active: ren
+    active: dev
   # jackson时间格式化
   jackson:
     time-zone: GMT+8

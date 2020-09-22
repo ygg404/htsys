@@ -7,14 +7,15 @@ server:
     port: 10010
     connection-timeout: 6000ms
     servlet:
-        context-path: /websys
+        context-path: /dopsys
 
 spring:
     file:
-        #文件管理和合同文件的上传路径（window）
+        #文件管理和合同文件的上传路径（linux）
         uploadFolder: /home/ubuntu/upload/file/
         upContractFolder: /home/ubuntu/upload/contract/
         upReportFolder: /home/ubuntu/upload/report/
+        upDopFolder: /home/ubuntu/upload/dop/
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
@@ -35,7 +36,7 @@ spring:
                     config:
                     multi-statement-allow: true
 logging:
-    file: ./springbootlog/ren.log
+    file: ./springbootlog/dop.log
 
 
 
