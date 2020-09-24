@@ -15,6 +15,7 @@ spring:
         uploadFolder: /home/ubuntu/upload/file/
         upContractFolder: /home/ubuntu/upload/contract/
         upReportFolder: /home/ubuntu/upload/report/
+        upDopFolder: /home/ubuntu/upload/dop/
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver

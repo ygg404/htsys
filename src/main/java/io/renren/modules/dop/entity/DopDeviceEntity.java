@@ -2,7 +2,6 @@ package io.renren.modules.dop.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +11,7 @@ import java.util.List;
  * 仪器表
  * 
  * @author ygg
- * @date 2020-09-08 10:24:37
+ * @date 2020-09-23 10:22:28
  */
 @TableName("dop_device")
 public class DopDeviceEntity implements Serializable {
@@ -50,12 +49,11 @@ public class DopDeviceEntity implements Serializable {
 	/**
 	 * 购置时间
 	 */
-	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM")
 	private Date buyTime;
 	/**
-	 * 设备状况
+	 * 设备状况（0-闲置中；1-出借中；2-维修中）
 	 */
-	private String devStation;
+	private Long devStation;
 	/**
 	 * 出借情况
 	 */
@@ -63,7 +61,6 @@ public class DopDeviceEntity implements Serializable {
 	/**
 	 * 上次检修时间
 	 */
-	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM")
 	private Date lastCheckTime;
 	/**
 	 * 有效期
@@ -91,8 +88,8 @@ public class DopDeviceEntity implements Serializable {
 	 */
 	public void setId (Long id){this.id = id;};
 	/**
-	 * 获取：仪器名称
-	 */
+	* 获取：仪器名称
+	*/
 	public String getDeviceName (){return this.deviceName;};
 	/**
 	 * 设置：仪器名称
@@ -147,13 +144,13 @@ public class DopDeviceEntity implements Serializable {
 	 */
 	public void setBuyTime (Date buyTime){this.buyTime = buyTime;};
 	/**
-	* 获取：设备状况
+	* 获取：设备状况（0-闲置中；1-出借中；2-维修中）
 	*/
-	public String getDevStation (){return this.devStation;};
+	public Long getDevStation (){return this.devStation;};
 	/**
-	 * 设置：设备状况
+	 * 设置：设备状况（0-闲置中；1-出借中；2-维修中）
 	 */
-	public void setDevStation (String devStation){this.devStation = devStation;};
+	public void setDevStation (Long devStation){this.devStation = devStation;};
 	/**
 	* 获取：出借情况
 	*/
