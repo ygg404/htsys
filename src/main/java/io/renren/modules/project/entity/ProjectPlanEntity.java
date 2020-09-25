@@ -36,6 +36,10 @@ public class ProjectPlanEntity implements Serializable {
 	 */
 	private String workRequire;
 	/**
+	 * 安全作业交底
+	 */
+	private String safeRequire;
+	/**
 	 * 项目编写人
 	 */
 	private String projectWriter;
@@ -113,7 +117,15 @@ public class ProjectPlanEntity implements Serializable {
 	/**
 	 * 设置：技术要求
 	 */
-	public void setworkRequire (String workRequire){this.workRequire = workRequire;};
+	public void setworkRequire (String workRequire){this.workRequire = workRequire;}
+	/**
+	 * 获取：安全技术交底
+	 */
+	public String getSafeRequire (){return this.safeRequire;};
+	/**
+	 * 设置：安全技术交底
+	 */
+	public void setSafeRequire (String safeRequire) {this.safeRequire = safeRequire;};
 	/**
 	* 获取：项目编写人
 	*/

@@ -79,6 +79,10 @@ public class ProjectInfoVoEntity implements Serializable {
      */
     private String workRequire;
     /**
+     * 安全要求
+     */
+    private String safeRequire;
+    /**
      * 项目开工时间
      */
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
@@ -324,6 +328,14 @@ public class ProjectInfoVoEntity implements Serializable {
      * 设置：技术要求
      */
     public void setworkRequire (String workRequire){this.workRequire = workRequire;};
+    /**
+     * 获取：安全技术交底
+     */
+    public String getSafeRequire (){return this.safeRequire;};
+    /**
+     * 设置：安全技术交底
+     */
+    public void setSafeRequire (String safeRequire) {this.safeRequire = safeRequire;};
     /**
      * 获取：项目开工时间
      */

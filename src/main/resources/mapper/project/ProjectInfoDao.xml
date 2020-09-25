@@ -20,6 +20,7 @@
         <result property="executeStandard" column="execute_standard"/>
         <result property="workNote" column="work_note"/>
         <result property="workRequire" column="work_require"/>
+        <result property="safeRequire" column="safe_require"/>
         <result property="projectBegunDateTime" column="project_begun_date_time"/>
         <result property="projectWorkDate" column="project_work_date"/>
         <result property="projectQualityDate" column="project_quality_date"/>
@@ -45,7 +46,7 @@
         select a.id,a.project_no,a.project_name,a.project_authorize,a.project_note,a.project_produce,
         a.examine_note,a.createUserId,s.username as createUserName,a.output_remark,
         a.project_type, a.project_business,c.contract_business,c.user_name,c.user_phone,
-        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.project_begun_date_time,
+        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.safe_require,p.project_begun_date_time,
         p.project_work_date,p.project_quality_date,p.project_output,p.project_workload,p.project_writer,
         w.work_load,w.data_name,w.brief_summary,w.technical_disclosure_note,w.check_suggestion,
         q.quality_note,q.quality_score
@@ -62,7 +63,7 @@
         select a.id,a.project_no,a.project_name,a.project_authorize,a.project_note,
         a.examine_note,a.createUserId,s.username as createUserName,a.project_produce,
         a.project_type, a.project_business,c.contract_business,c.user_name,c.user_phone,
-        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.project_begun_date_time,
+        p.project_charge,p.execute_standard,p.work_note,p.work_require,p.safe_require,p.project_begun_date_time,
         p.project_work_date,p.project_quality_date,p.project_output,p.project_workload,p.project_writer,
         w.work_load,w.data_name,w.brief_summary,w.technical_disclosure_note,w.check_suggestion,
         q.quality_note,q.quality_score,
