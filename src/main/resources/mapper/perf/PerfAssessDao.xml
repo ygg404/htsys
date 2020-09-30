@@ -15,16 +15,16 @@
         <result property="kbiRatio" column="kbi_ratio"/>
         <result property="kbiScore" column="kbi_score"/>
         <result property="year" column="year"/>
-        <result property="updown" column="updown"/>
+        <result property="month" column="month"/>
     </resultMap>
 
     <select id="queryAssessList" resultMap="perfAssessMap">
         SELECT perf_assess.*
         from perf_assess
-        where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and
+        where perf_assess.year = '${year}' and perf_assess.month = '${month}' and
         perf_assess.check_user_id in
         (SELECT ren_kbi_person.user_id from ren_kbi_person
-        where ren_kbi_person.year = '${year}' and ren_kbi_person.updown = '${updown}')
+        where ren_kbi_person.year = '${year}' and ren_kbi_person.month = '${month}')
         ORDER BY perf_assess.check_user_id ASC,perf_assess.user_id ASC,perf_assess.kbi_id ASC
     </select>
 

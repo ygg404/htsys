@@ -10,7 +10,7 @@
         <result property="username" column="username"/>
         <result property="isAttend" column="isAttend"/>
         <result property="year" column="year"/>
-        <result property="updown" column="updown"/>
+        <result property="month" column="month"/>
     </resultMap>
 
     <select id="getKbiPersonVoList" resultMap="renKbiPersonVoMap">
@@ -18,7 +18,7 @@
                         (case WHEN person.user_id IS NULL THEN 0 ELSE 1 END) as isAttend
              from sys_user
             LEFT JOIN (SELECT ren_kbi_person.* from ren_kbi_person
-            where ren_kbi_person.year = '${year}' and ren_kbi_person.updown = '${updown}') person
+            where ren_kbi_person.year = '${year}' and ren_kbi_person.month = '${month}') person
             on person.user_id = sys_user.user_id
             where sys_user.status = 1
             ORDER BY sys_user.user_id

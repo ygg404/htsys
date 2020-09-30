@@ -124,7 +124,7 @@
 				LEFT JOIN set_score_kbi_duty on set_score_kbi_duty.duty_id = ren_record.duty_id
 				LEFT JOIN set_score_kbi_title on set_score_kbi_title.title_id = ren_record.title_lever
 				LEFT JOIN
-				(SELECT * from ren_kbi_audit where ren_kbi_audit.year = '${year}' and ren_kbi_audit.updown = '${updown}') audit
+				( SELECT * from (SELECT * FROM ren_kbi_audit ORDER BY year desc ,month desc limit 999999) a GROUP BY user_id) audit
 				on audit.user_id = sys_user.user_id
 				LEFT JOIN (SELECT sys_branch_user.branch_id,sys_branch_user.user_id,
 				          sys_branch.branch_name,sys_branch.order_num,sys_branch.parent_id

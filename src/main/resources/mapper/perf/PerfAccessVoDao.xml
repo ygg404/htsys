@@ -17,28 +17,28 @@
         <result property="kbiRatio" column="KBI_ratio"/>
         <result property="kbiScore" column="kbi_score"/>
         <result property="year" column="year"/>
-        <result property="updown" column="updown"/>
+        <result property="month" column="month"/>
     </resultMap>
 
     <select id="getPerfAccessVoList" resultMap="perfAccessVoMap">
         SELECT sys_role.role_id,sys_role.role_name,
 		sys_user.user_id,sys_user.username,
 		sys_role_kbi.KBI_id,sys_kbi.KBI_name,sys_role_kbi.KBI_ratio,
-		perf.kbi_score,perf.year,perf.updown
+		perf.kbi_score,perf.year,perf.month
 		FROM sys_role
 		LEFT JOIN sys_role_kbi on sys_role_kbi.role_id = sys_role.role_id
 		LEFT JOIN sys_kbi on sys_role_kbi.KBI_id = sys_kbi.id
 		LEFT JOIN sys_user_role on sys_user_role.role_id = sys_role.role_id
 		LEFT JOIN sys_user on sys_user.user_id = sys_user_role.user_id
-		LEFT JOIN (SELECT * from perf_assess where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and perf_assess.user_id = '${userId}')perf
+		LEFT JOIN (SELECT * from perf_assess where perf_assess.year = '${year}' and perf_assess.month = '${month}' and perf_assess.user_id = '${userId}')perf
 		on perf.kbi_id =  sys_role_kbi.KBI_id and perf.check_user_id = sys_user.user_id
 		where sys_role.role_id != 1 and sys_user.user_id is not NULL
-		and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and updown = '${updown}')
+		and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and month = '${month}')
 		ORDER BY sys_role.role_id,sys_user.user_id,sys_role_kbi.KBI_id ASC
     </select>
 
     <select id="countPerfAccess" resultType="java.lang.Long">
-        select count(1) from perf_assess where perf_assess.year = '${year}' and perf_assess.updown = '${updown}' and perf_assess.user_id = '${userId}'
+        select count(1) from perf_assess where perf_assess.year = '${year}' and perf_assess.month = '${month}' and perf_assess.user_id = '${userId}'
     </select>
 
     <select id="getUserRoleList" resultMap="perfAccessVoMap">
@@ -55,8 +55,8 @@
 		LEFT JOIN set_score_kbi_title on set_score_kbi_title.title_id = ren_record.title_lever
 		LEFT JOIN set_score_title on set_score_title.id = ren_record.title_lever
         where sys_role.role_id is not NULL and sys_role.role_id != 1
-        <if test="year != null and updown != null">
-            and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and updown = '${updown}')
+        <if test="year != null and month != null">
+            and sys_user.user_id in	(SELECT ren_kbi_person.user_id FROM ren_kbi_person WHERE year = '${year}' and month = '${month}')
         </if>
         order by sys_role.role_id,sys_user.user_id asc
     </select>
@@ -65,10 +65,10 @@
     <select id="getUserHasAssess" resultMap="perfAccessVoMap">
         SELECT perf_assess.user_id,perf_assess.user_name
         from perf_assess
-        where perf_assess.year = '${year}' and perf_assess.updown = '${updown}'
+        where perf_assess.year = '${year}' and perf_assess.month = '${month}'
         and perf_assess.user_id in
 			(SELECT ren_kbi_check.user_id FROM ren_kbi_check
-			where ren_kbi_check.year = '${year}' and ren_kbi_check.updown =  '${updown}')
+			where ren_kbi_check.year = '${year}' and ren_kbi_check.month =  '${month}')
         GROUP BY perf_assess.user_id,perf_assess.user_name
     </select>
 
