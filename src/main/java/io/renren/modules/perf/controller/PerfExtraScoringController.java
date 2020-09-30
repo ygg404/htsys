@@ -75,8 +75,8 @@ public class PerfExtraScoringController {
         if(perfExtraVoEntity.getCheckUserId() == null){
             return R.error("考核对象不能为空");
         }
-        if(perfExtraVoEntity.getYear() == null || perfExtraVoEntity.getUpdown() == null){
-            return R.error("提交年份不能为空");
+        if(perfExtraVoEntity.getYear() == null || perfExtraVoEntity.getMonth() == null){
+            return R.error("提交日期不能为空");
         }
         perfExtraScoringService.deleteByParms(perfExtraVoEntity);
         perfExtraScoringService.insertBatch(perfExtraVoEntity.getScoreList());

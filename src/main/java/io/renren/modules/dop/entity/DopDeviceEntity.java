@@ -2,6 +2,7 @@ package io.renren.modules.dop.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -49,6 +50,7 @@ public class DopDeviceEntity implements Serializable {
 	/**
 	 * 购置时间
 	 */
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM")
 	private Date buyTime;
 	/**
 	 * 设备状况（0-闲置中；1-出借中；2-维修中）
@@ -61,6 +63,7 @@ public class DopDeviceEntity implements Serializable {
 	/**
 	 * 上次检修时间
 	 */
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM")
 	private Date lastCheckTime;
 	/**
 	 * 有效期

@@ -37,19 +37,19 @@ public class PerfExtraScoringServiceImpl extends ServiceImpl<PerfExtraScoringDao
     public void deleteByParms(PerfExtraVoEntity voEntity){
         this.delete(
                 new EntityWrapper<PerfExtraScoringEntity>().eq("check_user_id" ,voEntity.getCheckUserId())
-                .eq("year" , voEntity.getYear()).eq("updown",voEntity.getUpdown())
+                .eq("year" , voEntity.getYear()).eq("month",voEntity.getMonth())
         );
     }
 
     @Override
     public List<PerfExtraScoringEntity> queryList(Map<String, Object> params){
         String year = params.get("year").toString();
-        String updown = params.get("updown").toString();
+        String month = params.get("month").toString();
         String checkUserId = (String)params.get("checkUserId");
 
         List<PerfExtraScoringEntity> list = this.selectList(
                 new EntityWrapper<PerfExtraScoringEntity>()
-                        .eq("year",year).eq("updown",updown)
+                        .eq("year",year).eq("month",month)
                         .eq(StringUtils.isNotBlank(checkUserId),"check_user_id",checkUserId)
                         .orderBy("check_user_id", true)
         );

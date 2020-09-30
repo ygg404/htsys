@@ -35,10 +35,10 @@ public class RenKbiPersonServiceImpl extends ServiceImpl<RenKbiPersonDao, RenKbi
     @Override
     public List<RenKbiPersonEntity> queryList(Map<String, Object> params){
         String year = (String) params.get("year");
-        String updown = (String) params.get("updown");
+        String month = (String) params.get("month");
         List<RenKbiPersonEntity> list = this.selectList(
                 new EntityWrapper<RenKbiPersonEntity>().eq("year", year)
-                .and().eq("updown", updown)
+                .and().eq("month", month)
         );
         return list;
     }

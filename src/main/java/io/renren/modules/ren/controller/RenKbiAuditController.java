@@ -51,16 +51,16 @@ public class RenKbiAuditController {
     @SysLog("提交效能审定")
     @RequestMapping("/save")
     public R save(@RequestBody RenKbiAuditVoEntity voEntity){
-        if (voEntity.getYear() == null || voEntity.getUpdown() == null) {
-            return R.error("审定年度为空！请刷新重试！");
+        if (voEntity.getYear() == null || voEntity.getMonth() == null) {
+            return R.error("审定日期为空！请刷新重试！");
         }
         renKbiAuditService.delete(
                 new EntityWrapper<RenKbiAuditEntity>().eq("year",voEntity.getYear())
-                .and().eq("updown" , voEntity.getUpdown())
+                .and().eq("month" , voEntity.getMonth())
         );
         for(RenKbiAuditEntity entity : voEntity.getKbiAuditList()) {
             entity.setYear(voEntity.getYear());
-            entity.setUpdown(voEntity.getUpdown());
+            entity.setUpdown(voEntity.getMonth());
         }
         if(voEntity.getKbiAuditList().size() > 0)
 		renKbiAuditService.insertBatch(voEntity.getKbiAuditList());

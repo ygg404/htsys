@@ -35,9 +35,9 @@ public class PerfAssessServiceImpl extends ServiceImpl<PerfAssessDao, PerfAssess
 
     @Override
     public List<PerfAssessEntity> queryList(Map<String, Object> params){
-        // 年份 上下半年
+        // 年份 月份
         String year = params.get("year").toString();
-        String updown = params.get("updown").toString();
+        String month = params.get("month").toString();
 //        String userId = params.get("userId").toString();
 
         List<PerfAssessEntity> list = this.baseMapper.queryAssessList(params);
@@ -53,7 +53,7 @@ public class PerfAssessServiceImpl extends ServiceImpl<PerfAssessDao, PerfAssess
     public void deleteByMap(PerfAssessVoEntity voEntity){
         this.delete(
                 new EntityWrapper<PerfAssessEntity>().eq("year", voEntity.getYear())
-                        .eq("updown",voEntity.getUpdown())
+                        .eq("month",voEntity.getMonth())
                         .eq("user_id",voEntity.getUserId()));
     }
 

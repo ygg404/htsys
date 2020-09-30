@@ -35,9 +35,9 @@ public class RenKbiAuditEntity implements Serializable {
 	 */
 	private Long year;
 	/**
-	 * 上下半年(0-上半年，1-下半年 )
+	 * 月份
 	 */
-	private Long updown;
+	private Long month;
 
 	/**
 	* 获取：自增ID
@@ -72,11 +72,11 @@ public class RenKbiAuditEntity implements Serializable {
 	 */
 	public void setYear (Long year){this.year = year;};
 	/**
-	* 获取：上下半年(0-上半年，1-下半年 )
+	* 获取：月份
 	*/
-	public Long getUpdown (){return this.updown;};
+	public Long getMonth (){return this.month;};
 	/**
-	 * 设置：上下半年(0-上半年，1-下半年 )
+	 * 设置：年份
 	 */
-	public void setUpdown (Long updown){this.updown = updown;};
+	public void setUpdown (Long month){this.month = month;};
 }

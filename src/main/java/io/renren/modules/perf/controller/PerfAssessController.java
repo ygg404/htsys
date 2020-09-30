@@ -84,8 +84,8 @@ public class PerfAssessController {
         if(perfAccessVo.getUserId() == null){
             return R.error("提交用户Id为空");
         }
-        if(perfAccessVo.getYear() == null || perfAccessVo.getUpdown() == null){
-            return R.error("提交年份为空");
+        if(perfAccessVo.getYear() == null || perfAccessVo.getMonth() == null){
+            return R.error("提交时间为空");
         }
         perfAccessService.deleteByMap(perfAccessVo);
         perfAccessService.insertBatch(perfAccessVo.getAccessList());

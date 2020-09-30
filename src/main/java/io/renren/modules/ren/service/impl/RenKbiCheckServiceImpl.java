@@ -46,12 +46,12 @@ public class RenKbiCheckServiceImpl extends ServiceImpl<RenKbiCheckDao, RenKbiCh
     @Override
     public RenKbiCheckEntity queryByParams(Map<String, Object> params){
         String year = (String)params.get("year");
-        String updown = (String)params.get("updown");
+        String month = (String)params.get("month");
         // 获取当前用户Id
         Long curUserId =  ((SysUserEntity) SecurityUtils.getSubject().getPrincipal()).getUserId();
 
         RenKbiCheckEntity entity = this.selectOne(new EntityWrapper<RenKbiCheckEntity>()
-                .eq("year",year).eq("updown",updown).eq("user_id",curUserId));
+                .eq("year",year).eq("month",month).eq("user_id",curUserId));
         return entity;
     }
 

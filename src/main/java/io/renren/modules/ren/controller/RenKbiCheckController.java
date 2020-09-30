@@ -70,7 +70,7 @@ public class RenKbiCheckController {
     @RequestMapping("/save")
     public R save(@RequestBody RenKbiCheckVoEntity renKbiCheckVo){
         Long year = renKbiCheckVo.getYear();
-        Long updown = renKbiCheckVo.getUpdown();
+        Long updown = renKbiCheckVo.getMonth();
         renKbiCheckService.delete(
                 new EntityWrapper<RenKbiCheckEntity>().eq("year" ,year).and()
                         .eq("updown",updown)

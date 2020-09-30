@@ -35,9 +35,9 @@ public class RenKbiAuditServiceImpl extends ServiceImpl<RenKbiAuditDao, RenKbiAu
     @Override
     public List<RenKbiAuditEntity> queryList(Map<String, Object> params){
         String year = (String)params.get("year");
-        String updown = (String)params.get("updown");
+        String month = (String)params.get("month");
         List<RenKbiAuditEntity> list = this.selectList(
-                new EntityWrapper<RenKbiAuditEntity>().eq("year", year).eq("updown",updown)
+                new EntityWrapper<RenKbiAuditEntity>().eq("year", year).eq("month",month)
         );
         return list;
     }

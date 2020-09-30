@@ -91,12 +91,12 @@ public class QualityScoreController {
 		if(scoreVo.getScoreList().size() > 0)qualityScoreService.insertBatch(scoreVo.getScoreList());
 
 		// 插入质检点、间距、高程中误差
-        CheckErrorEntity errorEntity = new CheckErrorEntity();
-        errorEntity.setProjectNo(scoreVo.getprojectNo());
-        errorEntity.setErrorPoint(scoreVo.getErrorPoint());
-        errorEntity.setErrorSpace(scoreVo.getErrorSpace());
-        errorEntity.setErrorHeigh(scoreVo.getErrorHeigh());
-        checkErrorService.insertOrUpdate(errorEntity);
+//        CheckErrorEntity errorEntity = new CheckErrorEntity();
+//        errorEntity.setProjectNo(scoreVo.getprojectNo());
+//        errorEntity.setErrorPoint(scoreVo.getErrorPoint());
+//        errorEntity.setErrorSpace(scoreVo.getErrorSpace());
+//        errorEntity.setErrorHeigh(scoreVo.getErrorHeigh());
+//        checkErrorService.insertOrUpdate(errorEntity);
 
         return R.ok();
     }
