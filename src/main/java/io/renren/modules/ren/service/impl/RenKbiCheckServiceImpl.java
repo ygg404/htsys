@@ -37,8 +37,11 @@ public class RenKbiCheckServiceImpl extends ServiceImpl<RenKbiCheckDao, RenKbiCh
 
     @Override
     public List<RenKbiCheckEntity> queryList(Map<String, Object> params){
+        String year = (String)params.get("year");
+        String month = (String)params.get("month");
+
         List<RenKbiCheckEntity> list = this.selectList(
-                new EntityWrapper<RenKbiCheckEntity>()
+                new EntityWrapper<RenKbiCheckEntity>().eq("year",year).eq("month",month)
         );
         return list;
     }

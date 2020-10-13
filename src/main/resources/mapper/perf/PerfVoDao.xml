@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.perf.dao.PerfVoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.perf.vo.PerfVoEntity" id="perfVoMap">
+        <result property="ubranchId" column="ubranchId"/>
+        <result property="ubranchName" column="ubranchName"/>
+        <result property="cbranchId" column="cbranchId"/>
+        <result property="cbranchName" column="cbranchName"/>
+        <result property="isSameBranch" column="isSameBranch"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="checkUserId" column="check_user_id"/>
+        <result property="checkUserName" column="check_user_name"/>
+        <result property="kbiId" column="kbi_id"/>
+        <result property="kbiName" column="kbi_name"/>
+        <result property="kbiRatio" column="kbi_ratio"/>
+        <result property="kbiScore" column="kbi_score"/>
+        <result property="year" column="year"/>
+        <result property="month" column="month"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="dutyId" column="duty_id"/>
+        <result property="dutyName" column="dutyName"/>
+        <result property="dutyStandScore" column="dutyStandScore"/>
+        <result property="titleLever" column="title_lever"/>
+        <result property="titleName" column="titleName"/>
+        <result property="titleStandScore" column="titleStandScore"/>
+    </resultMap>
+
+    <select id="queryVoList" resultMap="perfVoMap">
+            DROP TEMPORARY TABLE IF EXISTS ubranchTemp;
+            create temporary table ubranchTemp
+            (SELECT sys_branch_user.branch_id,sys_branch_user.user_id,
+            branch.branch_name,branch.order_num,branch.parent_id from sys_branch_user
+            LEFT JOIN
+            (SELECT * from sys_branch where sys_branch.id  not in (SELECT parent_id from sys_branch) ORDER BY parent_id,order_num)branch
+            ON branch.id = sys_branch_user.branch_id
+            WHERE branch.id not in (SELECT parent_id from sys_branch)
+            GROUP BY sys_branch_user.user_id
+            ORDER BY branch.parent_id,branch.order_num);
+
+            DROP TEMPORARY TABLE IF EXISTS cbranchTemp;
+            create temporary table cbranchTemp
+            (SELECT sys_branch_user.branch_id,sys_branch_user.user_id,
+            branch.branch_name,branch.order_num,branch.parent_id from sys_branch_user
+            LEFT JOIN
+            (SELECT * from sys_branch where sys_branch.id  not in (SELECT parent_id from sys_branch) ORDER BY parent_id,order_num)branch
+            ON branch.id = sys_branch_user.branch_id
+            WHERE branch.id not in (SELECT parent_id from sys_branch)
+            GROUP BY sys_branch_user.user_id
+            ORDER BY branch.parent_id,branch.order_num);
+
+
+            SELECT ubranchTemp.branch_id as ubranchId,ubranchTemp.branch_name as ubranchName,
+            cbranchTemp.branch_id as cbranchId,cbranchTemp.branch_name as cbranchName,
+            (CASE WHEN ubranchTemp.branch_id = cbranchTemp.branch_id THEN TRUE ELSE FALSE END) as isSameBranch,
+            perf_assess.*,sys_role.role_id,sys_role.role_name,
+            ren_record.duty_id,set_score_duty.duty as dutyName,set_score_kbi_duty.standard_score as dutyStandScore,
+            ren_record.title_lever,set_score_title.job_title as titleName,set_score_kbi_title.standard_score as titleStandScore
+            -- (CASE WHEN ((ifnull(set_score_kbi_duty.standard_score, 0) - ifnull(set_score_kbi_title.standard_score, 0)) > 0
+            -- THEN set_score_kbi_duty.standard_score ELSE set_score_kbi_title.standard_score END) as kbiStandardScore
+            from perf_assess
+
+
+            LEFT JOIN ubranchTemp on ubranchTemp.user_id = perf_assess.user_id
+            LEFT JOIN cbranchTemp on cbranchTemp.user_id = perf_assess.check_user_id
+            LEFT JOIN sys_user_role on sys_user_role.user_id = perf_assess.check_user_id
+            LEFT JOIN sys_role on sys_role.role_id = sys_user_role.role_id
+
+            LEFT JOIN ren_record on ren_record.user_id = perf_assess.check_user_id
+            LEFT JOIN set_score_kbi_duty on set_score_kbi_duty.duty_id = ren_record.duty_id
+            LEFT JOIN set_score_duty on set_score_kbi_duty.duty_id = set_score_duty.id
+            LEFT JOIN set_score_kbi_title on set_score_kbi_title.title_id = ren_record.title_lever
+            LEFT JOIN set_score_title on set_score_title.id = ren_record.title_lever
+
+            where perf_assess.year = '${year}' and perf_assess.month = '${month}'
+            ORDER BY sys_role.role_id,perf_assess.check_user_id,ubranchId,perf_assess.user_id,perf_assess.kbi_id
+    </select>
+
+</mapper>

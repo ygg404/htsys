@@ -52,7 +52,6 @@ public class BranchController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("set:branch:list")
     public R list(){
         List<BranchVoEntity> list = branchVoService.getBranchList();
 

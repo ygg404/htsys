@@ -49,6 +49,10 @@ public class BranchVoEntity implements Serializable {
      * 成员列表(带档案)
      */
     private List<RenRecordVoEntity> recordVoList;
+    /**
+     * 子类工作组
+     */
+    private List<BranchVoEntity> childList;
 
     /**
      * 获取：部门Id
@@ -130,4 +134,12 @@ public class BranchVoEntity implements Serializable {
      *设置： 成员列表（带档案）
      */
     public void setRecordVoList(List<RenRecordVoEntity> recordVoList) { this.recordVoList = recordVoList;}
+    /**
+     * 获取： 子类工作组
+     */
+    public List<BranchVoEntity> getChildList() { return this.childList;}
+    /**
+     *设置： 子类工作组
+     */
+    public void setChildList(List<BranchVoEntity> list) {this.childList = list;}
 }

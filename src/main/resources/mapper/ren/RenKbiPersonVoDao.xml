@@ -14,14 +14,25 @@
     </resultMap>
 
     <select id="getKbiPersonVoList" resultMap="renKbiPersonVoMap">
-            SELECT sys_user.user_id,sys_user.username,
-                        (case WHEN person.user_id IS NULL THEN 0 ELSE 1 END) as isAttend
+            SELECT sys_user.user_id,sys_user.username,userRole.role_id,
+                        (case WHEN person.user_id IS NULL THEN 0 ELSE 1 END) as isAttend,
+                        branch.branch_id,branch.order_num,branch.parent_id
              from sys_user
-            LEFT JOIN (SELECT ren_kbi_person.* from ren_kbi_person
-            where ren_kbi_person.year = '${year}' and ren_kbi_person.month = '${month}') person
+            LEFT JOIN (SELECT ren_kbi_person.* from ren_kbi_person where ren_kbi_person.year = '${year}' and ren_kbi_person.month = '${month}') person
             on person.user_id = sys_user.user_id
-            where sys_user.status = 1
-            ORDER BY sys_user.user_id
+            LEFT JOIN (select * FROM sys_user_role WHERE role_id != 1 GROUP BY user_id ORDER BY user_id) userRole
+            on userRole.user_id =  sys_user.user_id
+            LEFT JOIN (SELECT sys_branch_user.branch_id,sys_branch_user.user_id,
+                       branch.branch_name,branch.order_num,branch.parent_id from sys_branch_user
+                       LEFT JOIN
+                       (SELECT * from sys_branch where sys_branch.id  not in (SELECT parent_id from sys_branch) ORDER BY parent_id,order_num)branch
+                       ON branch.id = sys_branch_user.branch_id
+                       WHERE branch.id not in (SELECT parent_id from sys_branch)
+                       ORDER BY branch.parent_id,branch.order_num) branch on branch.user_id = sys_user.user_id
+
+            where sys_user.status = 1 and userRole.role_id is NOT null
+            GROUP BY sys_user.user_id
+            ORDER BY branch.parent_id,branch.order_num,sys_user.user_id
     </select>
 
 </mapper>

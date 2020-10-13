@@ -3,7 +3,11 @@ package io.renren.modules.ren.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import io.renren.common.utils.MapUtils;
+import io.renren.modules.sys.entity.SysUserRoleEntity;
+import io.renren.modules.sys.service.SysUserRoleService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
@@ -19,6 +23,9 @@ import io.renren.modules.ren.service.RenKbiPersonService;
 
 @Service("renKbiPersonService")
 public class RenKbiPersonServiceImpl extends ServiceImpl<RenKbiPersonDao, RenKbiPersonEntity> implements RenKbiPersonService {
+
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
