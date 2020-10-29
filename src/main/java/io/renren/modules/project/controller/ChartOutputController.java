@@ -38,12 +38,11 @@ public class ChartOutputController {
     private ChartOutputService chartOutputService;
 
     /**
-     * 列表
+     * 作业/质检 产值列表
      */
-//    @SysLog("查看产值统计表")
     @RequestMapping("/list")
     @RequiresPermissions("project:chartoutput")
-    public R list(@RequestParam Map<String, Object> params){
+    public R wlist(@RequestParam Map<String, Object> params){
         List<ChartOutputVoEntity> list = chartOutputService.queryList(params);
 
         return R.ok().put("list", list);

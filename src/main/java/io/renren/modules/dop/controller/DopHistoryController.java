@@ -1,9 +1,8 @@
 package io.renren.modules.dop.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
+import io.renren.common.utils.UuidUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +19,7 @@ import io.renren.common.utils.R;
 
 
 /**
- * 仪器租赁情况表
+ * 仪器租借情况表
  *
  * @author ygg
  * @date 2020-09-28 10:38:16
@@ -67,6 +66,8 @@ public class DopHistoryController {
     @RequestMapping("/save")
     @RequiresPermissions("dop:history:save")
     public R save(@RequestBody DopHistoryEntity dopHistory){
+        dopHistory.setCreateTime(new Date());
+        dopHistory.setProcessId(UuidUtil.getShortUUID());
 		dopHistoryService.save(dopHistory);
 
         return R.ok();
@@ -93,5 +94,6 @@ public class DopHistoryController {
 
         return R.ok();
     }
+
 
 }

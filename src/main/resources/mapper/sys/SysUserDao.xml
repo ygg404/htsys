@@ -38,7 +38,7 @@
 	</select>
 
 	<!-- 查询用户列表 -->
-	<select id="queryUserList" resultMap="userMap" parameterType="java.lang.Long">
+		<select id="queryUserList" resultMap="userMap" parameterType="java.lang.Long">
 		SELECT u.*, r.role_id from sys_user u
 		left join sys_user_role r on u.user_id = r.user_id
 		<if test="roleId != 0">

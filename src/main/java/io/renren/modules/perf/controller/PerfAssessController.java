@@ -38,7 +38,6 @@ public class PerfAssessController {
      * 列表
      */
     @RequestMapping("/list")
-//    @RequiresPermissions("perf:access:list")
     public R list(@RequestParam Map<String, Object> params){
         List<PerfAssessEntity> list = perfAccessService.queryList(params);
 
@@ -49,7 +48,6 @@ public class PerfAssessController {
      * 各岗位中各成员的年度评分列表
      */
     @RequestMapping("/volist")
-//    @RequiresPermissions("perf:access:list")
     public R volist(@RequestParam Map<String, Object> params){
         List<PerfAssessVoEntity> list = perfAssessVoService.queryPerfAccessVoList(params);
         boolean isPost = perfAssessVoService.queryCountPerfAccess(params) > 0L ? true:false;

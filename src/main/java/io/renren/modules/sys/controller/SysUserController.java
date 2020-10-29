@@ -3,6 +3,7 @@ package io.renren.modules.sys.controller;
 import java.util.List;
 import java.util.Map;
 
+import io.renren.common.utils.CacheManager;
 import io.renren.modules.set.entity.UserGroupEntity;
 import io.renren.modules.set.entity.WorkGroupEntity;
 import io.renren.modules.set.service.BranchUserService;
@@ -195,5 +196,14 @@ public class SysUserController extends AbstractController {
 	public R getAllUserList(){
 		List<UserVoEntity> list = sysUserService.queryAllUserList();
 		return R.ok().put("list" , list);
+	}
+
+	/**
+	 * 根据角色Id 获取用户列表
+	 */
+	@GetMapping("/getUserList/{roleId}")
+	public R getUserList(@PathVariable("roleId") Long roleId) {
+		List<UserVoEntity> list = sysUserService.getUserList(roleId);
+		return R.ok().put("list",list);
 	}
 }

@@ -13,6 +13,8 @@
         <result property="groupName" column="groupName"/>
         <result property="projectOutput" column="project_output"/>
         <result property="projectCharge" column="project_charge"/>
+        <result property="qualityUseraccount" column="quality_useraccount"/>
+        <result property="qualityUserName" column="qualityUserName"/>
         <result property="projectActuallyOutput" column="project_actually_output"/>
         <result property="projectBegunDateTime" column="project_begun_date_time"/>
         <result property="wFinishDateTime" column="wFinishDateTime"/>
@@ -24,17 +26,19 @@
     <select id="getChartOutputVoList"  resultMap="chartOutputVoMap">
         select project.project_no ,project.project_name,project.project_start_date_time,
         project_group.group_id,work_group.name AS groupName,project_plan.project_charge,
+        check_quality.quality_useraccount,sys_user.username as qualityUserName,
         project_plan.project_output,project_group.project_actually_output,
         project_plan.project_begun_date_time,project_work.finish_date_time as wFinishDateTime,
         check_quality.finish_date_time as qFinishDateTime,check_quality.cut_off_time,
         project_work.project_status
         from project_group
         LEFT JOIN project on project_group.project_no = project.project_no
-        left join project_plan on project_plan.project_no = project.project_no
-        left join project_work on project_work.project_no = project.project_no
+        LEFT JOIN project_plan on project_plan.project_no = project.project_no
+        LEFT JOIN project_work on project_work.project_no = project.project_no
         LEFT JOIN work_group on work_group.id = project_group.group_id
-        left join check_quality on check_quality.project_no = project.project_no
-        left join project_situation on project_situation.project_no = project.project_no
+        LEFT JOIN check_quality on check_quality.project_no = project.project_no
+        LEFT JOIN project_situation on project_situation.project_no = project.project_no
+        LEFT JOIN sys_user on sys_user.useraccount = check_quality.quality_useraccount
         where project.p_stage = 1 and project_work.project_status = 0
         and project_situation.is_output = 1
 
@@ -48,6 +52,9 @@
             and check_quality.cut_off_time &lt; '${endDate}'
         </if>
 
-        ORDER BY work_group.p_id,work_group.order_num asc,project.id DESC;
+        ORDER BY
+        <if test="sidx != '' and sidx != null and sidx == 'work'">work_group.p_id,work_group.order_num</if>
+        <if test="sidx != '' and sidx != null and sidx == 'quality'">check_quality.quality_useraccount</if>
+         asc,project.id DESC;
     </select>
 </mapper>

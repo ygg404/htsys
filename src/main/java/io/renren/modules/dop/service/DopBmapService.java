@@ -24,5 +24,7 @@ public interface DopBmapService extends IService<DopBmapEntity> {
     void update(DopBmapEntity entity);
 
     void deleteBatch(Long[] Ids);
+
+    void deleteByProId(Long projectId);
 }
 

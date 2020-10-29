@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dop.dao.DopDeviceVoDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.dop.vo.DeviceVoEntity" id="DeviceVoMap">
+        <result property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="factoryNum" column="factory_num"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="devStation" column="dev_station"/>
+        <result property="borrowerId" column="borrower_id"/>
+        <result property="borrowerName" column="borrower_name"/>
+        <result property="lenderId" column="lender_id"/>
+        <result property="lenderName" column="lender_name"/>
+        <result property="lendDays" column="lend_days"/>
+        <result property="rentStatus" column="rent_status"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="processId" column="process_id"/>
+    </resultMap>
+
+    <select id="getDeviceLendList" resultMap="DeviceVoMap">
+        SELECT dop_device.device_name,dop_device.factory_num,dop_device.dev_station,
+              dop_history.* from dop_history
+        LEFT JOIN dop_device on dop_device.id = dop_history.device_id
+         where process_id  IN (
+        SELECT process_id from (
+        SELECT  process_id FROM(
+        SELECT process_id,rent_status from dop_history
+        WHERE device_id = #{deviceId}
+        GROUP BY process_id
+        ORDER BY create_time DESC ,process_id DESC,rent_status ASC
+        )a WHERE rent_status != 0 LIMIT 1) b )
+    </select>
+
+</mapper>

@@ -3,6 +3,7 @@ package io.renren.modules.dop.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import io.renren.common.utils.StringUtil;
 import io.renren.modules.dop.dao.DopBmapDao;
 import io.renren.modules.dop.entity.DopBmapEntity;
 import io.renren.modules.dop.service.DopBmapService;
@@ -38,10 +39,13 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
     @Override
     public List<DopBmapEntity> queryList(Map<String, Object> params){
         // 获取经纬度范围
-        String minlng = params.get("minlng").toString();
-        String minlat = params.get("minlat").toString();
-        String maxlng = params.get("maxlng").toString();
-        String maxlat = params.get("maxlat").toString();
+        String minlng = (String) params.get("minlng");
+        String minlat = (String) params.get("minlat");
+        String maxlng = (String) params.get("maxlng");
+        String maxlat = (String) params.get("maxlat");
+        // 项目编号大小
+        String maxNo = (String) params.get("maxNo");
+        String minNo = (String) params.get("minNo");
 
         List<DopBmapEntity> list = this.selectList(
                 new EntityWrapper<DopBmapEntity>()
@@ -49,6 +53,9 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                         .and(StringUtils.isNotBlank(maxlng) , "lng<={0}",maxlng)
                         .and(StringUtils.isNotBlank(minlat) , "lat>={0}",minlat)
                         .and(StringUtils.isNotBlank(maxlat) , "lat<={0}",maxlat)
+                        .and(StringUtils.isNotBlank(minNo), "project_id>={0}",minNo)
+                        .and(StringUtils.isNotBlank(maxNo), "project_id<={0}",maxNo)
+                .orderBy("project_id",false)
         );
         return list;
     }
@@ -62,6 +69,12 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
         entity.setCreateUserName(createUser.getUsername());
         entity.setCreateTime(new Date());
         this.insert(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByProId(Long projectId) {
+        this.delete(new EntityWrapper<DopBmapEntity>().eq("project_id",projectId));
     }
 
     @Override

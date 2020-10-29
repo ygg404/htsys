@@ -108,6 +108,19 @@ public class PerfVoEntity implements Serializable {
      */
     private Long kbiStandScore;
     /**
+     * 加减分总分
+     */
+    private Long extraAllScore;
+    /**
+     * 加减分最终得分
+     */
+    private Float extraFinalScore;
+    /**
+     * 效能最终得分
+     */
+    private Long kbiFinalScore;
+
+    /**
      * 考核人对应的评分列表
      */
     private List<PerfVoEntity> perfList;
@@ -316,6 +329,30 @@ public class PerfVoEntity implements Serializable {
      * 设置：效能基准分
      */
     public void setKbiStandScore (Long kbiStandScore){this.kbiStandScore = kbiStandScore;};
+    /**
+     * 设置：加减分总分
+     */
+    public void setExtraAllScore (Long extraAllScore) {this.extraAllScore = extraAllScore;}
+    /**
+     * 获取：加减分总分
+     */
+    public Long getExtraAllScore () { return this.extraAllScore;}
+    /**
+     * 设置：加减分最终得分
+     */
+    public void setExtraFinalScore (Float extraFinalScore) {this.extraFinalScore = extraFinalScore;}
+    /**
+     * 获取：加减分最终得分
+     */
+    public Float getExtraFinalScore () {return this.extraFinalScore;}
+    /**
+     * 设置： 效能最终得分
+     */
+    public void setKbiFinalScore (Long kbiFinalScore) {this.kbiFinalScore = kbiFinalScore;}
+    /**
+     * 获取：效能最终得分
+     */
+    public Long getKbiFinalScore () {return this.kbiFinalScore;}
     /**
      * 获取：考核人对应的评分列表
      */

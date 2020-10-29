@@ -74,6 +74,10 @@ public class DopBmapEntity implements Serializable {
 	 * 修改时间
 	 */
 	private Date modifyTime;
+	/**
+	 * 项目ID
+	 */
+	private Long projectId;
 
 	/**
 	* 获取：自增Id
@@ -187,4 +191,12 @@ public class DopBmapEntity implements Serializable {
 	 * 设置：修改时间
 	 */
 	public void setModifyTime (Date modifyTime){this.modifyTime = modifyTime;};
+	/**
+	 * 获取：项目ID
+	 */
+	public Long getProjectId () {return this.projectId;}
+	/**
+	 * 设置：项目ID
+	 */
+	public void setProjectId(Long projectId) {this.projectId = projectId;}
 }

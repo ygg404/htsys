@@ -117,8 +117,19 @@ public class PerfVoServiceImpl extends ServiceImpl<PerfVoDao, PerfVoEntity> impl
         //声明一个工作簿
         HSSFWorkbook workbook = new HSSFWorkbook();
 
+        // 计算每个成员的加减得分总分
+        Long extraAllScore;
+        for(PerfVoEntity voEntity : pList) {
+            extraAllScore = 0L;
+            for ( PerfExtraScoringEntity extraEntity : voEntity.getExtraList()) {
+                extraAllScore += extraEntity.getExtraNum();
+            }
+            voEntity.setExtraAllScore(extraAllScore);
+        }
         // 每个被考核人 设置一个表格
         for(PerfVoEntity voEntity : pList) {
+            // 统计加减分
+            Long extraScore = 0L;
             HSSFSheet sheet = workbook.createSheet(voEntity.getCheckUserName());
             int rowIndex = 0;
             //设置表格列宽度和列数
@@ -187,12 +198,23 @@ public class PerfVoServiceImpl extends ServiceImpl<PerfVoDao, PerfVoEntity> impl
             userId = 0L;
             HSSFRow eRow = sheet.createRow(rowIndex);
             float kbiScore = 0; // 效能总分
+            boolean isGudier = false;
+            boolean isSameBranch = false;
+            List<ScoreItem> scoreItemlist = new ArrayList<>();
             for ( PerfVoEntity pEntity: voEntity.getPerfList() ) {
                 if ( userId != pEntity.getUserId() ) {
+                    ScoreItem sItem = new ScoreItem();
+                    sItem.setScore(kbiScore);
+                    sItem.setIsGuider(isGudier);
+                    sItem.setIsSameBranch(isSameBranch);
+                    scoreItemlist.add(sItem);
+
                     colIndex = 0;
                     kbiScore = 0;
                     eRow = sheet.createRow(rowIndex++);
                     userId = pEntity.getUserId();
+                    isGudier = (pEntity.getIsGuider() == 1 ? true : false);
+                    isSameBranch = (pEntity.getIsSameBranch() == 1 ? true : false);
                     HSSFCell cell = eRow.createCell(11);
                     cell.setCellValue(new HSSFRichTextString(pEntity.getIsGuider() == 1 ? "是":"否"));
                     cell = eRow.createCell(12);
@@ -226,22 +248,130 @@ public class PerfVoServiceImpl extends ServiceImpl<PerfVoDao, PerfVoEntity> impl
                 cell = eRow.createCell(3);
                 cell.setCellValue(new HSSFRichTextString(extraEntity.getStandard()));
                 sheet.addMergedRegion(new CellRangeAddress(rowIndex - 1, rowIndex - 1, 3, 4));
+                // 默认 加减分的列表 分数为0
+                HSSFCellStyle fontStyle = workbook.createCellStyle();
+                HSSFFont ffont = workbook.createFont();
+                ffont.setColor(HSSFColor.RED.index);
+                fontStyle.setFont(ffont);
+                cell = eRow.createCell(5);
+                cell.setCellValue(new HSSFRichTextString("0"));
+                cell.setCellStyle(fontStyle);
+
                 for(PerfExtraScoringEntity score : voEntity.getExtraList()) {
                     if (score.getExtraId() == extraEntity.getId()) {
-                        HSSFCellStyle fontStyle = workbook.createCellStyle();
-                        HSSFFont ffont = workbook.createFont();
-                        ffont.setColor(HSSFColor.RED.index);
-                        fontStyle.setFont(ffont);
+                        extraScore += score.getExtraNum();
+                        voEntity.setExtraAllScore( extraScore);
                         cell = eRow.createCell(5);
                         cell.setCellValue(new HSSFRichTextString(score.getExtraNum().toString()));
                         cell.setCellStyle(fontStyle);
                         break;
                     }
                 }
+                voEntity.setExtraAllScore(extraScore);
             }
+            // 计算最终的加减分
+            // 获取同一部门的最高加减分数
+            Long maxExtra = voEntity.getExtraAllScore();
+            for (PerfVoEntity vEntity : pList) {
+                if (vEntity.getCbranchId() == voEntity.getCbranchId() && vEntity.getExtraAllScore() > maxExtra) {
+                    maxExtra = vEntity.getExtraAllScore();
+                }
+            }
+            //个人加减分=10+个人加减分之和 （用此公式的目的是避免出现负分情况）
+            // 加减得分 = 个人加减分 / 部门加减最高分 * 10 * 0.9
+            Float finalExtra = (float)(voEntity.getExtraAllScore() + 10) / (float)(maxExtra + 10) * 10f * 0.9f;
+            voEntity.setExtraFinalScore(finalExtra);
+            // 统计 最终效能分
+            Float kbiScoreOther = 0f ;  // 其他成员总分数
+            int kbiOhterNum = 0;
+            Float kbiScoreGuider = 0f;  // 领导成员总分数
+            int kbiGuiderNum = 0;
+            Float kbiScoreBranch = 0f; // 同部门成员总分数
+            int kbiBranchNum = 0;
+            int num = 0;
+            for (ScoreItem scoreItem: scoreItemlist) {
+                if (scoreItem.getIsGuider()) {
+                    kbiScoreGuider += scoreItem.getScore();
+                    kbiGuiderNum ++;
+                }
+                if (scoreItem.getIsSameBranch()) {
+                    kbiScoreBranch += scoreItem.getScore();
+                    kbiBranchNum ++;
+                }
+                if ( !(scoreItem.getIsGuider() && scoreItem.getIsSameBranch()) && num ++ > 0) {
+                    kbiScoreOther += scoreItem.getScore();
+                    kbiOhterNum ++;
+                }
+            }
+            kbiScore = (kbiOhterNum > 0 ? kbiScoreOther * 0.2f / kbiOhterNum : 0f)
+                                +  (kbiGuiderNum > 0 ? kbiScoreGuider * 0.4f / kbiGuiderNum : 0f)
+                                + (kbiBranchNum > 0 ? kbiScoreBranch * 0.4f / kbiBranchNum : 0f) ;
+            voEntity.setKbiScore((long)kbiScore);
+            // 计算最终的效能分数
+            Long finalKbiScore = (long) Math.round( (int)( ( 1 + (voEntity.getKbiScore() * 0.9f + voEntity.getExtraFinalScore() - 75f ) *0.6f / 75f) * 100 ) * voEntity.getKbiStandScore() / 100f );
+            voEntity.setKbiFinalScore(finalKbiScore);
+            // 合计项
+            rowIndex += 1;
+            HSSFRow fRow = sheet.createRow(rowIndex++);
+            fRow.setHeight((short) 400);
+            hcell = fRow.createCell(0);
+            hcell.setCellValue(new HSSFRichTextString("合计项"));
+            hcell.setCellStyle(tstyle);
+            fRow = sheet.createRow(rowIndex++);
+            HSSFCell cell = fRow.createCell(0);
+            cell.setCellValue(new HSSFRichTextString("效能评分"));
+            cell.setCellStyle(tstyle);
+            cell = fRow.createCell(1);
+            cell.setCellValue(new HSSFRichTextString("加减得分"));
+            cell.setCellStyle(tstyle);
+            cell = fRow.createCell(2);
+            cell.setCellValue(new HSSFRichTextString("效能基准分"));
+            cell.setCellStyle(tstyle);
+            cell = fRow.createCell(3);
+            cell.setCellValue(new HSSFRichTextString("最终效能得分"));
+            cell.setCellStyle(tstyle);
+            fRow = sheet.createRow(rowIndex++);
+            cell = fRow.createCell(0);
+            cell.setCellValue(new HSSFRichTextString(voEntity.getKbiScore().toString()));
+            cell = fRow.createCell(1);
+            cell.setCellValue(new HSSFRichTextString(voEntity.getExtraFinalScore().toString()));
+            cell = fRow.createCell(2);
+            cell.setCellValue(new HSSFRichTextString(voEntity.getKbiStandScore().toString()));
+            cell = fRow.createCell(3);
+            cell.setCellValue(new HSSFRichTextString(voEntity.getKbiFinalScore().toString()));
         }
+
 
         return workbook;
 
     }
+
+    // 定义分数项的类
+    public class ScoreItem {
+        /**
+         * 分数
+         */
+        private float score;
+        /**
+         * 是否领导
+         */
+        private boolean isGuider;
+        /**
+         *是否同部门
+         */
+        private boolean isSameBranch;
+
+        public void setScore(float score) {this.score = score;}
+
+        public float getScore() {return this.score;}
+
+        public void setIsGuider(boolean isGuider) {this.isGuider = isGuider;}
+
+        public boolean getIsGuider() {return this.isGuider;}
+
+        public void setIsSameBranch(boolean isSameBranch) {this.isSameBranch = isSameBranch;}
+
+        public boolean getIsSameBranch() {return this.isSameBranch;}
+    }
+
 }

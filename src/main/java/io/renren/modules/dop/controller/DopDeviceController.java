@@ -8,6 +8,8 @@ import java.util.List;
 
 import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.FileUtil;
+import io.renren.modules.dop.service.DopDeviceVoService;
+import io.renren.modules.dop.vo.DeviceVoEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,9 @@ public class DopDeviceController {
     @Autowired
     private DopDeviceService dopDeviceService;
 
+    @Autowired
+    private DopDeviceVoService dopDeviceVoService;
+
     /**
      * 分页查询
      */
@@ -60,6 +65,17 @@ public class DopDeviceController {
 
         return R.ok().put("list", list);
     }
+
+    /**
+     * 获取仪器的最新的租借情况
+     */
+    @RequestMapping("/list/{deviceId}")
+    public R list(@PathVariable("deviceId") Long deviceId){
+        List<DeviceVoEntity> list = dopDeviceVoService.getDeviceLendList(deviceId);
+
+        return R.ok().put("list", list);
+    }
+
 
     /**
      * 信息

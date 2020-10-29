@@ -48,7 +48,7 @@ public class DeviceVoEntity implements Serializable {
      */
     private Long lendDays;
     /**
-     * 出借情况（1-已出借；2-已归还）
+     * 出借情况（0-撤销申请,1-申请出借,2-批准出借,3-归还仪器, 4-确定归还）
      */
     private Long rentStatus;
     /**
@@ -59,6 +59,10 @@ public class DeviceVoEntity implements Serializable {
      * 创建时间
      */
     private Date createTime;
+    /**
+     * 流程ID
+     */
+    private String processId;
 
     /**
      * 获取：自增Id
@@ -164,4 +168,12 @@ public class DeviceVoEntity implements Serializable {
      * 设置：创建时间
      */
     public void setCreateTime (Date createTime){this.createTime = createTime;};
+    /**
+     * 获取：流程ID
+     */
+    public String getProcessId() {return this.processId;}
+    /**
+     * 设置： 流程ID
+     */
+    public void setProcessId(String processId) {this.processId = processId;}
 }

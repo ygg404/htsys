@@ -48,7 +48,7 @@ public class PerfExtraScoringController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("perf:perfextrascoring:info")
+    @RequiresPermissions("perf:extrascoring:info")
     public R info(@PathVariable("id") Long id){
 		PerfExtraScoringEntity perfExtraScoring = perfExtraScoringService.selectById(id);
 

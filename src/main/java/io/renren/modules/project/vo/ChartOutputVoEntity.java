@@ -40,6 +40,14 @@ public class ChartOutputVoEntity implements Serializable {
      */
     private String projectCharge;
     /**
+     * 质检用户
+     */
+    private String qualityUseraccount;
+    /**
+     * 质检用户名
+     */
+    private String qualityUserName;
+    /**
      * 项目实际产值
      */
     private Float projectActuallyOutput;
@@ -116,6 +124,22 @@ public class ChartOutputVoEntity implements Serializable {
      * 设置：项目负责人
      */
     public void setProjectCharge (String projectCharge){this.projectCharge = projectCharge;};
+    /**
+     * 获取：质检员账号
+     */
+    public String getQualityUseraccount() { return this.qualityUseraccount;}
+    /**
+     * 设置：质检员账号
+     */
+    public void setQualityUseraccount(String qualityUseraccount) { this.qualityUseraccount = qualityUseraccount;}
+    /**
+     * 获取：质检员姓名
+     */
+    public String getQualityUserName() { return this.qualityUserName;}
+    /**
+     * 设置：质检员姓名
+     */
+    public void setQualityUserName(String qualityUserName) { this.qualityUserName = qualityUserName;}
     /**
      * 获取：项目启动时间
      */

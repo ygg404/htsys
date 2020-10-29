@@ -43,8 +43,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	@Autowired
 	private SysRoleService sysRoleService;
 	@Autowired
-	private SysUserDao sysUserDao;
-	@Autowired
 	private WorkGroupService workGroupService;
 	@Autowired
 	private UserGroupService userGroupService;
@@ -209,8 +207,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
 	@Override
 	public List<UserVoEntity> getUserList(Long roleId){
-		List<UserVoEntity> businessList = sysUserDao.queryUserList(roleId);
-		return  businessList;
+		List<UserVoEntity> userList = this.baseMapper.queryUserList(roleId);
+		return  userList;
 	}
 
 	/**
@@ -218,6 +216,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	 */
 	@Override
 	public List<UserVoEntity> queryAllUserList(){
-		return sysUserDao.queryAllList();
+		return this.baseMapper.queryAllList();
 	}
 }
