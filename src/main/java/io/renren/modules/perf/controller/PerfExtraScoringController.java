@@ -79,7 +79,7 @@ public class PerfExtraScoringController {
             return R.error("提交日期不能为空");
         }
         perfExtraScoringService.deleteByParms(perfExtraVoEntity);
-        perfExtraScoringService.insertBatch(perfExtraVoEntity.getScoreList());
+        if (perfExtraVoEntity.getScoreList().size() > 0) perfExtraScoringService.insertBatch(perfExtraVoEntity.getScoreList());
 
         return R.ok();
     }
