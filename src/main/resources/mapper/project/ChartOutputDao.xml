@@ -41,8 +41,11 @@
         LEFT JOIN sys_user on sys_user.useraccount = check_quality.quality_useraccount
         where project.p_stage = 1 and project_work.project_status = 0
         and project_situation.is_output = 1
+        <if test="sidx != '' and sidx != null and sidx == 'quality'">
+            and project_situation.is_check = 1
+        </if>
 
-        <if test="groupId != '' and groupId != null">
+        <if test="groupId != '' and groupId != null and sidx != 'quality'">
             and work_group.id = #{groupId}
         </if>
         <if test="startDate != null and startDate != ''">

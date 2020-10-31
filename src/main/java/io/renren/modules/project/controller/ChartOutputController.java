@@ -49,7 +49,7 @@ public class ChartOutputController {
     }
 
     /**
-     * 导出产值统计表Excel
+     * 导出产值统计表Excel (作业/质检)
      */
     @RequestMapping("/exportExcel")
     public R exportExcel(HttpServletResponse response, @RequestParam Map<String, Object> params){
@@ -62,6 +62,7 @@ public class ChartOutputController {
 
             String startDate = params.get("startDate").toString();
             String endDate = params.get("endDate").toString();
+            String sidx = params.get("sidx").toString();
             // 标题名称
             Calendar sDate = Calendar.getInstance();
             Calendar eDate = Calendar.getInstance();
@@ -75,7 +76,7 @@ public class ChartOutputController {
                 eDate.set(Calendar.DAY_OF_MONTH, 1);
                 title += "至" + eDate.get(Calendar.YEAR) + "年" + String.valueOf( eDate.get(Calendar.MONTH ) + 1) + "月";
             }
-            title += "产值统计表";
+            title +=  "产值统计表"  + (sidx.equals("work") ? "(作业组)" : "(质检组)");
 
 
             //声明一个工作簿
@@ -134,7 +135,7 @@ public class ChartOutputController {
             tcell.setCellValue(new HSSFRichTextString("项目启动时间"));
             tcell.setCellStyle(tstyle);
             tcell = tRow.createCell(3);
-            tcell.setCellValue(new HSSFRichTextString("作业完成时间"));
+            tcell.setCellValue(new HSSFRichTextString(sidx.equals("work") ?"作业完成时间": "质检完成时间"));
             tcell.setCellStyle(tstyle);
             tcell = tRow.createCell(4);
             tcell.setCellValue(new HSSFRichTextString("实际产值"));
@@ -153,38 +154,45 @@ public class ChartOutputController {
 
             Long groupId = 0L; //初始工作组Id
             String groupNameTemp = ""; // 临时工作组
+            String qualityUsecount = ""; // 质检人员账号
+            String qualityUserName = ""; // 质检人员姓名
             int size = 0;
             float output = 0;
             for (ChartOutputVoEntity voEntity : list) {
-                if (voEntity.getgroupId() != groupId) {
+                // 工作组和质检组的报告
+                if ( (voEntity.getgroupId() != groupId && sidx.equals("work")) ||
+                        ( ! (voEntity.getQualityUseraccount() != null && voEntity.getQualityUseraccount().equals(qualityUsecount) )  && !sidx.equals("work")) ) {
                     groupId = voEntity.getgroupId();
+                    qualityUsecount = voEntity.getQualityUseraccount();
                     if (size == 0 && output == 0) {
                         // 写入工作组名
                         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 4));
                         HSSFRow gRow = sheet.createRow(rowIndex++);
                         gRow.setHeight((short) 300);
                         HSSFCell gcell = gRow.createCell(0);
-                        gcell.setCellValue(new HSSFRichTextString(voEntity.getgroupName()));
+                        gcell.setCellValue(new HSSFRichTextString( sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUserName()));
                         gcell.setCellStyle(gstyle);
                         groupNameTemp = voEntity.getgroupName();
+                        qualityUserName = voEntity.getQualityUserName();
                     } else {
                         // 写入合计产值
                         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 3));
                         HSSFRow outRow = sheet.createRow(rowIndex++);
                         outRow.setHeight((short) 300);
                         HSSFCell outcell;
-                        outcell = outRow.createCell(0);outcell.setCellValue(new HSSFRichTextString( groupNameTemp + ": 合计" + String.valueOf(size) + "个项目"));outcell.setCellStyle(gstyle);
+                        outcell = outRow.createCell(0);outcell.setCellValue(new HSSFRichTextString( (sidx.equals("work") ? groupNameTemp :qualityUserName)  + ": 合计" + String.valueOf(size) + "个项目"));outcell.setCellStyle(gstyle);
                         outcell = outRow.createCell(4);outcell.setCellValue(new HSSFRichTextString( decimalFormat.format(output) ));outcell.setCellStyle(gstyle);
                         output = 0;
                         size = 0;
                         groupId = voEntity.getgroupId();
                         groupNameTemp = voEntity.getgroupName();
+                        qualityUserName = voEntity.getQualityUserName();
                         // 写入工作组名
                         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 4));
                         HSSFRow gRow = sheet.createRow(rowIndex++);
                         gRow.setHeight((short) 300);
                         HSSFCell gcell = gRow.createCell(0);
-                        gcell.setCellValue(new HSSFRichTextString(voEntity.getgroupName()));
+                        gcell.setCellValue(new HSSFRichTextString(sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUserName()));
                         gcell.setCellStyle(gstyle);
 
                     }
@@ -200,18 +208,19 @@ public class ChartOutputController {
                 procell = proRow.createCell(2);
                 procell.setCellValue(new HSSFRichTextString( voEntity.getprojectStartDateTime() == null? "":formatter.format(voEntity.getprojectStartDateTime())));
                 procell = proRow.createCell(3);
-                procell.setCellValue(new HSSFRichTextString( voEntity.getwFinishDateTime() == null? "":formatter.format(voEntity.getwFinishDateTime())));
+                procell.setCellValue(new HSSFRichTextString((sidx.equals("work") ? ( voEntity.getwFinishDateTime() == null? "":formatter.format(voEntity.getwFinishDateTime()))
+                : ( voEntity.getqFinishDateTime() == null? "":formatter.format(voEntity.getqFinishDateTime())) )));
                 procell = proRow.createCell(4);
                 procell.setCellValue(new HSSFRichTextString(voEntity.getprojectActuallyOutput().toString()));
 
             }
-            if(output != 0 && groupNameTemp != ""){
+            if(output != 0 && (sidx.equals("work") ? !groupNameTemp.equals("") :  !qualityUserName.equals("")) ){
                 // 写入合计产值
                 sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 3));
                 HSSFRow outRow = sheet.createRow(rowIndex++);
                 outRow.setHeight((short) 300);
                 HSSFCell outcell;
-                outcell = outRow.createCell(0);outcell.setCellValue(new HSSFRichTextString( groupNameTemp + ": 合计" + String.valueOf(size) + "个项目"));outcell.setCellStyle(tstyle);
+                outcell = outRow.createCell(0);outcell.setCellValue(new HSSFRichTextString( (sidx.equals("work") ? groupNameTemp : qualityUserName) + ": 合计" + String.valueOf(size) + "个项目"));outcell.setCellStyle(tstyle);
                 outcell = outRow.createCell(4);outcell.setCellValue(new HSSFRichTextString( decimalFormat.format(output) ));outcell.setCellStyle(tstyle);
             }
 
