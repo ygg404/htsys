@@ -57,7 +57,6 @@ public class DopBmapController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("dop:bmap:info")
     public R info(@PathVariable("id") Long id){
 		DopBmapEntity dopBmap = dopBmapService.selectById(id);
 
@@ -92,10 +91,10 @@ public class DopBmapController {
      * 删除
      */
     @SysLog("删除地图标注")
-    @RequestMapping("/delete")
+    @RequestMapping("/delete/{id}")
     @RequiresPermissions("dop:bmap:delete")
-    public R delete(@RequestBody Long[] ids){
-		dopBmapService.deleteBatch(ids);
+    public R delete(@PathVariable("id") Long id){
+        dopBmapService.deleteBatch(new Long[] {id});
 
         return R.ok();
     }

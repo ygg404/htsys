@@ -148,8 +148,8 @@ public class RenSalaryBaseServiceImpl extends ServiceImpl<RenSalaryBaseDao, RenS
                         // 效能分数
                         salaryNewBase.setKbiAuditScore(recordNewVo.getKbiAuditScore());
                         // 没有审定的考核效能分数
-                        Long dutyKbiScore = (long) (recordNewVo.getDutyStandScore() == null ? 0 : recordNewVo.getDutyStandScore());
-                        Long titleKbiScore = (long) (recordNewVo.getTitleStandScore() == null ? 0 : recordNewVo.getTitleStandScore());
+                        Long dutyKbiScore = (long) (recordNewVo.getDutyAssessScore() == null ? 0 : recordNewVo.getDutyAssessScore());
+                        Long titleKbiScore = (long) (recordNewVo.getTitleAssessScore() == null ? 0 : recordNewVo.getTitleAssessScore());
                         // 该成员的转正时间
                         Date fillDate = DateUtils.addDateMonths(recordNewVo.getentryTime(), recordNewVo.gettrialPeriod().intValue());
                         // 判断该成员是否在试用期

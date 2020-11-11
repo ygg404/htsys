@@ -27,10 +27,6 @@ public class DopHistoryEntity implements Serializable {
 	 */
 	private Long deviceId;
 	/**
-	 * 仪器名称
-	 */
-	private String deviceName;
-	/**
 	 * 借物人Id
 	 */
 	private Long borrowerId;
@@ -79,14 +75,6 @@ public class DopHistoryEntity implements Serializable {
 	* 获取：仪器Id
 	*/
 	public Long getDeviceId (){return this.deviceId;};
-	/**
-	 * 获取：仪器名称
-	 */
-	public String getDeviceName (){return this.deviceName;};
-	/**
-	 * 设置：仪器名称
-	 */
-	public void setDeviceName (String deviceName){this.deviceName = deviceName;};
 	/**
 	 * 设置：仪器Id
 	 */

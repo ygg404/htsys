@@ -27,4 +27,11 @@ public interface ProjectArchivesVoDao extends BaseMapper<ProjectArchivesVoEntity
      * @return , Wrapper<ProjectArchivesVoEntity> queryWrapper
      */
     List<ProjectArchivesVoEntity> getArchivesVoList(Page<ProjectArchivesVoEntity> pagination, Map<String, Object> params);
+
+    /**
+     * 查询
+     * @param params
+     * @return
+     */
+    ProjectArchivesVoEntity getArchivesVo(Map<String, Object> params);
 }

@@ -66,10 +66,11 @@ public class DopHistoryController {
     @RequestMapping("/save")
     @RequiresPermissions("dop:history:save")
     public R save(@RequestBody DopHistoryEntity dopHistory){
-        dopHistory.setCreateTime(new Date());
-        dopHistory.setProcessId(UuidUtil.getShortUUID());
-		dopHistoryService.save(dopHistory);
-
+        try {
+            dopHistoryService.save(dopHistory);
+        } catch (Exception ex) {
+            return R.error(ex.getMessage());
+        }
         return R.ok();
     }
 

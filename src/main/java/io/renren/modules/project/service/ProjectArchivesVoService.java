@@ -20,4 +20,11 @@ public interface ProjectArchivesVoService extends IService<ProjectArchivesVoEnti
      * @return
      */
     PageUtils getArchivesVoPage(Map<String, Object> params);
+
+    /**
+     * 项目成果查询
+     * @param params
+     * @return
+     */
+    ProjectArchivesVoEntity getArchivesVo(Map<String, Object> params);
 }

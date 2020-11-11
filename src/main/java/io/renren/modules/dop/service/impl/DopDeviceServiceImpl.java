@@ -35,6 +35,14 @@ public class DopDeviceServiceImpl extends ServiceImpl<DopDeviceDao, DopDeviceEnt
     }
 
     @Override
+    public DopDeviceEntity selectByNum(Map<String, Object> params){
+        String factoryNum = (String)params.get("factoryNum");
+
+        DopDeviceEntity entity = this.selectOne(new EntityWrapper<DopDeviceEntity>().eq("factory_num" , factoryNum));
+        return entity;
+    }
+
+    @Override
     public List<DopDeviceEntity> queryList(Map<String, Object> params){
         List<DopDeviceEntity> list = this.selectList(
                 new EntityWrapper<DopDeviceEntity>()

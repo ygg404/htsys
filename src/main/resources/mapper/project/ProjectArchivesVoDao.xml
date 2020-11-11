@@ -75,4 +75,21 @@
             <otherwise>asc</otherwise>
         </choose>
     </select>
+
+    <select id="getArchivesVo"  resultMap="archivesVoMap" >
+        select project_archives.id,p.project_no,p.project_name,p.project_business,
+        p.project_authorize,p.project_type,p.project_start_date_time,
+        project_plan.project_writer,c.user_name,c.user_phone,
+        project_situation.is_plan,project_situation.is_work,project_situation.is_check,
+        project_situation.is_qauth,project_situation.is_output,project_situation.is_authorize,
+        project_archives.sig_image,project_archives.create_user_id,
+        project_archives.create_user_name,project_archives.create_time
+        from project p
+        LEFT JOIN project_plan  on project_plan.project_no = p.project_no
+        LEFT JOIN project_contract c on c.contract_no = p.contract_no
+        LEFT JOIN project_archives on project_archives.project_no = p.project_no
+        LEFT JOIN project_situation on project_situation.project_no = p.project_no
+        where p.p_stage = 1
+        and p.project_no = '${projectNo}'
+    </select>
 </mapper>

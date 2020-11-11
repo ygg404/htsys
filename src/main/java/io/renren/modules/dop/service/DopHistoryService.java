@@ -19,7 +19,7 @@ public interface DopHistoryService extends IService<DopHistoryEntity> {
 
     List<DopHistoryEntity> queryList(Map<String, Object> params);
 
-    void save(DopHistoryEntity entity);
+    void save(DopHistoryEntity entity) throws Exception;
 
     void update(DopHistoryEntity entity);
 

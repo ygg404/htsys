@@ -3,10 +3,15 @@ package io.renren.modules.dop.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import io.renren.common.utils.UuidUtil;
+import io.renren.modules.dop.entity.DopDeviceEntity;
+import io.renren.modules.dop.service.DopDeviceService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import io.renren.common.utils.PageUtils;
@@ -20,6 +25,9 @@ import io.renren.modules.dop.service.DopHistoryService;
 @Service("dopHistoryService")
 public class DopHistoryServiceImpl extends ServiceImpl<DopHistoryDao, DopHistoryEntity> implements DopHistoryService {
 
+    @Autowired
+    public DopDeviceService dopDeviceService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String deviceId = (String)params.get("deviceId");
@@ -29,7 +37,6 @@ public class DopHistoryServiceImpl extends ServiceImpl<DopHistoryDao, DopHistory
                 new Query<DopHistoryEntity>(params).getPage(),
                 new EntityWrapper<DopHistoryEntity>().eq("device_id", deviceId)
                         .like(StringUtils.isNotBlank(key),"borrower_name", key)
-                        .like(StringUtils.isNotBlank(key),"lender_name", key)
                         .like(StringUtils.isNotBlank(key),"device_name", key)
         );
 
@@ -46,8 +53,38 @@ public class DopHistoryServiceImpl extends ServiceImpl<DopHistoryDao, DopHistory
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(DopHistoryEntity entity) {
-        this.insert(entity);
+    public void save(DopHistoryEntity entity) throws Exception{
+        try {
+            entity.setCreateTime(new Date());
+            DopDeviceEntity deviceEntity = dopDeviceService.selectOne(new EntityWrapper<DopDeviceEntity>().eq("id" , entity.getDeviceId()));
+            switch (entity.getRentStatus().intValue()) {
+                // 申请出借为流程开始，初始化流程ID
+                case 1:
+                    entity.setProcessId(UuidUtil.getShortUUID());
+                    break;
+                // 审批出借
+                case 2:
+                    // 查看仪器是否闲置中
+                    if (deviceEntity.getDevStation() == 0) {
+                        deviceEntity.setDevStation(1L);
+                        dopDeviceService.update(deviceEntity);
+                    } else {
+                        throw new Exception("仪器已经出借中，无法出借！");
+                    }
+                    break;
+                 //确认归还
+                case 4:
+                    deviceEntity.setDevStation(0L);
+                    dopDeviceService.update(deviceEntity);
+                    break;
+                 default:
+                     ;
+            }
+            this.insert(entity);
+
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     @Override

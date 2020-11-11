@@ -77,12 +77,23 @@ public class DopDeviceController {
     }
 
 
+
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
 		DopDeviceEntity dopDevice = dopDeviceService.selectById(id);
+
+        return R.ok().put("dopDevice", dopDevice);
+    }
+
+    /**
+     * 通过出厂编号 获取仪器信息
+     */
+    @RequestMapping("/getInfoByNum")
+    public R getInfoByNum(@RequestParam Map<String, Object> params){
+        DopDeviceEntity dopDevice = dopDeviceService.selectByNum(params);
 
         return R.ok().put("dopDevice", dopDevice);
     }

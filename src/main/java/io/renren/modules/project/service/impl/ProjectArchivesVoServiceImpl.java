@@ -31,4 +31,10 @@ public class ProjectArchivesVoServiceImpl extends ServiceImpl<ProjectArchivesVoD
         return new PageUtils(pagnation);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ProjectArchivesVoEntity getArchivesVo(Map<String, Object> params){
+        return baseMapper.getArchivesVo(params);
+    }
+
 }

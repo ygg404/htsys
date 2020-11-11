@@ -53,7 +53,7 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 类型（1-点；2-线；3-面）
 	 */
-	private String type;
+	private Long type;
 	/**
 	 * 备注
 	 */
@@ -146,11 +146,11 @@ public class DopBmapEntity implements Serializable {
 	/**
 	* 获取：类型（1-点；2-线；3-面）
 	*/
-	public String getType (){return this.type;};
+	public Long getType (){return this.type;};
 	/**
 	 * 设置：类型（1-点；2-线；3-面）
 	 */
-	public void setType (String type){this.type = type;};
+	public void setType (Long type){this.type = type;};
 	/**
 	* 获取：备注
 	*/

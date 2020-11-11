@@ -27,12 +27,13 @@
         LEFT JOIN dop_device on dop_device.id = dop_history.device_id
          where process_id  IN (
         SELECT process_id from (
-        SELECT  process_id FROM(
-        SELECT process_id,rent_status from dop_history
-        WHERE device_id = #{deviceId}
-        GROUP BY process_id
-        ORDER BY create_time DESC ,process_id DESC,rent_status ASC
-        )a WHERE rent_status != 0 LIMIT 1) b )
+          SELECT  process_id FROM(
+            SELECT process_id,MIN(rent_status) as rent_status from dop_history
+            WHERE device_id = #{deviceId}
+            GROUP BY process_id
+            ORDER BY create_time DESC ,process_id DESC,rent_status ASC
+          )a
+        WHERE rent_status != 0 LIMIT 1) b )
     </select>
 
 </mapper>
