@@ -1,13 +1,28 @@
 package io.renren.common.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import com.alibaba.fastjson.JSON;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HTTP;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.google.common.io.ByteStreams.toByteArray;
 
 public class HttpClient {
     public static String doGet(String httpurl) {
@@ -147,5 +162,68 @@ public class HttpClient {
             connection.disconnect();
         }
         return result;
+    }
+
+    /**
+     * @param accessToken
+     * @param page
+     * @param scene
+     * @param width
+     * @return
+     */
+
+    /**
+     * @param accessToken
+     * @param page
+     * @param scene
+     * @param width
+     * @return
+     */
+    public static Map<String, Object> getMiniQrCode(String accessToken, String page, String scene, int width) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            // ======================================================================//
+            // 拼接调用微信的URL
+            // ======================================================================//
+            String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit" + "?access_token=" + accessToken;
+            Map<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put("page", page);
+            paramsMap.put("scene", scene);
+            paramsMap.put("width", width <= 0 ? 430 : width);
+            paramsMap.put("auto_color", false);
+            Map<String, Object> line_color = new HashMap<String, Object>();
+            line_color.put("r", 0);
+            line_color.put("g", 0);
+            line_color.put("b", 0);
+            paramsMap.put("line_color", line_color);
+            System.out.println("调用生成微信URL接口传参：" + paramsMap);
+            // ======================================================================//
+            // 执行URL Post调用
+            // ======================================================================//
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json");
+            // 必须是json模式的 post
+            String body = JSON.toJSONString(paramsMap);
+            StringEntity entity = new StringEntity(body);
+            entity.setContentType("image/png");
+            httpPost.setEntity(entity);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            // ======================================================================//
+            // 处理HTTP返回结果
+            // ======================================================================//
+            InputStream contentStream = httpEntity.getContent();
+            byte[] bytes = toByteArray(contentStream);
+            contentStream.read(bytes);
+            // 返回内容
+            data.put("qrLength", bytes.length);
+            data.put("qrBytes", bytes);
+            data.put("qrBytesEncoder", Base64.getEncoder().encodeToString(bytes));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("调用生成微信小程序码URL接口异常" + e);
+        }
+        return data;
     }
 }

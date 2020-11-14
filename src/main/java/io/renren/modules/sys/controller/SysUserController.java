@@ -3,7 +3,6 @@ package io.renren.modules.sys.controller;
 import java.util.List;
 import java.util.Map;
 
-import io.renren.common.utils.CacheManager;
 import io.renren.modules.set.entity.UserGroupEntity;
 import io.renren.modules.set.entity.WorkGroupEntity;
 import io.renren.modules.set.service.BranchUserService;
