@@ -1,11 +1,17 @@
 package io.renren.modules.dop.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.*;
 
 import io.renren.common.annotation.SysLog;
+import io.renren.common.utils.FileUtil;
+import io.renren.modules.dop.entity.DopBmapProjectEntity;
+import io.renren.modules.dop.service.DopBmapProjectService;
+import io.renren.modules.sys.entity.SysUserEntity;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +24,12 @@ import io.renren.modules.dop.entity.DopBmapEntity;
 import io.renren.modules.dop.service.DopBmapService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import org.springframework.web.multipart.MultipartFile;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.DocumentHelper;
 
 
 /**
@@ -32,6 +43,9 @@ import io.renren.common.utils.R;
 public class DopBmapController {
     @Autowired
     private DopBmapService dopBmapService;
+
+    @Autowired
+    private DopBmapProjectService dopBmapProjectService;
 
     /**
      * 分页查询
@@ -99,4 +113,93 @@ public class DopBmapController {
         return R.ok();
     }
 
+    /**
+     * 导入KML文件
+     * @param file
+     * @return
+     */
+    @SysLog("导入KML文件")
+    @RequestMapping("/upKmlFile")
+    public R upKmlFile(@PathVariable MultipartFile file) {
+        SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        BufferedReader reader = null;
+        try {
+            Reader read = new InputStreamReader(file.getInputStream(), "UTF-8");
+            reader = new BufferedReader(read);
+            String buffer = null;
+            // 存放请求内容
+            StringBuffer kml = new StringBuffer();
+            while ((buffer = reader.readLine()) != null) {
+                // 在页面中显示读取到的请求参数
+                kml.append(buffer);
+            }
+            String kmlContent = kml.toString();
+            Document doc = DocumentHelper.parseText(kmlContent);
+
+            Element root =doc.getRootElement();
+            Element document = root.element("Document");
+            String  projectName = document.element("Folder").element("name").getTextTrim();
+            Element folder = (Element) document.elementIterator("Folder").next();
+            Iterator iter = folder.elementIterator("Placemark");
+            // 插入数据库的标志列表 及其项目
+            List<DopBmapEntity> bList = new ArrayList<>();
+            DopBmapProjectEntity projectEntity = new DopBmapProjectEntity();
+            projectEntity.setProjectName(projectName);
+            // 遍历body节点
+            while (iter.hasNext()) {
+                DopBmapEntity entity = new DopBmapEntity();
+
+                Element node = (Element) iter.next();
+                String nodeName = node.element("name").getTextTrim();
+                entity.setLabel(nodeName);
+                entity.setCreateTime(new Date());
+                entity.setCreateUserId(userEntity.getUserId());
+                entity.setCreateUserName(userEntity.getUsername());
+
+                // 线元素
+                Element lineEle = node.element("LineString");
+                if (lineEle != null) {
+                    String[] lineList = lineEle.element("coordinates").getTextTrim().split(" ");
+                    String corStr = "";
+                    Float lng = 0f;
+                    Float lat = 0f;
+                    for (String line : lineList) {
+                        String[] pointStr = line.split(",");
+                        corStr += pointStr[0] + "," + pointStr[1] + ";";
+
+                        lng += Float.parseFloat(pointStr[0]);
+                        lat += Float.parseFloat(pointStr[1]);
+                    }
+                    entity.setLng( lng/lineList.length);
+                    entity.setLat( lat/lineList.length);
+                    entity.setLabelLng( lng/lineList.length);
+                    entity.setLabelLat( lat/lineList.length);
+                    entity.setCoordinate(corStr.substring(0,corStr.length()-1));
+                    entity.setArea(0f);
+                    entity.setType(2L);
+                }
+                // 点元素
+                Element pointEle = node.element("Point");
+                if (pointEle != null) {
+                    String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
+                    entity.setLabelLng(Float.parseFloat(pointStr[0]));
+                    entity.setLabelLat(Float.parseFloat(pointStr[1]));
+                    entity.setLng(Float.parseFloat(pointStr[0]));
+                    entity.setLat(Float.parseFloat(pointStr[1]));
+                    entity.setArea(0f);
+                    entity.setType(1L);
+                    entity.setCoordinate(pointStr[0] + "," + pointStr[1]);
+                }
+
+                bList.add(entity);
+            }
+
+            dopBmapProjectService.save(projectEntity);
+            dopBmapService.insertOrUpdateBatch(bList);
+
+        }catch (Exception ex){
+            return R.error(ex.getMessage());
+        }
+        return R.ok();
+    }
 }

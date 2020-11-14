@@ -25,8 +25,8 @@ public class CacheListener {
                     }
 
                     try {
-                        //休息10s再检查
-                        Thread.sleep(10000);
+                        //休息30s再检查
+                        Thread.sleep(30 * 1000);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

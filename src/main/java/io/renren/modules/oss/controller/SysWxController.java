@@ -1,7 +1,6 @@
 package io.renren.modules.oss.controller;
 
 import cn.hutool.json.JSONObject;
-import com.alibaba.fastjson.JSON;
 import io.renren.common.utils.*;
 import io.renren.common.utils.cache.CacheListener;
 import io.renren.common.utils.cache.CacheManager;
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
-
-import static io.renren.common.utils.FileUtil.toByteArray;
 
 /**
  * 微信接口
@@ -39,11 +38,11 @@ public class SysWxController {
             System.out.println("已经获取微信ticket：");
         } else {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+ appId + "&secret=" + appsecret;
-            String result = HttpClient.doGet(url);
+            String result = HttpClientUtils.doGet(url);
             JSONObject json = new JSONObject(result);
             String access_token = (String)json.get("access_token");
             String ticketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=jsapi";
-            String ticketRes = HttpClient.doGet(ticketUrl);
+            String ticketRes = HttpClientUtils.doGet(ticketUrl);
             JSONObject ticketJson = new JSONObject(ticketRes);
             wxTicket = (String)ticketJson.get("ticket");
             // 将微信Ticket 放入缓存区
@@ -60,22 +59,41 @@ public class SysWxController {
 
     /**
      * 生成微信小程序二维码（带项目编号参数）
-     * @param request
+     * @param response
      * @param projectNo
      * @return
      */
     @GetMapping("/getWxQR")
-    public R getWxQR(HttpServletRequest request,@RequestParam String projectNo){
+    public R getWxQR(HttpServletResponse response, @RequestParam String projectNo){
+        OutputStream stream = null;
         String appId = "wxdbda2ef3390a8529";
         String appsecret = "a2389f5383a3ebbb267a4d40a64a47f9";
         try {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+ appId + "&secret=" + appsecret;
-            String result = HttpClient.doGet(url);
+            String result = HttpClientUtils.doGet(url);
             JSONObject json = new JSONObject(result);
             String access_token = (String)json.get("access_token");
             String qrurl = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=" + access_token;
-            // 发送请求参数
-            Map<String, Object> qrRes = HttpClient.getMiniQrCode(access_token , "/pages/auth/auth", "projectNo=" + projectNo,200);
+            //组装参数
+            Map<String, Object> paraMap = new HashMap<>();
+            //二维码携带参数 不超过32位 参数类型必须是字符串
+            paraMap.put("scene", projectNo);
+            //二维码跳转页面
+            paraMap.put("page", "/pages/auth/auth");
+            //二维码的宽度
+            paraMap.put("width", 300);
+            //自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+            paraMap.put("auto_color", false);
+            //是否需要透明底色， is_hyaline 为true时，生成透明底色的小程序码
+            paraMap.put("is_hyaline", false);
+            //执行post 获取数据流
+            byte[] imgByte = HttpClientUtils.doImgPost(url, paraMap);
+            //输出图片到页面
+            response.setContentType("image/jpg");
+            stream = response.getOutputStream();
+            stream.write(imgByte);
+            stream.flush();
+            stream.close();
         } catch (Exception ex) {
             return R.error("生成二维码失败！");
         }
