@@ -155,7 +155,28 @@ public class DopBmapController {
                 entity.setCreateTime(new Date());
                 entity.setCreateUserId(userEntity.getUserId());
                 entity.setCreateUserName(userEntity.getUsername());
+                // 面元素
+                Element polyEle = node.element("Polygon");
+                if (polyEle != null) {
+                    String[] polyList = polyEle.element("outerBoundaryIs").element("LinearRing").element("coordinates").getTextTrim().split(" ");
+                    String corStr = "";
+                    Float lng = 0f;
+                    Float lat = 0f;
+                    for (String poly : polyList) {
+                        String[] pointStr = poly.split(",");
+                        corStr += pointStr[0] + "," + pointStr[1] + ";";
 
+                        lng += Float.parseFloat(pointStr[0]);
+                        lat += Float.parseFloat(pointStr[1]);
+                    }
+                    entity.setLng( lng/polyList.length);
+                    entity.setLat( lat/polyList.length);
+                    entity.setLabelLng( lng/polyList.length);
+                    entity.setLabelLat( lat/polyList.length);
+                    entity.setCoordinate(corStr.substring(0,corStr.length()-1));
+                    entity.setArea(0f);   // 多边面面积计算
+                    entity.setType(3L);
+                }
                 // 线元素
                 Element lineEle = node.element("LineString");
                 if (lineEle != null) {
@@ -195,6 +216,9 @@ public class DopBmapController {
             }
 
             dopBmapProjectService.save(projectEntity);
+            for(DopBmapEntity bEntity : bList) {
+                bEntity.setProjectId(projectEntity.getId());
+            }
             dopBmapService.insertOrUpdateBatch(bList);
 
         }catch (Exception ex){

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dop.dao.DopBmapProjectDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.dop.entity.DopBmapProjectEntity" id="dopBmapProjectMap">
+        <result property="id" column="id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createUserName" column="create_user_name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getMaxId" resultType="Long">
+        select max(id) from dop_bmap_project
+    </select>
+</mapper>

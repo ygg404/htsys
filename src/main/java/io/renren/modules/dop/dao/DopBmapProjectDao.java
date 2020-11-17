@@ -12,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface DopBmapProjectDao extends BaseMapper<DopBmapProjectEntity> {
-	
+
+    Long getMaxId();
 }

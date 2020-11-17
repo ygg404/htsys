@@ -20,6 +20,8 @@ public interface DopBmapProjectService extends IService<DopBmapProjectEntity> {
 
     List<DopBmapProjectEntity> queryList(Map<String, Object> params);
 
+    Long getMaxId();
+
     void save(DopBmapProjectEntity entity);
 
     void update(DopBmapProjectEntity entity);

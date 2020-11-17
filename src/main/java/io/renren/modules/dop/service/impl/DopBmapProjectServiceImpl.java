@@ -71,8 +71,16 @@ public class DopBmapProjectServiceImpl extends ServiceImpl<DopBmapProjectDao, Do
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public Long getMaxId() {
+        return this.baseMapper.getMaxId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(DopBmapProjectEntity entity) {
+        Long maxId = this.getMaxId() == null ? 1L: this.getMaxId() + 1L;
         SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        entity.setId(maxId);
         entity.setCreateTime(new Date());
         entity.setCreateUserId(userEntity.getUserId());
         entity.setCreateUserName(userEntity.getUsername());
