@@ -37,9 +37,6 @@ public class DopArchivesController {
     @Autowired
     private DopArchivesService dopArchivesService;
 
-    @Autowired
-    private ProjectArchivesService projectArchivesService;
-
 
     /**
      * 列表

@@ -137,7 +137,7 @@ public class GPSUtil {
      * @return
      */
     private static double retain6(double num){
-        String result = String .format("%.6f", num);
+        String result = String .format("%.10f", num);
         return Double.valueOf(result);
     }
 

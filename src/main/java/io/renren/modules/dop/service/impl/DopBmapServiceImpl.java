@@ -62,6 +62,15 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public List<DopBmapEntity> queryByProId(Long projectId){
+        List<DopBmapEntity> list = this.selectList(
+                new EntityWrapper<DopBmapEntity>().eq("project_id" , projectId)
+        );
+        return list;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(DopBmapEntity entity) {
         // 获取当前用户Id
         SysUserEntity createUser =  (SysUserEntity) SecurityUtils.getSubject().getPrincipal();

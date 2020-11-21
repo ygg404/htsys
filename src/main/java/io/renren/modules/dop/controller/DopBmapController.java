@@ -1,13 +1,14 @@
 package io.renren.modules.dop.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.*;
 
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.FileUtil;
+import io.renren.common.utils.map.GPSUtil;
 import io.renren.modules.dop.entity.DopBmapProjectEntity;
 import io.renren.modules.dop.service.DopBmapProjectService;
 import io.renren.modules.sys.entity.SysUserEntity;
@@ -160,14 +161,15 @@ public class DopBmapController {
                 if (polyEle != null) {
                     String[] polyList = polyEle.element("outerBoundaryIs").element("LinearRing").element("coordinates").getTextTrim().split(" ");
                     String corStr = "";
-                    Float lng = 0f;
-                    Float lat = 0f;
+                    double lng = 0f;
+                    double lat = 0f;
                     for (String poly : polyList) {
                         String[] pointStr = poly.split(",");
-                        corStr += pointStr[0] + "," + pointStr[1] + ";";
+                        double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                        corStr += bd09[1] + "," + bd09[0] + ";";
 
-                        lng += Float.parseFloat(pointStr[0]);
-                        lat += Float.parseFloat(pointStr[1]);
+                        lng += bd09[1];
+                        lat += bd09[0];
                     }
                     entity.setLng( lng/polyList.length);
                     entity.setLat( lat/polyList.length);
@@ -182,14 +184,14 @@ public class DopBmapController {
                 if (lineEle != null) {
                     String[] lineList = lineEle.element("coordinates").getTextTrim().split(" ");
                     String corStr = "";
-                    Float lng = 0f;
-                    Float lat = 0f;
+                    double lng = 0f;
+                    double lat = 0f;
                     for (String line : lineList) {
                         String[] pointStr = line.split(",");
-                        corStr += pointStr[0] + "," + pointStr[1] + ";";
-
-                        lng += Float.parseFloat(pointStr[0]);
-                        lat += Float.parseFloat(pointStr[1]);
+                        double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                        corStr += bd09[1] + "," + bd09[0] + ";";
+                        lng += bd09[1];
+                        lat += bd09[0];
                     }
                     entity.setLng( lng/lineList.length);
                     entity.setLat( lat/lineList.length);
@@ -203,13 +205,14 @@ public class DopBmapController {
                 Element pointEle = node.element("Point");
                 if (pointEle != null) {
                     String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
-                    entity.setLabelLng(Float.parseFloat(pointStr[0]));
-                    entity.setLabelLat(Float.parseFloat(pointStr[1]));
-                    entity.setLng(Float.parseFloat(pointStr[0]));
-                    entity.setLat(Float.parseFloat(pointStr[1]));
+                    double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                    entity.setLabelLng(bd09[1]);
+                    entity.setLabelLat(bd09[0]);
+                    entity.setLng(bd09[1]);
+                    entity.setLat(bd09[0]);
                     entity.setArea(0f);
                     entity.setType(1L);
-                    entity.setCoordinate(pointStr[0] + "," + pointStr[1]);
+                    entity.setCoordinate( String.valueOf(bd09[1]) + "," + String.valueOf(bd09[0]) );
                 }
 
                 bList.add(entity);
@@ -224,6 +227,30 @@ public class DopBmapController {
         }catch (Exception ex){
             return R.error(ex.getMessage());
         }
+        return R.ok();
+    }
+
+    /**
+     * 导出控制点 Word文件
+     * @param entity
+     * @return
+     */
+    @SysLog("导出Word文件")
+    @RequestMapping("/exportWord")
+    public R exportWord(DopBmapProjectEntity entity) {
+        try {
+            Configuration configuration = new Configuration();
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setClassForTemplateLoading(this.getClass(), "/templates/ftl");
+            Template template = configuration.getTemplate("need.ftl");
+            Map<String , Object> resultMap = new HashMap<>();
+            resultMap.put("userInfoList","");
+            File outFile = new File("userRequireInfo.doc");
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),"UTF-8"));
+        } catch (Exception ex) {
+            return R.error(ex.getMessage());
+        }
+
         return R.ok();
     }
 }
