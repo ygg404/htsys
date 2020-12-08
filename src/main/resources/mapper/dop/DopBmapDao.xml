@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.dop.dao.DopBmapDao">
+
+    <select id="getMapPIdList" resultType="java.lang.Long">
+        -- 创建所有父ID 临时表
+        DROP TEMPORARY TABLE IF EXISTS pIdTemp;
+        create temporary table pIdTemp(id INT);
+
+        -- 创建函数（查找所有父类Id）
+        DROP PROCEDURE IF EXISTS findPIdFun;
+        CREATE PROCEDURE findPIdFun()
+        BEGIN
+        -- 该变量用于标识是否还有数据需遍历
+        DECLARE flag INT DEFAULT 0;
+        -- 创建一个变量用来存储遍历过程中的值
+        DECLARE cid INT(40);
+        -- 查询出需要遍历的数据集合
+        DECLARE idList CURSOR FOR (SELECT id FROM dop_bmap WHERE label LIKE '%${key}%');
+
+        -- 查询是否有下一个数据，没有将标识设为1，相当于hasNext
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET flag = 1;
+        -- 打开游标
+        OPEN idList;
+        -- 	取值设置到临时变量中
+        FETCH idList INTO cid;
+        -- 遍历未结束就一直执行
+          WHILE flag != 1 DO
+            INSERT INTO pIdTemp (id)
+            SELECT id FROM (
+            SELECT @r AS _id, (SELECT @r := parent_id FROM dop_bmap WHERE id = _id) AS pid
+            FROM (SELECT @r := cid) vars, dop_bmap h WHERE @r != 0
+            ) T1
+            JOIN dop_bmap T2
+            ON T1._id = T2.id
+            where parent_id = 0;
+            FETCH idList INTO cid;
+          END WHILE;
+        END;
+
+        call findPIdFun();
+        -- 查找不同的父类ID
+        SELECT DISTINCT(id) from pIdTemp order by  id desc
+    </select>
+
+    <select id="getMapChildList" resultType="io.renren.modules.dop.entity.DopBmapEntity">
+      -- 创建所有父ID 临时表
+      DROP TEMPORARY TABLE IF EXISTS cIdTemp;
+      create temporary table cIdTemp(id INT);
+      <foreach collection="list" item="pId" index="index" >
+          INSERT INTO cIdTemp (id)
+          select id from
+          ( select t1.id,t1.label,if(find_in_set(parent_id, @pids) > 0,@pids := concat(@pids, ',', id),0) as ischild
+          from (select id,label,parent_id from dop_bmap t order by parent_id,id ) t1,(select @pids := #{pId}) t2 ) t3
+          where ischild != 0 or id = #{pId};
+      </foreach>
+      select * from dop_bmap where id in (select * from cIdTemp) order by id desc;
+    </select>
+</mapper>

@@ -1,9 +1,11 @@
 package io.renren.modules.project.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.renren.modules.project.entity.ProjectBillEntity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -167,6 +169,10 @@ public class ProjectInfoVoEntity implements Serializable {
      * 高程中误差
      */
     private Float errorHeigh;
+    /**
+     * 项目清单列表
+     */
+    private List<ProjectBillEntity> projectBillList;
 
     /**
      * 获取：
@@ -480,4 +486,12 @@ public class ProjectInfoVoEntity implements Serializable {
      * 设置：高程中误差
      */
     public void setErrorHeigh (Float errorHeigh){this.errorHeigh = errorHeigh;};
+    /**
+     * 获取：项目清单列表
+     */
+    public List<ProjectBillEntity> getProjectBillList(){return this.projectBillList;};
+    /**
+     * 设置：项目清单列表
+     */
+    public void  setProjectBillList(List<ProjectBillEntity> projectBillList){this.projectBillList = projectBillList;};
 }

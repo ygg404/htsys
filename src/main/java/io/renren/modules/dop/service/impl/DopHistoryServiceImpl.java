@@ -69,7 +69,24 @@ public class DopHistoryServiceImpl extends ServiceImpl<DopHistoryDao, DopHistory
                         deviceEntity.setDevStation(1L);
                         dopDeviceService.update(deviceEntity);
                     } else {
-                        throw new Exception("仪器已经出借中，无法出借！");
+                        String errMsg = "";
+                        switch(deviceEntity.getDevStation().intValue()) {
+                            case 1:
+                                errMsg = "仪器已经出借中，无法出借！";
+                                break;
+                            case 2:
+                                errMsg = "仪器维修中，无法出借！";
+                                break;
+                            case 3:
+                                errMsg = "仪器已丢失，无法出借！";
+                                break;
+                            case 4:
+                                errMsg = "仪器已报废，无法出借！";
+                                break;
+                             default:
+                                 break;
+                        }
+                        throw new Exception(errMsg);
                     }
                     break;
                  //确认归还

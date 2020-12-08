@@ -178,6 +178,14 @@ public class ProjectArchivesVoEntity implements Serializable {
      */
     private Long isAuthorize;
     /**
+     * 微信头像
+     */
+    private String avatarUrl;
+    /**
+     * 微信昵称
+     */
+    private String nickName;
+    /**
      * 签名图片
      */
     private String sigImage;
@@ -530,6 +538,22 @@ public class ProjectArchivesVoEntity implements Serializable {
      * 设置：是否审核（0:未审核，1:已审核）
      */
     public void setisAuthorize (Long isAuthorize){this.isAuthorize = isAuthorize;};
+    /**
+     * 获取：微信头像
+     */
+    public String getAvatarUrl() {return this.avatarUrl;};
+    /**
+     * 设置：微信头像
+     */
+    public void setAvatarUrl (String avatarUrl){this.avatarUrl = avatarUrl;};
+    /**
+     * 获取：微信昵称
+     */
+    public String getNickName() {return this.nickName;};
+    /**
+     * 设置：微信昵称
+     */
+    public void setNickName (String nickName){this.nickName = nickName;};
     /**
      * 获取：签名图片
      */

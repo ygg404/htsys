@@ -1,6 +1,7 @@
 package io.renren.common.utils;
 
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
@@ -71,7 +72,7 @@ public class ImgUtils {
             if(!fileParent.exists()){
                 fileParent.mkdirs();
             }
-            imgfile.createNewFile();
+            fileParent.createNewFile();
 
             BASE64Decoder decoder = new sun.misc.BASE64Decoder();
             byte[] bytes1 = decoder.decodeBuffer(base64Code.replaceFirst( regex , ""));
@@ -83,5 +84,21 @@ public class ImgUtils {
             throw e;
         }
 
+    }
+
+    public static String getImgBase64(String imgFile) {
+        InputStream inputStream = null;
+        byte[] data = null;
+        try {
+            inputStream = new FileInputStream(imgFile);
+            data = new byte[inputStream.available()];
+            inputStream.read(data);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 加编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
     }
 }

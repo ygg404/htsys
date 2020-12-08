@@ -2,19 +2,27 @@ package io.renren.modules.dop.controller;
 
 import java.io.*;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.renren.common.annotation.SysLog;
-import io.renren.common.utils.FileUtil;
+
+import io.renren.common.utils.*;
 import io.renren.common.utils.map.GPSUtil;
 import io.renren.modules.dop.entity.DopBmapProjectEntity;
 import io.renren.modules.dop.service.DopBmapProjectService;
+import io.renren.modules.dop.vo.MapVoEntity;
 import io.renren.modules.sys.entity.SysUserEntity;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,14 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.renren.modules.dop.entity.DopBmapEntity;
 import io.renren.modules.dop.service.DopBmapService;
-import io.renren.common.utils.PageUtils;
-import io.renren.common.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.DocumentHelper;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -42,6 +49,10 @@ import org.dom4j.DocumentHelper;
 @RestController
 @RequestMapping("dop/bmap")
 public class DopBmapController {
+
+    @Value("${spring.file.upBmapFolder}")
+    private String upBmapFolder;
+
     @Autowired
     private DopBmapService dopBmapService;
 
@@ -84,8 +95,8 @@ public class DopBmapController {
     @SysLog("保存地图标注")
     @RequestMapping("/save")
     @RequiresPermissions("dop:bmap:save")
-    public R save(@RequestBody DopBmapEntity dopBmap){
-		dopBmapService.save(dopBmap);
+    public R save(@RequestBody MapVoEntity mapVoEntity){
+		dopBmapService.save(mapVoEntity.getDopBmapEntity());
 
         return R.ok();
     }
@@ -96,8 +107,8 @@ public class DopBmapController {
     @SysLog("修改地图标注")
     @RequestMapping("/update")
     @RequiresPermissions("dop:bmap:update")
-    public R update(@RequestBody DopBmapEntity dopBmap){
-		dopBmapService.updateById(dopBmap);
+    public R update(@RequestBody MapVoEntity mapVoEntity){
+		dopBmapService.updateById(mapVoEntity.getDopBmapEntity());
 
         return R.ok();
     }
@@ -112,6 +123,16 @@ public class DopBmapController {
         dopBmapService.deleteBatch(new Long[] {id});
 
         return R.ok();
+    }
+
+    /**
+     * 上传并保存图片
+     */
+    @RequestMapping("/upBmapImg")
+    public R upBmapImg(@RequestBody Map<String, Object> params){
+        String imgPath = dopBmapService.saveBmapImg(params);
+
+        return R.ok().put("imgPath",imgPath);
     }
 
     /**
@@ -232,21 +253,66 @@ public class DopBmapController {
 
     /**
      * 导出控制点 Word文件
-     * @param entity
+     * @param params
      * @return
      */
     @SysLog("导出Word文件")
     @RequestMapping("/exportWord")
-    public R exportWord(DopBmapProjectEntity entity) {
+    public R exportWord(HttpServletResponse response, @RequestParam Map<String, Object> params) {
         try {
-            Configuration configuration = new Configuration();
-            configuration.setDefaultEncoding("utf-8");
-            configuration.setClassForTemplateLoading(this.getClass(), "/templates/ftl");
-            Template template = configuration.getTemplate("need.ftl");
-            Map<String , Object> resultMap = new HashMap<>();
-            resultMap.put("userInfoList","");
-            File outFile = new File("userRequireInfo.doc");
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile),"UTF-8"));
+//            ClassPathResource resource =  new ClassPathResource("ftl/bPoint.ftl");
+//            InputStream inputStream = resource.getInputStream();
+//            File sourceFile =  resource.getFile();
+            DopBmapEntity entity = dopBmapService.selectById(Long.parseLong((String)params.get("bmapId")));
+            Map<String, Object> objectMap = MapEntityUtil.entity2Map(entity);
+            String transImg = ImgUtils.getImgBase64(upBmapFolder + entity.getTransImg());
+            String photoScene = ImgUtils.getImgBase64(upBmapFolder + entity.getPhotoScene());
+            String photoFar = ImgUtils.getImgBase64(upBmapFolder + entity.getPhotoFar());
+            objectMap.put("transImg",transImg);
+            objectMap.put("photoScene",photoScene);
+            objectMap.put("photoFar",photoFar);
+            objectMap.put("stoneTime",entity.getStoneTime().equals("") ? "" : DateUtils.format(entity.getStoneTime(),DateUtils.DATE_PATTERN));
+            String ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
+
+//            // 设置响应类型为html，编码为utf-8，处理相应页面文本显示的乱码
+//            response.setCharacterEncoding("UTF-8");
+//            response.setContentType("application/octet-stream");
+//            response.setHeader("Content-disposition", "attachment;filename= 1.doc");
+//            // 发送给客户端的数据
+//            OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+//            out.write(ftl);
+//            out.flush();
+//            out.close();
+//
+//            //ftl模板文件
+//            configuration.setClassForTemplateLoading(this.getClass(),"/");
+//            //获取模板
+//            Template template = configuration.getTemplate("ftl/bPoint.ftl");
+
+//            VelocityContext context = new VelocityContext(params);
+//            //渲染模板
+//            StringWriter sw = new StringWriter();
+//            Template tpl = Velocity.getTemplate("template/bPoint.ftl", "UTF-8" );
+//            tpl.merge(context, sw);
+//
+            //添加到zip
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ZipOutputStream zip = new ZipOutputStream(outputStream);
+            zip.putNextEntry(new ZipEntry(entity.getLabel() + ".doc"));
+            IOUtils.write(ftl, zip, "UTF-8" );
+
+            zip.closeEntry();
+            IOUtils.closeQuietly(zip);
+
+            response.reset();
+            response.addHeader("Access-Control-Allow-Origin" , "*");
+            response.setHeader("Access-Control-Allow-Credentials" ,"false");
+            response.setHeader("Content-Disposition", "attachment; filename=\"map.zip\"");
+            response.addHeader("Content-Length", "" );
+            response.setContentType("application/octet-stream; charset=UTF-8");
+
+            IOUtils.write(outputStream.toByteArray(), response.getOutputStream());
+
         } catch (Exception ex) {
             return R.error(ex.getMessage());
         }

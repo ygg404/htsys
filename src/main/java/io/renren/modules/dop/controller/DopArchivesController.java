@@ -12,6 +12,7 @@ import io.renren.modules.project.vo.ProjectArchivesVoEntity;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Map;
@@ -69,10 +71,10 @@ public class DopArchivesController {
      */
     @RequestMapping("/exportAuthExcel")
     public void operAutographExcel(HttpServletResponse response, @RequestParam Map<String, Object> params){
-        String filePath = null;
+        InputStream inputStream = null;
         try {
-            filePath = ResourceUtils.getFile("classpath:template/xls/proAuth.xlsx").getPath();
-            System.out.println("路径" + filePath);
+            ClassPathResource resource =  new ClassPathResource("template/xls/proAuth.xlsx");
+            inputStream = resource.getInputStream();
         } catch (Exception e) {
             System.out.println("文件不存在"+  e);
         } finally {
@@ -88,7 +90,7 @@ public class DopArchivesController {
             String picStr = strs[1];
             byte[] byteArray = Base64.getDecoder().decode(picStr);
             try {
-                Workbook xb = WorkbookFactory.create(new FileInputStream(filePath));
+                Workbook xb = WorkbookFactory.create(inputStream);
                 for(int sheetnum = 0; sheetnum < xb.getNumberOfSheets(); sheetnum++){
                     for (Row row : xb.getSheetAt(sheetnum)) {
                         for(int i = 0; i<= row.getLastCellNum(); i++){
