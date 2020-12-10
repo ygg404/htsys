@@ -171,13 +171,9 @@ public class DopBmapEntity implements Serializable {
 	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
 	private Date modifyTime;
 	/**
-	 * 项目ID
+	 * 父类ID
 	 */
-	private Long projectId;
-	/**
-	 * 项目名称
-	 */
-	private String projectName;
+	private Long parentId;
 
 	/**
 	 * 获取：自增Id
@@ -476,19 +472,11 @@ public class DopBmapEntity implements Serializable {
 	 */
 	public void setModifyTime (Date modifyTime){this.modifyTime = modifyTime;};
 	/**
-	 * 获取：项目ID
+	 * 获取：父类ID
 	 */
-	public Long getProjectId (){return this.projectId;};
-	/**
-	 * 设置：项目ID
-	 */
-	public void setProjectId (Long projectId){this.projectId = projectId;};
-	/**
-	 * 获取：项目名称
-	 */
-	public String getProjectName (){return this.projectName;};
+	public Long getParentId() {return this.parentId;}
 	/**
 	 * 设置：项目名称
 	 */
-	public void setProjectName (String projectName){this.projectName = projectName;};
+	public void setParentId (Long parentId){this.parentId = parentId;};
 }

@@ -63,10 +63,8 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<DopBmapEntity> queryByProId(Long projectId){
-        List<DopBmapEntity> list = this.selectList(
-                new EntityWrapper<DopBmapEntity>().eq("project_id" , projectId)
-        );
+    public List<DopBmapEntity> queryByPId(List<Long> pIdList){
+        List<DopBmapEntity> list = this.baseMapper.getMapChildList(pIdList);
         return list;
     }
 

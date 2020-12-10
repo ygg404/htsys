@@ -19,7 +19,7 @@ public interface DopBmapService extends IService<DopBmapEntity> {
 
     List<DopBmapEntity> queryList(Map<String, Object> params);
 
-    List<DopBmapEntity> queryByProId(Long projectId);
+    List<DopBmapEntity> queryByPId(List<Long> pIdList);
 
     String saveBmapImg(Map<String, Object> params);
 
