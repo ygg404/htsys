@@ -48,12 +48,13 @@
       -- 创建所有父ID 临时表
       DROP TEMPORARY TABLE IF EXISTS cIdTemp;
       create temporary table cIdTemp(id INT);
+        -- 根据父ID 遍历 获取所有子ID列表
       <foreach collection="list" item="pId" index="index" >
           INSERT INTO cIdTemp (id)
           select id from
-          ( select t1.id,t1.label,if(find_in_set(parent_id, @pids) > 0,@pids := concat(@pids, ',', id),0) as ischild
+          ( select t1.id,t1.label,if(find_in_set(parent_id, @pids) > 0,@pids := concat(@pids, ',', id),'0') as ischild
           from (select id,label,parent_id from dop_bmap t order by parent_id,id ) t1,(select @pids := #{pId}) t2 ) t3
-          where ischild != 0 or id = #{pId};
+          where ischild != '0' or id = #{pId};
       </foreach>
       select * from dop_bmap where id in (select * from cIdTemp) order by id desc;
     </select>
