@@ -56,7 +56,7 @@
           from (select id,label,parent_id from dop_bmap t order by parent_id,id ) t1,(select @pids := #{pId}) t2 ) t3
           where ischild != '0' or id = #{pId};
       </foreach>
-      select * from dop_bmap where id in (select * from cIdTemp) order by id desc;
+      select * from dop_bmap where id in (select * from cIdTemp) order by type asc ,id desc;
     </select>
 
     <select id="getMaxId" resultType="Long">

@@ -153,6 +153,10 @@ public class DopBmapEntity implements Serializable {
 	 */
 	private String remark;
 	/**
+	 * 上传的word文件（点之记）
+	 */
+	private String wordFile;
+	/**
 	 * 创建用户ID
 	 */
 	private Long createUserId;
@@ -439,6 +443,14 @@ public class DopBmapEntity implements Serializable {
 	 * 设置：备注
 	 */
 	public void setRemark (String remark){this.remark = remark;};
+	/**
+	 * 获取：上传的word文件（点之记）
+	 */
+	public String getWordFile(){ return this.wordFile;}
+	/**
+	 * 设置： 上传的word文件（点之记）
+	 */
+	public void setWordFile(String wordFile){ this.wordFile = wordFile;}
 	/**
 	 * 获取：创建用户ID
 	 */

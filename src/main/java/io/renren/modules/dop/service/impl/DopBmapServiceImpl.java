@@ -281,7 +281,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 entity.setLabelLng( lng/polyList.length);
                 entity.setLabelLat( lat/polyList.length);
                 entity.setCoordinate(corStr.substring(0,corStr.length()-1));
-                entity.setArea(0.0);   // 多边面面积计算
+                entity.setArea(AreaUtil.caculateArea(corStr));   // 多边面面积计算
                 entity.setType(3L);
                 rootId ++;
             }
