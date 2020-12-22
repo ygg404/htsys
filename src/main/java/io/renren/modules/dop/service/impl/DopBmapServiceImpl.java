@@ -268,8 +268,8 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 String corStr = "";
                 double lng = 0f;
                 double lat = 0f;
-                for (String poly : polyList) {
-                    String[] pointStr = poly.split(",");
+                for (int i = 0; i < polyList.length - 1 ; i ++) {
+                    String[] pointStr = polyList[i].split(",");
                     double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
                     corStr += bd09[1] + "," + bd09[0] + ";";
 
