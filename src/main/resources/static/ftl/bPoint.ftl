@@ -977,6 +977,15 @@
                     </w:rPr>
                     <w:t>：</w:t>
                 </w:r>
+                <w:r>
+                    <w:rPr>
+                        <w:rFonts w:ascii="宋体" w:h-ansi="宋体" w:cs="宋体" w:hint="fareast"/>
+                        <w:kern w:val="0"/>
+                        <w:sz w:val="24"/>
+                        <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
+                    </w:rPr>
+                    <w:t>${corSystem}</w:t>
+                </w:r>
             </w:p>
             <w:p>
                 <w:pPr>

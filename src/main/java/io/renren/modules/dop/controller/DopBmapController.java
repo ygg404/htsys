@@ -29,8 +29,6 @@ import io.renren.modules.dop.service.DopBmapService;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.DocumentHelper;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -94,13 +92,31 @@ public class DopBmapController {
     }
 
     /**
+     * 复制保存
+     */
+    @SysLog("复制地图标注")
+    @RequestMapping("/copy")
+    public R copy(@RequestParam Map<String, Object> params){
+        try {
+            dopBmapService.copyList(params);
+        } catch (Exception ex) {
+            return R.error(ex.getMessage());
+        }
+        return R.ok();
+    }
+
+    /**
      * 修改
      */
     @SysLog("修改地图标注")
     @RequestMapping("/update")
     @RequiresPermissions("dop:bmap:update")
     public R update(@RequestBody MapVoEntity mapVoEntity){
-		dopBmapService.updateById(mapVoEntity.getDopBmapEntity());
+        try {
+            dopBmapService.update(mapVoEntity.getDopBmapEntity());
+        } catch (Exception ex) {
+            return R.error(ex.getMessage());
+        }
 
         return R.ok();
     }
@@ -112,7 +128,7 @@ public class DopBmapController {
     @RequestMapping("/delete/{id}")
     @RequiresPermissions("dop:bmap:delete")
     public R delete(@PathVariable("id") Long id){
-        dopBmapService.deleteBatch(new Long[] {id});
+        dopBmapService.deleteByPId(id);
 
         return R.ok();
     }
@@ -128,36 +144,13 @@ public class DopBmapController {
     }
 
     /**
-     * 读取所有元素
-     * @param doc 根元素
-     * @param id  本元素ID
-     * @param pId  父元素ID
-     * @param list 存放的数据列
-     * @return
-     */
-    public Long readKMLByEle(Element doc,Long id,Long pId,List<DopBmapEntity> list){
-        if (doc.element("Folder") != null) {
-            DopBmapEntity entity = new DopBmapEntity();
-            entity.setParentId(id);
-            entity.setParentId(pId);
-
-        } else if (doc.element("Placemark") != null) {
-
-        }
-
-        return pId;
-    }
-
-
-    /**
      * 导入KML文件
      * @param file
      * @return
      */
     @SysLog("导入KML文件")
     @RequestMapping("/upKmlFile")
-    public R upKmlFile(@PathVariable MultipartFile file) {
-        SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+    public R upKmlFile(@PathVariable MultipartFile file,@RequestParam Map<String, Object> params) {
         BufferedReader reader = null;
         try {
             Reader read = new InputStreamReader(file.getInputStream(), "UTF-8");
@@ -170,94 +163,7 @@ public class DopBmapController {
                 kml.append(buffer);
             }
             String kmlContent = kml.toString();
-            Document doc = DocumentHelper.parseText(kmlContent);
-
-            Element root =doc.getRootElement();
-            Element document = root.element("Document");
-            String  projectName = document.element("Folder").element("name").getTextTrim();
-            Element folder = (Element) document.elementIterator("Folder").next();
-            Iterator iter = folder.elementIterator("Placemark");
-            // 插入数据库的标志列表 及其项目
-            List<DopBmapEntity> bList = new ArrayList<>();
-
-            // 遍历body节点
-            while (iter.hasNext()) {
-                DopBmapEntity entity = new DopBmapEntity();
-
-                Element node = (Element) iter.next();
-                String nodeName = node.element("name").getTextTrim();
-                entity.setLabel(nodeName);
-                entity.setCreateTime(new Date());
-                entity.setCreateUserId(userEntity.getUserId());
-                entity.setCreateUserName(userEntity.getUsername());
-                // 面元素
-                Element polyEle = node.element("Polygon");
-                if (polyEle != null) {
-                    String[] polyList = polyEle.element("outerBoundaryIs").element("LinearRing").element("coordinates").getTextTrim().split(" ");
-                    String corStr = "";
-                    double lng = 0f;
-                    double lat = 0f;
-                    for (String poly : polyList) {
-                        String[] pointStr = poly.split(",");
-                        double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
-                        corStr += bd09[1] + "," + bd09[0] + ";";
-
-                        lng += bd09[1];
-                        lat += bd09[0];
-                    }
-                    entity.setLng( lng/polyList.length);
-                    entity.setLat( lat/polyList.length);
-                    entity.setLabelLng( lng/polyList.length);
-                    entity.setLabelLat( lat/polyList.length);
-                    entity.setCoordinate(corStr.substring(0,corStr.length()-1));
-                    entity.setArea(0f);   // 多边面面积计算
-                    entity.setType(3L);
-                }
-                // 线元素
-                Element lineEle = node.element("LineString");
-                if (lineEle != null) {
-                    String[] lineList = lineEle.element("coordinates").getTextTrim().split(" ");
-                    String corStr = "";
-                    double lng = 0f;
-                    double lat = 0f;
-                    for (String line : lineList) {
-                        String[] pointStr = line.split(",");
-                        double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
-                        corStr += bd09[1] + "," + bd09[0] + ";";
-                        lng += bd09[1];
-                        lat += bd09[0];
-                    }
-                    entity.setLng( lng/lineList.length);
-                    entity.setLat( lat/lineList.length);
-                    entity.setLabelLng( lng/lineList.length);
-                    entity.setLabelLat( lat/lineList.length);
-                    entity.setCoordinate(corStr.substring(0,corStr.length()-1));
-                    entity.setArea(0f);
-                    entity.setType(2L);
-                }
-                // 点元素
-                Element pointEle = node.element("Point");
-                if (pointEle != null) {
-                    String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
-                    double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
-                    entity.setLabelLng(bd09[1]);
-                    entity.setLabelLat(bd09[0]);
-                    entity.setLng(bd09[1]);
-                    entity.setLat(bd09[0]);
-                    entity.setArea(0f);
-                    entity.setType(1L);
-                    entity.setCoordinate( String.valueOf(bd09[1]) + "," + String.valueOf(bd09[0]) );
-                }
-
-                bList.add(entity);
-            }
-
-//            dopBmapProjectService.save(projectEntity);
-//            for(DopBmapEntity bEntity : bList) {
-//                bEntity.setProjectId(projectEntity.getId());
-//            }
-            dopBmapService.insertOrUpdateBatch(bList);
-
+            dopBmapService.parseKML(kmlContent,params);
         }catch (Exception ex){
             return R.error(ex.getMessage());
         }
@@ -265,111 +171,12 @@ public class DopBmapController {
     }
 
     /**
-     * 导出项目KML
+     * 导出KML文件
      */
     @RequestMapping("/exportKML/{bmapId}")
     public  void exportKML(HttpServletResponse response, @PathVariable("bmapId") Long bmapId) {
         try {
-            List<DopBmapEntity> list = new ArrayList<>();
-//            DopBmapProjectEntity project = dopBmapProjectService.selectById(projectId);
-            //接收项目id
-            Element root = DocumentHelper.createElement("kml");
-            Document document = DocumentHelper.createDocument(root);
-            //根节点添加属性
-            root.addAttribute("xmlns", "http://www.opengis.net/kml/2.2")
-                    .addAttribute("xmlns:gx", "http://www.google.com/kml/ext/2.2");
-            Element documentElement = root.addElement("Document");
-
-            String pointStyleId = "2707719465";
-            String pointStyleIdStr = "#" + pointStyleId;
-            String lineStyleId = "559648089";
-            String lineStyleIdStr = "#" + lineStyleId;
-            String polygonStyleId = "3411153112";
-            String polygonStyleIdStr = "#" + polygonStyleId;
-
-            //添加样式
-            Element styleElement1 = documentElement.addElement("Style");
-            styleElement1.addAttribute("id", lineStyleId);
-            Element linestyleElement1 = styleElement1.addElement("LineStyle");
-            linestyleElement1.addElement("color").addText("ff0000ff");
-            linestyleElement1.addElement("width").addText("1");
-
-            Element styleElement2 = documentElement.addElement("Style");
-            styleElement2.addAttribute("id", pointStyleId);
-            Element iconstyleElement = styleElement2.addElement("IconStyle");
-            iconstyleElement.addElement("scale").addText("1");
-            Element iconElement = iconstyleElement.addElement("icon");
-            iconElement.addElement("href").addText("http://maps.google.com/mapfiles/kml/paddle/ylw-square.png");
-
-            Element styleElement3 = documentElement.addElement("Style");
-            styleElement3.addAttribute("id", polygonStyleId);
-            Element linestyleElement2 = styleElement3.addElement("LineStyle");
-            linestyleElement2.addElement("color").addText("ff0000ff");
-            linestyleElement2.addElement("width").addText("1");
-            Element polyStyleElement = styleElement3.addElement("PolyStyle");
-            polyStyleElement.addElement("color").addText("40ff0000");
-
-            //图层内容
-            Element folderElement = documentElement.addElement("Folder");
-//            folderElement.addElement("name").addText(project.getProjectName());
-
-            for (DopBmapEntity item : list) {
-                Element placemarkElement;
-                switch (item.getType().intValue()) {
-                    //点
-                    case 1:
-                        placemarkElement = folderElement.addElement("Placemark");
-                        placemarkElement.addElement("name").addText(item.getLabel());
-                        placemarkElement.addElement("styleUrl").addText(pointStyleIdStr);
-                        Element pointElement = placemarkElement.addElement("Point");
-                        // 经纬度 由百度坐标 转化为 84坐标系
-                        double[] gps84 = GPSUtil.bd09_To_gps84(  item.getLat() , item.getLng());
-                        String pointcoordinates = gps84[1]  + "," + gps84[0];
-                        pointElement.addElement("coordinates").addText(pointcoordinates);
-                        break;
-                    //线
-                    case 2:
-                        placemarkElement = folderElement.addElement("Placemark");
-                        placemarkElement.addElement("name").addText(item.getLabel());
-                        placemarkElement.addElement("styleUrl").addText(lineStyleIdStr);
-                        Element lineStringElement = placemarkElement.addElement("LineString");
-                        String coordinateData = "";
-                        // 经纬度 由百度坐标 转化为 84坐标系
-                        for (String corItem : item.getCoordinate().split(";")){
-                            // 经纬度 由百度坐标 转化为 84坐标系
-                            double[] lineGps84 = GPSUtil.bd09_To_gps84(  Double.parseDouble(corItem.split(",")[1])
-                                    , Double.parseDouble(corItem.split(",")[0]));
-                            coordinateData += String.valueOf(lineGps84[1]) + "," + String.valueOf(lineGps84[0]) + ";";
-                        }
-                        String coordinateText = coordinateData.replaceAll(";","  " );
-                        lineStringElement.addElement("coordinates").addText(coordinateText);
-                        break;
-                    //面
-                    case 3:
-                        placemarkElement = folderElement.addElement("Placemark");
-                        placemarkElement.addElement("name").addText(item.getLabel());
-                        placemarkElement.addElement("styleUrl").addText(polygonStyleIdStr);
-                        Element polygonElement = placemarkElement.addElement("Polygon");
-                        polygonElement.addElement("tessellate").addText("1");
-                        Element outerBoundaryIsElement = polygonElement.addElement("outerBoundaryIs");
-                        Element linearRingElement = outerBoundaryIsElement.addElement("LinearRing");
-                        String coorData = "";
-                        String coorText = "";
-                        // 经纬度 由百度坐标 转化为 84坐标系
-                        for (String corItem : item.getCoordinate().split(";")){
-                            // 经纬度 由百度坐标 转化为 84坐标系
-                            double[] wgs84 = GPSUtil.bd09_To_gps84(  Double.parseDouble(corItem.split(",")[1])
-                                    , Double.parseDouble(corItem.split(",")[0]));
-                            coorData += String.valueOf(wgs84[1]) + "," + String.valueOf(wgs84[0]) + ";";
-                        }
-                        coorData += coorData.split(";")[0];
-                        coorText = coorData.replaceAll(";","  " );
-                        linearRingElement.addElement("coordinates").addText(coorText);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            Document document = dopBmapService.createKML(bmapId);
 
             // 设置响应类型为html，编码为utf-8，处理相应页面文本显示的乱码
             response.setCharacterEncoding("UTF-8");
@@ -400,35 +207,15 @@ public class DopBmapController {
 //            File sourceFile =  resource.getFile();
             DopBmapEntity entity = dopBmapService.selectById(Long.parseLong((String)params.get("bmapId")));
             Map<String, Object> objectMap = MapEntityUtil.entity2Map(entity);
-            String transImg = ImgUtils.getImgBase64(upBmapFolder + entity.getTransImg());
-            String photoScene = ImgUtils.getImgBase64(upBmapFolder + entity.getPhotoScene());
-            String photoFar = ImgUtils.getImgBase64(upBmapFolder + entity.getPhotoFar());
+            String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
+            String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
+            String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
             objectMap.put("transImg",transImg);
             objectMap.put("photoScene",photoScene);
             objectMap.put("photoFar",photoFar);
-            objectMap.put("stoneTime",entity.getStoneTime().equals("") ? "" : DateUtils.format(entity.getStoneTime(),DateUtils.DATE_PATTERN));
+            objectMap.put("stoneTime",entity.getStoneTime() == null ? "" : DateUtils.format(entity.getStoneTime(),DateUtils.DATE_PATTERN));
             String ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
 
-//            // 设置响应类型为html，编码为utf-8，处理相应页面文本显示的乱码
-//            response.setCharacterEncoding("UTF-8");
-//            response.setContentType("application/octet-stream");
-//            response.setHeader("Content-disposition", "attachment;filename= 1.doc");
-//            // 发送给客户端的数据
-//            OutputStreamWriter out = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
-//            out.write(ftl);
-//            out.flush();
-//            out.close();
-//
-//            //ftl模板文件
-//            configuration.setClassForTemplateLoading(this.getClass(),"/");
-//            //获取模板
-//            Template template = configuration.getTemplate("ftl/bPoint.ftl");
-
-//            VelocityContext context = new VelocityContext(params);
-//            //渲染模板
-//            StringWriter sw = new StringWriter();
-//            Template tpl = Velocity.getTemplate("template/bPoint.ftl", "UTF-8" );
-//            tpl.merge(context, sw);
 //
             //添加到zip
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

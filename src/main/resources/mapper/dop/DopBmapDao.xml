@@ -41,7 +41,7 @@
 
         call findPIdFun();
         -- 查找不同的父类ID
-        SELECT DISTINCT(id) from pIdTemp order by  id desc
+        SELECT DISTINCT(id) from pIdTemp order by id desc
     </select>
 
     <select id="getMapChildList" resultType="io.renren.modules.dop.entity.DopBmapEntity">
@@ -57,5 +57,9 @@
           where ischild != '0' or id = #{pId};
       </foreach>
       select * from dop_bmap where id in (select * from cIdTemp) order by id desc;
+    </select>
+
+    <select id="getMaxId" resultType="Long">
+        select max(id) from dop_bmap
     </select>
 </mapper>

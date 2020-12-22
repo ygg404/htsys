@@ -20,11 +20,16 @@ public interface DopBmapDao extends BaseMapper<DopBmapEntity> {
      * 获取所有父类ID
      * @return
      */
-    List<Long> getMapPIdList(Page<DopBmapEntity> pagination, Map<String, Object> params);
+    List<Long> getMapPIdList(Map<String, Object> params);
 
     /**
      * 获取所有父类ID
      * @return
      */
     List<DopBmapEntity> getMapChildList(List<Long> pIdList);
+
+    /**
+     * 获取列表最大ID
+     */
+    Long getMaxId();
 }

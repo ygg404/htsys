@@ -50,7 +50,7 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 面积
 	 */
-	private Float area;
+	private Double area;
 	/**
 	 * 类型（1-点；2-线；3-面）
 	 */
@@ -163,12 +163,12 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 创建时间
 	 */
-	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	/**
 	 * 修改时间
 	 */
-	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	private Date modifyTime;
 	/**
 	 * 父类ID
@@ -234,11 +234,11 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 获取：面积
 	 */
-	public Float getArea (){return this.area;};
+	public Double getArea (){return this.area;};
 	/**
 	 * 设置：面积
 	 */
-	public void setArea (Float area){this.area = area;};
+	public void setArea (Double area){this.area = area;};
 	/**
 	 * 获取：类型（1-点；2-线；3-面）
 	 */

@@ -95,7 +95,7 @@ public class ImgUtils {
             inputStream.read(data);
             inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            return "";
         }
         // 加编码
         BASE64Encoder encoder = new BASE64Encoder();
