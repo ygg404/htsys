@@ -194,6 +194,26 @@ public class DopBmapController {
     }
 
     /**
+     * 上传点之记Word文件
+     * @param file
+     * @return
+     */
+    @SysLog("上传点之记Word文件")
+    @RequestMapping("/upBmapWord")
+    public R upBmapWord(@PathVariable MultipartFile file) {
+        String fileName = "";
+        try {
+            String filePath = FileUtil.setFilePath(upBmapFolder + "word/", file.getOriginalFilename() , true);
+            File dest = new File(filePath);
+            fileName = dest.getName();
+            file.transferTo(dest);
+        }catch (Exception ex){
+            return R.error(ex.getMessage());
+        }
+        return R.ok().put("fileName", fileName);
+    }
+
+    /**
      * 导出控制点 Word文件
      * @param params
      * @return

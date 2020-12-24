@@ -31,6 +31,14 @@ public class ProjectArchivesEntity implements Serializable {
 	 */
 	private String sigImage;
 	/**
+	 * 微信头像
+	 */
+	private String avatarUrl;
+	/**
+	 * 微信昵称
+	 */
+	private String nickName;
+	/**
 	 * 创建用户Id
 	 */
 	private Long createUserId;
@@ -67,6 +75,22 @@ public class ProjectArchivesEntity implements Serializable {
 	 * 设置：签名图片
 	 */
 	public void setSigImage (String sigImage){this.sigImage = sigImage;};
+	/**
+	 * 获取：微信头像
+	 */
+	public String getAvatarUrl() {return this.avatarUrl;};
+	/**
+	 * 设置：微信头像
+	 */
+	public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;};
+	/**
+	 *  获取：微信昵称
+	 */
+	public String getNickName() {return  this.nickName;};
+	/**
+	 * 设置：微信昵称
+	 */
+	public void setNickName(String nickName) {this.nickName = nickName;};
 	/**
 	* 获取：创建用户Id
 	*/

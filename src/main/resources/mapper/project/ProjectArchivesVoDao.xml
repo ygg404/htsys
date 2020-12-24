@@ -91,6 +91,7 @@
         project_plan.project_writer,c.user_name,c.user_phone,
         project_situation.is_plan,project_situation.is_work,project_situation.is_check,
         project_situation.is_qauth,project_situation.is_output,project_situation.is_authorize,
+        project_archives.avatar_url,project_archives.nick_name,
         project_archives.sig_image,project_archives.create_user_id,
         project_archives.create_user_name,project_archives.create_time
         from project p

@@ -52,25 +52,10 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
 
     @Override
     public List<DopBmapEntity> queryList(Map<String, Object> params){
-        // 获取经纬度范围
-        String minlng = (String) params.get("minlng");
-        String minlat = (String) params.get("minlat");
-        String maxlng = (String) params.get("maxlng");
-        String maxlat = (String) params.get("maxlat");
-        // 项目编号大小
-        String maxNo = (String) params.get("maxNo");
-        String minNo = (String) params.get("minNo");
-
-        List<DopBmapEntity> list = this.selectList(
-                new EntityWrapper<DopBmapEntity>()
-                        .and(StringUtils.isNotBlank(minlng) , "lng>={0}",minlng)
-                        .and(StringUtils.isNotBlank(maxlng) , "lng<={0}",maxlng)
-                        .and(StringUtils.isNotBlank(minlat) , "lat>={0}",minlat)
-                        .and(StringUtils.isNotBlank(maxlat) , "lat<={0}",maxlat)
-                        .and(StringUtils.isNotBlank(minNo), "project_id>={0}",minNo)
-                        .and(StringUtils.isNotBlank(maxNo), "project_id<={0}",maxNo)
-                .orderBy("project_id",false)
-        );
+        Long id = Long.parseLong(params.get("id").toString());
+        List<Long> pIdList = new ArrayList<>();
+        pIdList.add(id);
+        List<DopBmapEntity> list = this.baseMapper.getMapChildList(pIdList);
         return list;
     }
 
@@ -276,10 +261,10 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                     lng += bd09[1];
                     lat += bd09[0];
                 }
-                entity.setLng( lng/polyList.length);
-                entity.setLat( lat/polyList.length);
-                entity.setLabelLng( lng/polyList.length);
-                entity.setLabelLat( lat/polyList.length);
+                entity.setLng( lng/(polyList.length - 1));
+                entity.setLat( lat/(polyList.length - 1));
+                entity.setLabelLng( lng/(polyList.length - 1));
+                entity.setLabelLat( lat/(polyList.length - 1));
                 entity.setCoordinate(corStr.substring(0,corStr.length()-1));
                 entity.setArea(AreaUtil.caculateArea(corStr));   // 多边面面积计算
                 entity.setType(3L);
@@ -389,7 +374,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN).replaceAll("-","").replaceAll(":","").replaceAll(" ","")
                 + ").png";
         try {
-            ImgUtils.convertBase64ToImage(base64, upBmapFolder + imgName);
+            ImgUtils.convertBase64ToImage(base64, upBmapFolder + "photo/" + imgName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
