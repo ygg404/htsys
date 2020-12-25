@@ -1,6 +1,5 @@
 package io.renren.modules.dop.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import io.renren.common.utils.*;
@@ -10,15 +9,15 @@ import io.renren.modules.dop.dao.DopBmapDao;
 import io.renren.modules.dop.entity.DopBmapEntity;
 import io.renren.modules.dop.service.DopBmapService;
 import io.renren.modules.sys.entity.SysUserEntity;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 
@@ -137,7 +136,15 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                             childElement = parentElement.addElement("Placemark");
                             childElement.addElement("name").addText(item.getLabel());
                             childElement.addElement("styleUrl").addText(pointStyleIdStr);
+
                             Element pointElement = childElement.addElement("Point");
+                            //"""点之记信息"""
+                            Class clasz= item.getClass();
+                            Field[] fields = clasz.getDeclaredFields();
+                            for (Field field : fields) {
+                                field.setAccessible(true);
+                                pointElement.addElement(field.getName()).addText( field.get(item) == null ? "" : field.get(item).toString() );
+                            }
                             // 经纬度 由百度坐标 转化为 84坐标系
                             double[] gps84 = GPSUtil.bd09_To_gps84(item.getLat(), item.getLng());
                             String pointcoordinates = gps84[1] + "," + gps84[0];
@@ -296,6 +303,19 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
             // 点元素
             Element pointEle = node.element("Point");
             if (pointEle != null) {
+                //点之记信息导入
+                Map<String,Object> map = MapEntityUtil.entityToMap(entity);
+                Set<String> keySet = map.keySet();
+                for(String key : keySet) {
+                    if (key.equals("id") || key.equals("parentId") || key.equals("createTime") || key.equals("createUserId") || key.equals("createUserName") || key.equals("modifyTime")){
+                        continue;
+                    }
+                    if ( pointEle.element(key) != null) {
+                        map.put( key , pointEle.element(key).getTextTrim());
+                    }
+                }
+                entity =  (DopBmapEntity) MapEntityUtil.mapToEntity(map, DopBmapEntity.class);
+                // 坐标位置导入
                 String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
                 double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
                 entity.setLabelLng(bd09[1]);

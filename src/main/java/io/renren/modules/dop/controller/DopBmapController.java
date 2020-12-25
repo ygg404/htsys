@@ -226,7 +226,7 @@ public class DopBmapController {
 //            InputStream inputStream = resource.getInputStream();
 //            File sourceFile =  resource.getFile();
             DopBmapEntity entity = dopBmapService.selectById(Long.parseLong((String)params.get("bmapId")));
-            Map<String, Object> objectMap = MapEntityUtil.entity2Map(entity);
+            Map<String, Object> objectMap = MapEntityUtil.entityToMap(entity);
             String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
             String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
             String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
