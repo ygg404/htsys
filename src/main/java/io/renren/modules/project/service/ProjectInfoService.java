@@ -3,6 +3,8 @@ package io.renren.modules.project.service;
 import com.baomidou.mybatisplus.service.IService;
 import io.renren.modules.project.vo.ProjectInfoVoEntity;
 
+import java.util.List;
+
 /**
  * 项目基本信息
  *
@@ -22,5 +24,5 @@ public interface ProjectInfoService extends IService<ProjectInfoVoEntity> {
      * @param projectNo
      * @return
      */
-    ProjectInfoVoEntity getPrintByProjectNo(String projectNo);
+    List<ProjectInfoVoEntity> getPrintByProjectNo(String projectNo);
 }

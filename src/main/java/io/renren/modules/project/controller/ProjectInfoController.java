@@ -47,8 +47,8 @@ public class ProjectInfoController {
      */
     @RequestMapping("/print/{projectNo}")
     public R print(@PathVariable("projectNo") String projectNo) {
-        ProjectInfoVoEntity entity = projectInfoService.getPrintByProjectNo(projectNo);
+        List<ProjectInfoVoEntity> list = projectInfoService.getPrintByProjectNo(projectNo);
 
-        return R.ok().put("projectInfo", entity);
+        return R.ok().put("projectInfo", list);
     }
 }

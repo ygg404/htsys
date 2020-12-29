@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import io.renren.modules.project.vo.ProjectInfoVoEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 项目基本信息
  *
@@ -15,5 +17,5 @@ public interface ProjectInfoDao extends BaseMapper<ProjectInfoVoEntity> {
 
     ProjectInfoVoEntity getInfoByProjectNo(String projectNo);
 
-    ProjectInfoVoEntity getPrintByProjectNo(String projectNo);
+    List<ProjectInfoVoEntity> getPrintByProjectNo(String projectNo);
 }

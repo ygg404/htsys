@@ -10,9 +10,9 @@ import java.util.List;
 
 /**
  * 地图标注表
- * 
+ *
  * @author ygg
- * @date 2020-11-21 10:12:31
+ * @date 2020-12-28 11:46:22
  */
 @TableName("dop_bmap")
 public class DopBmapEntity implements Serializable {
@@ -52,7 +52,7 @@ public class DopBmapEntity implements Serializable {
 	 */
 	private Double area;
 	/**
-	 * 类型（1-点；2-线；3-面）
+	 * 类型（0-项目;1-点；2-线；3-面）
 	 */
 	private Long type;
 	/**
@@ -64,9 +64,82 @@ public class DopBmapEntity implements Serializable {
 	 */
 	private String surveyor;
 	/**
+	 * 测绘时间
+	 */
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd")
+	private Date surveyTime;
+	/**
 	 * 定位方法
 	 */
 	private String posMethod;
+	/**
+	 * 线路类型
+	 */
+	private String lineType;
+	/**
+	 * 线路长度
+	 */
+	private Double lineLength;
+	/**
+	 * 高程基准
+	 */
+	private Double heightDatum;
+	/**
+	 * 高程等级
+	 */
+	private String heightLevel;
+	/**
+	 * 测绘要求
+	 */
+	private String surveyRequire;
+	/**
+	 * 参数类型（1-四参表；2-七参表）
+	 */
+	private Long sfRadio;
+	/**
+	 * 四参表-平移北(m)
+	 */
+	private Float fpNorth;
+	/**
+	 * 四参表-平移东(m)
+	 */
+	private Float fpEast;
+	/**
+	 * 四参表-旋转
+	 */
+	private String fpRotate;
+	/**
+	 * 四参表-尺寸
+	 */
+	private Float fpSize;
+	/**
+	 * 七参数
+	 */
+	private Double spDxm;
+	/**
+	 * 七参数
+	 */
+	private Double spDym;
+	/**
+	 * 七参数
+	 */
+	private Double spDzm;
+	/**
+	 * 七参数
+	 */
+	private Double spRx;
+	/**
+	 * 七参数
+	 */
+	private Double spRy;
+	/**
+	 * 七参数
+	 */
+	private Double spRz;
+	/**
+	 * 七参数
+	 */
+	private Double spKppm;
 	/**
 	 * 坐标系统
 	 */
@@ -175,7 +248,7 @@ public class DopBmapEntity implements Serializable {
 	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	private Date modifyTime;
 	/**
-	 * 父类ID
+	 * 父类Id
 	 */
 	private Long parentId;
 
@@ -244,11 +317,11 @@ public class DopBmapEntity implements Serializable {
 	 */
 	public void setArea (Double area){this.area = area;};
 	/**
-	 * 获取：类型（1-点；2-线；3-面）
+	 * 获取：类型（0-项目;1-点；2-线；3-面）
 	 */
 	public Long getType (){return this.type;};
 	/**
-	 * 设置：类型（1-点；2-线；3-面）
+	 * 设置：类型（0-项目;1-点；2-线；3-面）
 	 */
 	public void setType (Long type){this.type = type;};
 	/**
@@ -268,6 +341,14 @@ public class DopBmapEntity implements Serializable {
 	 */
 	public void setSurveyor (String surveyor){this.surveyor = surveyor;};
 	/**
+	 * 获取：测绘时间
+	 */
+	public Date getSurveyTime (){return this.surveyTime;};
+	/**
+	 * 设置：测绘时间
+	 */
+	public void setSurveyTime (Date surveyTime){this.surveyTime = surveyTime;};
+	/**
 	 * 获取：定位方法
 	 */
 	public String getPosMethod (){return this.posMethod;};
@@ -275,6 +356,142 @@ public class DopBmapEntity implements Serializable {
 	 * 设置：定位方法
 	 */
 	public void setPosMethod (String posMethod){this.posMethod = posMethod;};
+	/**
+	 * 获取：线路类型
+	 */
+	public String getLineType (){return this.lineType;};
+	/**
+	 * 设置：线路类型
+	 */
+	public void setLineType (String lineType){this.lineType = lineType;};
+	/**
+	 * 获取：线路长度
+	 */
+	public Double getLineLength (){return this.lineLength;};
+	/**
+	 * 设置：线路长度
+	 */
+	public void setLineLength (Double lineLength){this.lineLength = lineLength;};
+	/**
+	 * 获取：高程基准
+	 */
+	public Double getHeightDatum (){return this.heightDatum;};
+	/**
+	 * 设置：高程基准
+	 */
+	public void setHeightDatum (Double heightDatum){this.heightDatum = heightDatum;};
+	/**
+	 * 获取：高程等级
+	 */
+	public String getHeightLevel (){return this.heightLevel;};
+	/**
+	 * 设置：高程等级
+	 */
+	public void setHeightLevel (String heightLevel){this.heightLevel = heightLevel;};
+	/**
+	 * 获取：测绘要求
+	 */
+	public String getSurveyRequire (){return this.surveyRequire;};
+	/**
+	 * 设置：测绘要求
+	 */
+	public void setSurveyRequire (String surveyRequire){this.surveyRequire = surveyRequire;};
+	/**
+	 * 获取：参数类型（1-四参表；2-七参表）
+	 */
+	public Long getSfRadio (){return this.sfRadio;};
+	/**
+	 * 设置：参数类型（1-四参表；2-七参表）
+	 */
+	public void setSfRadio (Long sfRadio){this.sfRadio = sfRadio;};
+	/**
+	 * 获取：四参表-平移北(m)
+	 */
+	public Float getFpNorth (){return this.fpNorth;};
+	/**
+	 * 设置：四参表-平移北(m)
+	 */
+	public void setFpNorth (Float fpNorth){this.fpNorth = fpNorth;};
+	/**
+	 * 获取：四参表-平移东(m)
+	 */
+	public Float getFpEast (){return this.fpEast;};
+	/**
+	 * 设置：四参表-平移东(m)
+	 */
+	public void setFpEast (Float fpEast){this.fpEast = fpEast;};
+	/**
+	 * 获取：四参表-旋转
+	 */
+	public String getFpRotate (){return this.fpRotate;};
+	/**
+	 * 设置：四参表-旋转
+	 */
+	public void setFpRotate (String fpRotate){this.fpRotate = fpRotate;};
+	/**
+	 * 获取：四参表-尺寸
+	 */
+	public Float getFpSize (){return this.fpSize;};
+	/**
+	 * 设置：四参表-尺寸
+	 */
+	public void setFpSize (Float fpSize){this.fpSize = fpSize;};
+	/**
+	 * 获取：七参数Dx
+	 */
+	public Double getSpDxm (){return this.spDxm;};
+	/**
+	 * 设置：七参数Dx
+	 */
+	public void setSpDxm (Double spDxm){this.spDxm = spDxm;};
+	/**
+	 * 获取：七参数Dy
+	 */
+	public Double getSpDym (){return this.spDym;};
+	/**
+	 * 设置：七参数Dy
+	 */
+	public void setSpDym (Double spDym){this.spDym = spDym;};
+	/**
+	 * 获取：七参数Dz
+	 */
+	public Double getSpDzm (){return this.spDzm;};
+	/**
+	 * 设置：七参数Dz
+	 */
+	public void setSpDzm (Double spDzm){this.spDzm = spDzm;};
+	/**
+	 * 获取：七参数Rx
+	 */
+	public Double getSpRx (){return this.spRx;};
+	/**
+	 * 设置：七参数Rx
+	 */
+	public void setSpRx (Double spRx){this.spRx = spRx;};
+	/**
+	 * 获取：七参数Ry
+	 */
+	public Double getSpRy (){return this.spRy;};
+	/**
+	 * 设置：七参数Ry
+	 */
+	public void setSpRy (Double spRy){this.spRy = spRy;};
+	/**
+	 * 获取：七参数Rz
+	 */
+	public Double getSpRz (){return this.spRz;};
+	/**
+	 * 设置：七参数Rz
+	 */
+	public void setSpRz (Double spRz){this.spRz = spRz;};
+	/**
+	 * 获取：七参数Kppm
+	 */
+	public Double getSpKppm (){return this.spKppm;};
+	/**
+	 * 设置：七参数Kppm
+	 */
+	public void setSpKppm (Double spKppm){this.spKppm = spKppm;};
 	/**
 	 * 获取：坐标系统
 	 */
@@ -446,11 +663,11 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 获取：上传的word文件（点之记）
 	 */
-	public String getWordFile(){ return this.wordFile;}
+	public String getWordFile (){return this.wordFile;};
 	/**
-	 * 设置： 上传的word文件（点之记）
+	 * 设置：上传的word文件（点之记）
 	 */
-	public void setWordFile(String wordFile){ this.wordFile = wordFile;}
+	public void setWordFile (String wordFile){this.wordFile = wordFile;};
 	/**
 	 * 获取：创建用户ID
 	 */
@@ -484,11 +701,11 @@ public class DopBmapEntity implements Serializable {
 	 */
 	public void setModifyTime (Date modifyTime){this.modifyTime = modifyTime;};
 	/**
-	 * 获取：父类ID
+	 * 获取：父类Id
 	 */
-	public Long getParentId() {return this.parentId;}
+	public Long getParentId (){return this.parentId;};
 	/**
-	 * 设置：项目名称
+	 * 设置：父类Id
 	 */
 	public void setParentId (Long parentId){this.parentId = parentId;};
 }

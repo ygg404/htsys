@@ -1,5 +1,6 @@
 package io.renren.modules.dop.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import io.renren.common.utils.*;
@@ -143,7 +144,11 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                             Field[] fields = clasz.getDeclaredFields();
                             for (Field field : fields) {
                                 field.setAccessible(true);
-                                pointElement.addElement(field.getName()).addText( field.get(item) == null ? "" : field.get(item).toString() );
+                                String txt = field.get(item) == null ? "" : field.get(item).toString();
+                                if (field.getType() == Date.class &&  field.get(item) != null) {
+                                    txt = DateUtils.format((Date) field.get(item),DateUtils.DATE_TIME_PATTERN);
+                                }
+                                pointElement.addElement(field.getName()).addText(txt);
                             }
                             // 经纬度 由百度坐标 转化为 84坐标系
                             double[] gps84 = GPSUtil.bd09_To_gps84(item.getLat(), item.getLng());
@@ -314,7 +319,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                         map.put( key , pointEle.element(key).getTextTrim());
                     }
                 }
-                entity =  (DopBmapEntity) MapEntityUtil.mapToEntity(map, DopBmapEntity.class);
+                entity = JSON.parseObject(JSON.toJSONString(map), DopBmapEntity.class);
                 // 坐标位置导入
                 String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
                 double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));

@@ -7,6 +7,8 @@ import io.renren.modules.project.service.ProjectInfoService;
 import io.renren.modules.project.vo.ProjectInfoVoEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("ProjectInfoService")
 public class ProjectInfoServiceImpl extends ServiceImpl<ProjectInfoDao, ProjectInfoVoEntity> implements ProjectInfoService  {
     /**
@@ -26,8 +28,8 @@ public class ProjectInfoServiceImpl extends ServiceImpl<ProjectInfoDao, ProjectI
      * @return
      */
     @Override
-    public ProjectInfoVoEntity getPrintByProjectNo(String projectNo){
-        ProjectInfoVoEntity entity = baseMapper.getPrintByProjectNo( projectNo );
-        return entity;
+    public List<ProjectInfoVoEntity> getPrintByProjectNo(String projectNo){
+        List<ProjectInfoVoEntity> list = baseMapper.getPrintByProjectNo( projectNo );
+        return list;
     }
 }
