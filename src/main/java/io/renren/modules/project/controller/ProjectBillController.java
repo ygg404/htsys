@@ -72,7 +72,7 @@ public class ProjectBillController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("set:projectbill:update")
+    @RequiresPermissions("project:bill:update")
     public R update(@RequestBody ProjectBillEntity projectBill){
 		projectBillService.updateById(projectBill);
 
@@ -83,7 +83,7 @@ public class ProjectBillController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("set:projectbill:delete")
+    @RequiresPermissions("project:bill:delete")
     public R delete(@RequestBody Long[] ids){
 		projectBillService.deleteBatch(ids);
 
