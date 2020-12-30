@@ -77,6 +77,6 @@
 		LEFT JOIN sys_user on sys_user.useraccount = p.project_charge_account
         LEFT JOIN project_group on project_group.project_no = a.project_no
         LEFT JOIN work_group on work_group.id = project_group.group_id
-        where a.project_no = #{projectNo} and work_group.head_id = sys_user.user_id
+        where a.project_no = #{projectNo}
     </select>
 </mapper>

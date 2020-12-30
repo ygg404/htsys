@@ -46,7 +46,7 @@ public class ChartOutputVoEntity implements Serializable {
     /**
      * 质检用户名
      */
-    private String qualityUserName;
+    private String qualityUsername;
     /**
      * 项目实际产值
      */
@@ -133,13 +133,13 @@ public class ChartOutputVoEntity implements Serializable {
      */
     public void setQualityUseraccount(String qualityUseraccount) { this.qualityUseraccount = qualityUseraccount;}
     /**
-     * 获取：质检员姓名
+     * 获取：质检用户名
      */
-    public String getQualityUserName() { return this.qualityUserName;}
+    public String getQualityUsername (){return this.qualityUsername;};
     /**
-     * 设置：质检员姓名
+     * 设置：质检用户名
      */
-    public void setQualityUserName(String qualityUserName) { this.qualityUserName = qualityUserName;}
+    public void setQualityUsername (String qualityUsername){this.qualityUsername = qualityUsername;};
     /**
      * 获取：项目启动时间
      */

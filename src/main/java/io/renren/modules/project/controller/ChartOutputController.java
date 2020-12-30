@@ -170,10 +170,10 @@ public class ChartOutputController {
                         HSSFRow gRow = sheet.createRow(rowIndex++);
                         gRow.setHeight((short) 300);
                         HSSFCell gcell = gRow.createCell(0);
-                        gcell.setCellValue(new HSSFRichTextString( sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUserName()));
+                        gcell.setCellValue(new HSSFRichTextString( sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUsername()));
                         gcell.setCellStyle(gstyle);
                         groupNameTemp = voEntity.getgroupName();
-                        qualityUserName = voEntity.getQualityUserName();
+                        qualityUserName = voEntity.getQualityUsername();
                     } else {
                         // 写入合计产值
                         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 3));
@@ -186,13 +186,13 @@ public class ChartOutputController {
                         size = 0;
                         groupId = voEntity.getgroupId();
                         groupNameTemp = voEntity.getgroupName();
-                        qualityUserName = voEntity.getQualityUserName();
+                        qualityUserName = voEntity.getQualityUsername();
                         // 写入工作组名
                         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 4));
                         HSSFRow gRow = sheet.createRow(rowIndex++);
                         gRow.setHeight((short) 300);
                         HSSFCell gcell = gRow.createCell(0);
-                        gcell.setCellValue(new HSSFRichTextString(sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUserName()));
+                        gcell.setCellValue(new HSSFRichTextString(sidx.equals("work")? voEntity.getgroupName(): voEntity.getQualityUsername()));
                         gcell.setCellStyle(gstyle);
 
                     }

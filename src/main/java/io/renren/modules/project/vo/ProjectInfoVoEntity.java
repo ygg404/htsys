@@ -2,6 +2,7 @@ package io.renren.modules.project.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.renren.modules.project.entity.ProjectBillEntity;
+import io.renren.modules.project.entity.ProjectMtaskEntity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -173,6 +174,10 @@ public class ProjectInfoVoEntity implements Serializable {
      * 项目清单列表
      */
     private List<ProjectBillEntity> projectBillList;
+    /**
+     * 岗位职责列表
+     */
+    private List<ProjectMtaskEntity> projectMtaskList;
 
     /**
      * 获取：
@@ -494,4 +499,12 @@ public class ProjectInfoVoEntity implements Serializable {
      * 设置：项目清单列表
      */
     public void  setProjectBillList(List<ProjectBillEntity> projectBillList){this.projectBillList = projectBillList;};
+    /**
+     * 获取：岗位职责表
+     */
+    public List<ProjectMtaskEntity> getProjectMtaskList(){return this.projectMtaskList;};
+    /**
+     * 设置：岗位职责表
+     */
+    public void  setProjectMtaskList(List<ProjectMtaskEntity> projectMtaskList){this.projectMtaskList = projectMtaskList;};
 }

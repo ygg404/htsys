@@ -14,7 +14,7 @@
         <result property="projectOutput" column="project_output"/>
         <result property="projectCharge" column="project_charge"/>
         <result property="qualityUseraccount" column="quality_useraccount"/>
-        <result property="qualityUserName" column="qualityUserName"/>
+        <result property="qualityUsername" column="quality_username"/>
         <result property="projectActuallyOutput" column="project_actually_output"/>
         <result property="projectBegunDateTime" column="project_begun_date_time"/>
         <result property="wFinishDateTime" column="wFinishDateTime"/>
@@ -26,7 +26,7 @@
     <select id="getChartOutputVoList"  resultMap="chartOutputVoMap">
         select project.project_no ,project.project_name,project.project_start_date_time,
         project_group.group_id,work_group.name AS groupName,project_plan.project_charge,
-        check_quality.quality_useraccount,sys_user.username as qualityUserName,
+        check_quality.quality_useraccount,quality_username,
         project_plan.project_output,project_group.project_actually_output,
         project_plan.project_begun_date_time,project_work.finish_date_time as wFinishDateTime,
         check_quality.finish_date_time as qFinishDateTime,check_quality.cut_off_time,
@@ -38,7 +38,6 @@
         LEFT JOIN work_group on work_group.id = project_group.group_id
         LEFT JOIN check_quality on check_quality.project_no = project.project_no
         LEFT JOIN project_situation on project_situation.project_no = project.project_no
-        LEFT JOIN sys_user on sys_user.useraccount = check_quality.quality_useraccount
         where project.p_stage = 1 and project_work.project_status = 0
         and project_situation.is_output = 1
         <if test="sidx != '' and sidx != null and sidx == 'quality'">

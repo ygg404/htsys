@@ -149,13 +149,11 @@ public class CheckQualityController {
         if(entity.getcutOffTime() == null){
             entity.setcutOffTime(new Date());
         }
-        // 获取当前用户Id
-        Long createUserId =  ((SysUserEntity) SecurityUtils.getSubject().getPrincipal()).getUserId();
-        if(entity.getqualityUseraccount() == null){
-            SysUserEntity userEntity = sysUserService.selectById(createUserId);
-            entity.setqualityUseraccount(userEntity.getUseraccount());
-//            entity.setqualityConfirmaccount(userEntity.getUseraccount());
-        }
+        // 获取当前用户(即其质检人员)
+        SysUserEntity userEntity =  (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        entity.setqualityUseraccount(userEntity.getUseraccount());
+        entity.setQualityUsername(userEntity.getUsername());
+
 		checkQualityService.insertOrUpdate(entity);
 
         //保存质检后 设置项目情况已经质检
@@ -195,11 +193,11 @@ public class CheckQualityController {
     @RequestMapping("/update")
     @RequiresPermissions("project:quality:update")
     public R update(@RequestBody CheckQualityEntity checkQuality){
-        // 获取当前用户Id
-        Long userId =  ((SysUserEntity) SecurityUtils.getSubject().getPrincipal()).getUserId();
-        SysUserEntity userEntity = sysUserService.selectById(userId);
+        // 获取当前用户
+        SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         // 设置质量审核人
         checkQuality.setqualityConfirmaccount(userEntity.getUseraccount());
+        checkQuality.setQualityConfirmname(userEntity.getUsername());
 		checkQualityService.updateById(checkQuality);
 
         //保存质量综述后 设置项目情况已经质审

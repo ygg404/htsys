@@ -58,14 +58,21 @@ public class CheckQualityEntity implements Serializable {
 	 */
 	private Long groupid;
 	/**
-	 * 质检用户
+	 * 质检用户账号
 	 */
 	private String qualityUseraccount;
 	/**
-	 * 质检确认账号
+	 * 质检用户名
+	 */
+	private String qualityUsername;
+	/**
+	 * 质检审核账号
 	 */
 	private String qualityConfirmaccount;
-
+	/**
+	 * 质检审核姓名
+	 */
+	private String qualityConfirmname;
 	/**
 	* 获取：ID
 	*/
@@ -139,19 +146,35 @@ public class CheckQualityEntity implements Serializable {
 	 */
 	public void setgroupid (Long groupid){this.groupid = groupid;};
 	/**
-	* 获取：质检用户
+	* 获取：质检用户账号
 	*/
 	public String getqualityUseraccount (){return this.qualityUseraccount;};
 	/**
-	 * 设置：质检用户
+	 * 设置：质检用户账号
 	 */
 	public void setqualityUseraccount (String qualityUseraccount){this.qualityUseraccount = qualityUseraccount;};
 	/**
-	* 获取：质检确认账号
+	 * 获取：质检用户名
+	 */
+	public String getQualityUsername (){return this.qualityUsername;};
+	/**
+	 * 设置：质检用户名
+	 */
+	public void setQualityUsername (String qualityUsername){this.qualityUsername = qualityUsername;};
+	/**
+	* 获取：质检审核账号
 	*/
 	public String getqualityConfirmaccount (){return this.qualityConfirmaccount;};
 	/**
-	 * 设置：质检确认账号
+	 * 设置：质检审核账号
 	 */
 	public void setqualityConfirmaccount (String qualityConfirmaccount){this.qualityConfirmaccount = qualityConfirmaccount;};
+	/**
+	 * 获取：质检审核姓名
+	 */
+	public String getQualityConfirmname (){return this.qualityConfirmname;};
+	/**
+	 * 设置：质检审核姓名
+	 */
+	public void setQualityConfirmname (String qualityConfirmname){this.qualityConfirmname = qualityConfirmname;};
 }
