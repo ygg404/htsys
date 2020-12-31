@@ -83,7 +83,7 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 高程基准
 	 */
-	private Double heightDatum;
+	private String heightDatum;
 	/**
 	 * 高程等级
 	 */
@@ -375,11 +375,11 @@ public class DopBmapEntity implements Serializable {
 	/**
 	 * 获取：高程基准
 	 */
-	public Double getHeightDatum (){return this.heightDatum;};
+	public String getHeightDatum (){return this.heightDatum;};
 	/**
 	 * 设置：高程基准
 	 */
-	public void setHeightDatum (Double heightDatum){this.heightDatum = heightDatum;};
+	public void setHeightDatum (String heightDatum){this.heightDatum = heightDatum;};
 	/**
 	 * 获取：高程等级
 	 */
