@@ -76,6 +76,13 @@ public class RecycleController {
 
     @Autowired
     private BackWorkService backWorkService;
+
+    @Autowired
+    private ProjectBillService projectBillService;
+
+    @Autowired
+    private ProjectMtaskService projectMtaskService;
+
     /**
      * 列表
      */
@@ -121,7 +128,7 @@ public class RecycleController {
         //根据项目编号进行删除
         Map<String , Object> parm = new HashMap<>();
         parm.put("project_no" , params.get("projectNo"));
-        //项目 进度 工作安排 工作组 产值 质检 项目情况 返修记录相关内容删除
+        //项目 进度 工作安排 工作组 产值 质检 项目情况 成果清单 返修记录相关内容删除
         projectService.deleteByMap(parm);
         projectPlanService.deleteByMap(parm);
         projectScheduleService.deleteByMap(parm);
@@ -134,7 +141,9 @@ public class RecycleController {
         checkOutputTempService.deleteByMap(parm);
         backWorkService.deleteByMap(parm);
         checkOutputRemarkService.deleteByMap(parm);
-
+        projectBillService.deleteByMap(parm);
+        projectMtaskService.deleteByMap(parm);
+        
         return R.ok();
     }
 

@@ -125,10 +125,10 @@ public class ContractController {
         //获取 该合同下所有项目信息
         List<ProjectEntity> projectList = projectService.queryList(new MapUtils().put("contractNo",projectContract.getcontractNo()));
         for( ProjectEntity project : projectList){
-            project.setprojectType(projectContract.getprojectType());
+//            project.setprojectType(projectContract.getprojectType());
             project.setprojectAuthorize(projectContract.getcontractAuthorize());
             project.setprojectBusiness(projectContract.getcontractBusiness());
-            project.setprojectNote(projectContract.getcontractNote());
+//            project.setprojectNote(projectContract.getcontractNote());
         }
         if(projectList.size() > 0) {
             projectService.insertOrUpdateBatch(projectList);
