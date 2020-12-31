@@ -143,7 +143,7 @@ public class RecycleController {
         checkOutputRemarkService.deleteByMap(parm);
         projectBillService.deleteByMap(parm);
         projectMtaskService.deleteByMap(parm);
-        
+
         return R.ok();
     }
 
