@@ -6,12 +6,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
+
+import net.sf.json.JSONObject;
+import com.qiniu.util.Json;
 import io.renren.common.annotation.SysLog;
 
 import io.renren.common.utils.*;
 import io.renren.common.utils.map.GPSUtil;
 import io.renren.modules.dop.vo.MapVoEntity;
 import io.renren.modules.sys.entity.SysUserEntity;
+import jodd.json.JsonParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -220,23 +224,32 @@ public class DopBmapController {
      */
     @SysLog("导出Word文件")
     @RequestMapping("/exportWord")
-    public R exportWord(HttpServletResponse response, @RequestParam Map<String, Object> params) {
+    public void exportWord(HttpServletResponse response, @RequestParam Map<String, Object> params) {
         try {
 //            ClassPathResource resource =  new ClassPathResource("ftl/bPoint.ftl");
 //            InputStream inputStream = resource.getInputStream();
 //            File sourceFile =  resource.getFile();
             DopBmapEntity entity = dopBmapService.selectById(Long.parseLong((String)params.get("bmapId")));
             Map<String, Object> objectMap = MapEntityUtil.entityToMap(entity);
-            String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
-            String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
-            String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
-            objectMap.put("transImg",transImg);
-            objectMap.put("photoScene",photoScene);
-            objectMap.put("photoFar",photoFar);
-            objectMap.put("stoneTime",entity.getStoneTime() == null ? "" : DateUtils.format(entity.getStoneTime(),DateUtils.DATE_PATTERN));
-            String ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
+            String ftl = "";
+            switch (entity.getType().intValue()) {
+                case 1:
+                    String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
+                    String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
+                    String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
+                    objectMap.put("transImg",transImg);
+                    objectMap.put("photoScene",photoScene);
+                    objectMap.put("photoFar",photoFar);
+                    ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
+                    break;
+                case 2:
+                    ftl = FreeMarkerUtil.getFreeMarkerFile("lPoint.ftl",objectMap);
+                    break;
+                case 3:
+                    ftl = FreeMarkerUtil.getFreeMarkerFile("pPoint.ftl",objectMap);
+                    break;
+            }
 
-//
             //添加到zip
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ZipOutputStream zip = new ZipOutputStream(outputStream);
@@ -256,9 +269,7 @@ public class DopBmapController {
             IOUtils.write(outputStream.toByteArray(), response.getOutputStream());
 
         } catch (Exception ex) {
-            return R.error(ex.getMessage());
+            ex.printStackTrace();
         }
-
-        return R.ok();
     }
 }

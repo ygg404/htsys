@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,15 @@ public class MapEntityUtil {
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                map.put(field.getName(), field.get(obj) == null ? "" : field.get(obj));
+                switch (field.getType().getName()) {
+                    case "java.util.Date":
+                        String date = field.get(obj) == null ? "" : DateUtils.format((Date)field.get(obj),DateUtils.DATE_PATTERN);
+                        map.put(field.getName(),date);
+                        break;
+                    default:
+                        map.put(field.getName(), field.get(obj) == null ? "" : field.get(obj));
+                        break;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

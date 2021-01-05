@@ -12,7 +12,6 @@ public class FreeMarkerUtil {
 	
 	/**
 	   * @param fltFile  flt文件名
-	    * @param templatePath flt文件路径   src/template
 	    * @param datas 数据集合（与ftl中占位的变量名一致）
 	    * @return
 	   */
