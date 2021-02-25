@@ -22,7 +22,7 @@ spring:
         driverClassName: com.mysql.jdbc.Driver
         druid:
             first:  #数据源1
-                url: jdbc:mysql://localhost:3306/dop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+                url: jdbc:mysql://localhost:3306/jxtest?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
                 username: root
                 password:
             second:  #数据源2

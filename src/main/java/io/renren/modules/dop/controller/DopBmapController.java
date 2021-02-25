@@ -1,6 +1,7 @@
 package io.renren.modules.dop.controller;
 
 import java.io.*;
+import java.sql.Struct;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -226,35 +227,38 @@ public class DopBmapController {
     @RequestMapping("/exportWord")
     public void exportWord(HttpServletResponse response, @RequestParam Map<String, Object> params) {
         try {
-//            ClassPathResource resource =  new ClassPathResource("ftl/bPoint.ftl");
-//            InputStream inputStream = resource.getInputStream();
-//            File sourceFile =  resource.getFile();
-            DopBmapEntity entity = dopBmapService.selectById(Long.parseLong((String)params.get("bmapId")));
-            Map<String, Object> objectMap = MapEntityUtil.entityToMap(entity);
-            String ftl = "";
-            switch (entity.getType().intValue()) {
-                case 1:
-                    String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
-                    String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
-                    String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
-                    objectMap.put("transImg",transImg);
-                    objectMap.put("photoScene",photoScene);
-                    objectMap.put("photoFar",photoFar);
-                    ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
-                    break;
-                case 2:
-                    ftl = FreeMarkerUtil.getFreeMarkerFile("lPoint.ftl",objectMap);
-                    break;
-                case 3:
-                    ftl = FreeMarkerUtil.getFreeMarkerFile("pPoint.ftl",objectMap);
-                    break;
-            }
-
+            List<Long> pIdList = new ArrayList<>();
+            pIdList.add(Long.parseLong((String)params.get("bmapId")));
+            List<DopBmapEntity> list = dopBmapService.queryByPId(pIdList);
+            String[] selectIds = params.get("selectIds").toString().split(",");
             //添加到zip
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ZipOutputStream zip = new ZipOutputStream(outputStream);
-            zip.putNextEntry(new ZipEntry(entity.getLabel() + ".doc"));
-            IOUtils.write(ftl, zip, "UTF-8" );
+            for (DopBmapEntity entity : list) {
+                if(Arrays.asList(selectIds).contains(String.valueOf(entity.getId())) && entity.getType() != 0L){
+                    Map<String, Object> objectMap = MapEntityUtil.entityToMap(entity);
+                    String ftl = "";
+                    switch (entity.getType().intValue()) {
+                        case 1:
+                            String transImg = StringUtil.isEmpty(entity.getTransImg()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getTransImg());
+                            String photoScene = StringUtil.isEmpty(entity.getPhotoScene()) ? "" : ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoScene());
+                            String photoFar = StringUtil.isEmpty(entity.getPhotoFar()) ? "" :ImgUtils.getImgBase64( upBmapFolder + entity.getPhotoFar());
+                            objectMap.put("transImg",transImg);
+                            objectMap.put("photoScene",photoScene);
+                            objectMap.put("photoFar",photoFar);
+                            ftl = FreeMarkerUtil.getFreeMarkerFile("bPoint.ftl",objectMap);
+                            break;
+                        case 2:
+                            ftl = FreeMarkerUtil.getFreeMarkerFile("lPoint.ftl",objectMap);
+                            break;
+                        case 3:
+                            ftl = FreeMarkerUtil.getFreeMarkerFile("pPoint.ftl",objectMap);
+                            break;
+                    }
+                    zip.putNextEntry(new ZipEntry(entity.getLabel() + ".doc"));
+                    IOUtils.write(ftl, zip, "UTF-8" );
+                }
+            }
 
             zip.closeEntry();
             IOUtils.closeQuietly(zip);

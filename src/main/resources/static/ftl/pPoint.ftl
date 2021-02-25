@@ -583,7 +583,7 @@
                     </w:tc>
                     <w:tc>
                         <w:tcPr>
-                            <w:tcW w:w="1949" w:type="dxa"/>
+                            <w:tcW w:w="2400" w:type="dxa"/>
                             <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
                         </w:tcPr>
                         <w:p>
@@ -605,7 +605,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spDxm}</w:t>
+                                <w:t><#if spDxm??>${spDxm?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -689,7 +689,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spDym}</w:t>
+                                <w:t><#if spDym??>${spDym?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -773,7 +773,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spDzm}</w:t>
+                                <w:t><#if spDzm??>${spDzm?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -857,7 +857,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spRx}</w:t>
+                                <w:t><#if spRx??>${spRx?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -941,7 +941,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spRy}</w:t>
+                                <w:t><#if spRy??>${spRy?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -1025,7 +1025,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spRz}</w:t>
+                                <w:t><#if spRz??>${spRz?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>
@@ -1109,7 +1109,7 @@
                                             w:val="24"/>
                                     <w:lang w:val="EN-US" w:fareast="ZH-CN"/>
                                 </w:rPr>
-                                <w:t>${spKppm}</w:t>
+                                <w:t><#if spKppm??>${spKppm?string("#.############")}</#if></w:t>
                             </w:r>
                         </w:p>
                     </w:tc>

@@ -1,4 +1,4 @@
-package io.renren.modules.ren.controller;
+package io.renren.modules.set.controller;
 
 import java.util.List;
 import java.util.Map;

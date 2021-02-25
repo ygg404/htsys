@@ -53,7 +53,7 @@ public class SmsUtil {
      */
     public static R sendVerifyCodeMsg(String phoneNumber,String[] replacedValues) {
         try {
-            sendMessage(873770,phoneNumber,replacedValues);
+            sendMessage(877408,phoneNumber,replacedValues);
             return R.ok();
         } catch (Exception e) {
             return R.error(e.getMessage());
@@ -62,7 +62,7 @@ public class SmsUtil {
 
     public static void main(String[] args) {
         try {
-            String phoneNumber = "15917919286";
+            String phoneNumber = "13536870690";
             String[] replacedValues= {"787878","勇哥","第二组","11111"};
             String[] replacedValue = {"434355"};
             sendVerifyCodeMsg(phoneNumber,replacedValue);  // 888878 是templateId “短信签名名字” 这个是腾讯天申请的短信签名  replacedValues 是短信内容需要的参数

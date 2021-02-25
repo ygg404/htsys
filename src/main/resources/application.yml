@@ -12,11 +12,11 @@ spring:
       max-request-size: 100MB
       enabled: true
   redis:
-    open: false  # 是否开启redis缓存  true开启   false关闭
-    database: 0
-    host: localhost
+    open: true  # 是否开启redis缓存  true开启   false关闭
+    database: 1
+    host: 193.112.32.233
     port: 6379
-    password:    # 密码（默认为空）
+    password: ygg654321   # 密码（默认为空）
     timeout: 6000ms  # 连接超时时长（毫秒）
     jedis:
       pool:
@@ -63,7 +63,7 @@ mybatis-plus:
 renren:
   database: mysql
   redis:
-    open: false
+    open: true
   shiro:
     redis: false
   # APP模块，是通过jwt认证的，如果要使用APP模块，则需要修改【加密秘钥】
@@ -73,6 +73,14 @@ renren:
     # token有效时长，7天，单位秒
     expire: 604800
     header: token
+wx:
+  # 小程序ID 和 秘钥
+  miniId: wx3cb1dcfcd74edebf
+  miniSecret: 7b68cbe6b21394a7af0a24d02426f37b
+  # 公众号ID 和 秘钥
+  accountId:  wxdbda2ef3390a8529
+  accountSecret: a2389f5383a3ebbb267a4d40a64a47f9
+
 upload-config:
     #附件存储根目录
   root: /usr/local/huatong/tomcat/upload

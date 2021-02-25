@@ -151,7 +151,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                                 pointElement.addElement(field.getName()).addText(txt);
                             }
                             // 经纬度 由百度坐标 转化为 84坐标系
-                            double[] gps84 = GPSUtil.bd09_To_gps84(item.getLat(), item.getLng());
+                            double[] gps84 = GPSUtil.gcj02_To_Gps84(item.getLat(), item.getLng());
                             String pointcoordinates = gps84[1] + "," + gps84[0];
                             pointElement.addElement("coordinates").addText(pointcoordinates);
                             break;
@@ -165,7 +165,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                             // 经纬度 由百度坐标 转化为 84坐标系
                             for (String corItem : item.getCoordinate().split(";")) {
                                 // 经纬度 由百度坐标 转化为 84坐标系
-                                double[] lineGps84 = GPSUtil.bd09_To_gps84(Double.parseDouble(corItem.split(",")[1])
+                                double[] lineGps84 = GPSUtil.gcj02_To_Gps84(Double.parseDouble(corItem.split(",")[1])
                                         , Double.parseDouble(corItem.split(",")[0]));
                                 coordinateData += String.valueOf(lineGps84[1]) + "," + String.valueOf(lineGps84[0]) + ";";
                             }
@@ -186,7 +186,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                             // 经纬度 由百度坐标 转化为 84坐标系
                             for (String corItem : item.getCoordinate().split(";")) {
                                 // 经纬度 由百度坐标 转化为 84坐标系
-                                double[] wgs84 = GPSUtil.bd09_To_gps84(Double.parseDouble(corItem.split(",")[1])
+                                double[] wgs84 = GPSUtil.gcj02_To_Gps84(Double.parseDouble(corItem.split(",")[1])
                                         , Double.parseDouble(corItem.split(",")[0]));
                                 coorData += String.valueOf(wgs84[1]) + "," + String.valueOf(wgs84[0]) + ";";
                             }
@@ -267,7 +267,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 double lat = 0f;
                 for (int i = 0; i < polyList.length - 1 ; i ++) {
                     String[] pointStr = polyList[i].split(",");
-                    double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                    double[] bd09 = GPSUtil.gps84_To_Gcj02(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
                     corStr += bd09[1] + "," + bd09[0] + ";";
 
                     lng += bd09[1];
@@ -291,7 +291,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 double lat = 0f;
                 for (String line : lineList) {
                     String[] pointStr = line.split(",");
-                    double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                    double[] bd09 = GPSUtil.gps84_To_Gcj02(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
                     corStr += bd09[1] + "," + bd09[0] + ";";
                     lng += bd09[1];
                     lat += bd09[0];
@@ -322,7 +322,7 @@ public class DopBmapServiceImpl extends ServiceImpl<DopBmapDao, DopBmapEntity> i
                 entity = JSON.parseObject(JSON.toJSONString(map), DopBmapEntity.class);
                 // 坐标位置导入
                 String[] pointStr = pointEle.element("coordinates").getTextTrim().split(",");
-                double[] bd09 = GPSUtil.gps84_To_bd09(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
+                double[] bd09 = GPSUtil.gps84_To_Gcj02(Double.parseDouble(pointStr[1]),Double.parseDouble(pointStr[0]));
                 entity.setLabelLng(bd09[1]);
                 entity.setLabelLat(bd09[0]);
                 entity.setLng(bd09[1]);
